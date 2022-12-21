@@ -1,5 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="a4c8c1dd-3b7f-4e81-9304-ddbea9ce2e23" >
+		<http:listener-connection host="0.0.0.0" port="8080" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="1701806b-6ab0-4cb9-8a6b-1602a7ee595c" >
+		<http:request-connection host="localhost" port="8080" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="e3fed6b1-be5b-48f3-8696-a8bd704264ac" >
+		<http:request-connection host="localhost" port="8081" />
+	</http:request-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="95104acc-e9e9-4b45-8a21-f9b1b12666a8" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="AWhansve3032" database="northwind" />
+	</db:config>
+	<flow name="getShippingDate" doc:id="3681e400-04ee-424c-9bba-7e96390c09f0" >
+		<http:listener doc:name="Listener" doc:id="9269f133-cfe5-416b-b48f-0cd0302ce7eb" config-ref="HTTP_Listener_config" path="/shippingDate" />
+		<set-variable value="#[attributes.queryParams.offerID]" doc:name="offerID" doc:id="944600e7-edaa-4ccf-883e-d0185c0a20b1" variableName="offerID" />
+		<set-variable value="#[attributes.queryParams.shipperID]" doc:name="shipperID" doc:id="c7319c7c-f953-4e03-9fe3-5b9833fc4977" variableName="shipperID" />
+		<set-variable value="#[attributes.queryParams.dateAccepted as Date]" doc:name="dateAccepted" doc:id="b5ffe920-d24d-46fb-b18b-831a0dbd82ee" variableName="dateAccepted"/>
+		<http:request method="GET" doc:name="GET/postalCode" doc:id="d535c64a-d0e7-4828-80ac-e6ba58382d9d" config-ref="HTTP_Request_configuration" path="/customerInfo" target="postalCode">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	offerID : vars.offerID
+}]]]></http:query-params>
+		</http:request>
+		<http:request method="GET" doc:name="GET/categoryName" doc:id="d8c03f35-eb3a-4627-9675-711a5eec5df6" config-ref="HTTP_Request_configuration" path="/product" target="categoryName">
+			<http:body ><![CDATA[payload]]></http:body>
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	offerID : vars.offerID
+}]]]></http:query-params>
+		</http:request>
+		<http:request method="POST" doc:name="POST/ship" doc:id="3ee624d6-e645-4610-a380-41c20121e657" config-ref="HTTP_Request_configuration1" path="/api/ship" >
+			<http:body ><![CDATA[#[output application/json
+---
+{
+	"shipperID": vars.shipperID as Number,
+	"postalCode": vars.postalCode,
+	"categoryName": vars.categoryName
+}]]]></http:body>
+		</http:request>
+		<choice doc:name="Choice" doc:id="047c63b9-66f1-4e49-8bf6-7ac846c2a8d5" >
+			<when expression='#[import * from dw::core::Dates&#10;import * from dw::core::Periods&#10;output application/json&#10;&#10;var days = 15&#10;---&#10;payload.shippingDate &lt; vars.dateAccepted + ("P$(days)D" as Period)]'>
+				<set-payload value="#[payload.shippingDate]" doc:name="Set Payload" doc:id="2c563410-0dba-4b9e-85d2-7e35f7058c32" />
+			</when>
+			<otherwise>
+				<raise-error doc:name="Raise error" doc:id="7c17baa1-b693-49f0-b707-29667bbbab16" type="CUSTOM:CUSTOM_ERROR" description="Shipping date &gt; 15 days away"/>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="getCustomerInfo" doc:id="96a40a65-0390-4098-aa54-e031fbc0906c" >
+		<http:listener doc:name="Listener" doc:id="1b0bdbbb-4ba6-43ce-bf5c-3fb8a9faedba" config-ref="HTTP_Listener_config" path="/customerInfo" allowedMethods="GET" />
+		<logger level="INFO" doc:name="Logger" doc:id="c79f9eca-f601-4716-86e8-5be4230ae637" />
+		<db:select doc:name="Select" doc:id="6005f275-ee12-41ec-92db-1e14b954f9f7" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT customers.postalCode
+FROM offers, customers
+WHERE offerID = :offerID AND offers.customerID = customers.customerID;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{"offerID": attributes.queryParams.offerID}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="14a605c3-4a3a-4783-a911-b1ba845e45bd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+
+payload[0].postalCode as String
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="75a540b6-83a7-4c3f-a459-e17ca5915282" />
+	</flow>
+	<flow name="getProduct" doc:id="2c69889a-8414-4e13-ac14-8835fdf4d3c7" >
+		<http:listener doc:name="Listener" doc:id="8d0b2d64-4cb5-452f-80ea-4fd579def1b5" config-ref="HTTP_Listener_config" path="/product" />
+		<logger level="INFO" doc:name="Logger" doc:id="084d423d-d213-4dc8-b326-929d952d261f" />
+		<db:select doc:name="Select" doc:id="eaed32d3-ce17-4881-97a2-65366dd3361e" config-ref="Database_Config" >
+			<db:sql ><![CDATA[SELECT C.categoryName 
+from offers O, products P, categories C
+WHERE O.offerID = :offerID AND O.productID = P.productID AND P.categoryID = C.categoryID;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{"offerID": attributes.queryParams.offerID}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="938dec72-86b7-4f9f-bda7-4d1a69176992" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+
+payload[0].categoryName as String
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="3bff199a-93d0-4311-ad38-763c8a247daa" />
+	</flow>
+</mule>

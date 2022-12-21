@@ -1,0 +1,9 @@
+{
+  "sampleData": {
+    "3ee624d6-e645-4610-a380-41c20121e657": {
+      "vars-shipperID": "sample_data/java.dwl",
+      "vars-postalCode": "sample_data/java_1.dwl",
+      "vars-categoryName": "sample_data/java_2.dwl"
+    }
+  }
+}
