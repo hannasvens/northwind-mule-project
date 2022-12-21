@@ -49,7 +49,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		</http:request>
 		<choice doc:name="Choice" doc:id="047c63b9-66f1-4e49-8bf6-7ac846c2a8d5" >
 			<when expression='#[import * from dw::core::Dates&#10;import * from dw::core::Periods&#10;output application/json&#10;&#10;var days = 15&#10;---&#10;payload.shippingDate &lt; vars.dateAccepted + ("P$(days)D" as Period)]'>
-				<set-payload value="#[payload.shippingDate]" doc:name="Set Payload" doc:id="2c563410-0dba-4b9e-85d2-7e35f7058c32" />
+				<set-payload value='#[{&#10;	"ShippingDate": payload.shippingDate&#10;}]' doc:name="Set Payload" doc:id="2c563410-0dba-4b9e-85d2-7e35f7058c32" />
 			</when>
 			<otherwise>
 				<raise-error doc:name="Raise error" doc:id="7c17baa1-b693-49f0-b707-29667bbbab16" type="CUSTOM:CUSTOM_ERROR" description="Shipping date &gt; 15 days away"/>
