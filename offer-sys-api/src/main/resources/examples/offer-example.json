@@ -1,0 +1,14 @@
+{
+    "OfferID": 1,
+    "Status": "pending",
+    "DateCreated": "2022-12-16T12:41:41Z",
+    "DateApproved": "2022-12-16T12:41:41Z",
+    "EmployeeID": 7,
+    "CustomerID": "ALKWE",
+    "ProductID": 23,
+    "Quantity": 3,
+    "OrderID": 11086,
+    "TotalPrice": 30.0,
+    "PriceDiscount": 0,
+    "PaymentTransactionID": 9
+}

@@ -1,5 +1,105 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="post-offer" doc:id="096bd494-83d3-4cbc-80fc-2e33f94e96af" >
+		<logger level="INFO" doc:name="Logger" doc:id="679602d0-d7ba-497c-a794-9d82d438062b" />
+		<ee:transform doc:name="Transform Message" doc:id="18ad5c33-bc7f-4471-aa4c-8e7f695c6ae0" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: payload.Status,
+	PaymentTransactionID: payload.PaymentTransactionID,
+	TotalPrice: payload.TotalPrice,
+	DateCreated: payload.DateCreated,
+	Quantity: payload.Quantity,
+	ProductID: payload.ProductID,
+	DateApproved: payload.DateApproved,
+	CustomerID: payload.CustomerID,
+	EmployeeID: payload.EmployeeID,
+	OrderID: payload.OrderID,
+	PriceDiscount: payload.PriceDiscount
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:insert doc:name="Insert" doc:id="da0032df-b0e9-4e5c-aedf-e5979e3d17e5" config-ref="Database_Config">
+			<db:sql ><![CDATA[insert into offers (Status, DateCreated, DateApproved, EmployeeID, CustomerID, ProductID, Quantity, OrderID, TotalPrice, PriceDiscount, PaymentTransactionID)
+values (:Status, :DateCreated, :DateApproved, :EmployeeID, :CustomerID, :ProductID, :Quantity, :OrderID, :TotalPrice, :PriceDiscount, :PaymentTransactionID)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="d7e5c788-2b7e-4c1c-9050-c1917ecf4367" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"An offer request has been sent."]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="d1b8acf8-76ac-4543-b98f-cdfa7aa5f994" />
+	</flow>
+	<flow name="get-all-offers" doc:id="2fea5e85-ab97-435d-942b-710e70d8e4c0" >
+		<logger level="INFO" doc:name="Logger" doc:id="90b90f4c-ab5a-4634-8eae-79a80485b7ab" />
+		<db:select doc:name="Select" doc:id="fb18590c-5c12-4368-9716-32a4720fd3d1" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from offers]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="71b2f787-127a-40aa-9f06-a5bc2077c461" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( property , indexOfproperty ) -> {
+	"Offer ID": property.OfferID,
+	Status: property.Status,
+	"Date created": property.DateCreated as String,
+	"Date approved": property.DateApproved as String,
+	"Employee ID": property.EmployeeID,
+	"Customer ID": property.CustomerID,
+	"Product ID": property.ProductID,
+	Quantity: property.Quantity,
+	"Order ID": property.OrderID,
+	"Total price": property.TotalPrice,
+	"Price discount": property.PriceDiscount,
+	"Payment transaction ID": property.PaymentTransactionID
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="2d9b1ae7-9340-4af1-8a6e-ad7257b9cc75" message="#[payload]"/>
+	</flow>
+	<flow name="patch-offer" doc:id="ebffde56-1a1d-4887-853a-41ac1038876c" >
+		<logger level="INFO" doc:name="Logger" doc:id="ce407388-d76d-42a9-9446-f2c079933e48" />
+	</flow>
+	<flow name="get-offer" doc:id="b73535f2-c416-46b4-ba89-54db70076758" >
+		<logger level="INFO" doc:name="Logger" doc:id="24f20c15-30ab-4595-a9ec-da3dec949d06" />
+		<db:select doc:name="Select" doc:id="4fb4e708-e8fc-40aa-8624-7d0198a19663" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from offers where OfferID = :offerID]]></db:sql>
+			<db:input-parameters ><![CDATA[#["offerID": attributes.uriParams.offerID]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="25cf5756-f86f-491c-889b-860b009ff442" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( property , indexOfproperty ) -> {
+	"Offer ID": property.OfferID,
+	Status: property.Status,
+	"Date created": property.DateCreated as String,
+	"Date approved": property.DateApproved as String,
+	"Employee ID": property.EmployeeID,
+	"Customer ID": property.CustomerID,
+	"Product ID": property.ProductID,
+	Quantity: property.Quantity,
+	"Order ID": property.OrderID,
+	"Total price": property.TotalPrice,
+	"Price discount": property.PriceDiscount,
+	"Payment transaction ID": property.PaymentTransactionID
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="3f846e7a-7f34-4213-a965-6eec933f5f84" message="#[payload]" />
+	</flow>
+</mule>

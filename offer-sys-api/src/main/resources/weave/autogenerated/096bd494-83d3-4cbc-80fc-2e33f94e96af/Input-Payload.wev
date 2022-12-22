@@ -1,0 +1,18 @@
+%dw 2.0
+
+type auto_096bd494_83d3_4cbc_80fc_2e33f94e96af_Input_Payload = {
+  OfferID?: Number, 
+  Status?: String, 
+  PaymentTransactionID?: Number, 
+  TotalPrice?: Number, 
+  DateCreated?: String, 
+  Quantity?: Number, 
+  ProductID?: Number, 
+  DateApproved?: String, 
+  CustomerID?: String, 
+  EmployeeID?: Number, 
+  OrderID?: Number, 
+  PriceDiscount?: Number, 
+  _?: Any
+}
+
