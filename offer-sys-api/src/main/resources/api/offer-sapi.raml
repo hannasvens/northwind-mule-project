@@ -1,0 +1,50 @@
+#%RAML 1.0
+title: Offer API
+version: 1.0
+
+types:
+  OfferType: !include DataTypes/offer-dataType.raml
+
+/offers:
+  post:
+    description: Create a new offer request
+    body:
+      application/json:
+        type: OfferType
+        example: !include Examples/pending-offer-example.raml
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              An offer request has been sent.
+  get:
+    description: Retrieve all offers
+    responses:
+            200:
+              body:
+                application/json:
+                  examples:
+                    !include Examples/offers-example.raml
+
+  /{offerID}:
+    patch:
+      description: Update an offer
+      body:
+        application/json:
+          type: OfferType
+          example:
+            !include Examples/offer-example.raml
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                Offer status updated.
+    get:
+      description: Retrieve a specific offer
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include Examples/offer-example.raml

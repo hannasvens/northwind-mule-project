@@ -1,0 +1,17 @@
+%dw 2.0
+
+type auto_e2d72521_c37f_4825_b03b_da0fb4fe5091_Output_Payload = {
+  contactInfo?: {
+    country: String, 
+    contactTitle: String, 
+    address: String, 
+    phone: String, 
+    postalCode: Number, 
+    _?: Any
+  }, 
+  contactName: String, 
+  companyName: String, 
+  customerID: String, 
+  _?: Any
+}
+
