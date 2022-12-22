@@ -27,7 +27,7 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<db:insert doc:name="Insert" doc:id="da0032df-b0e9-4e5c-aedf-e5979e3d17e5" config-ref="Database_Config" autoGenerateKeys="true">
+		<db:insert doc:name="Insert" doc:id="da0032df-b0e9-4e5c-aedf-e5979e3d17e5" config-ref="Database_Config">
 			<db:sql ><![CDATA[insert into offers (Status, DateCreated, DateApproved, EmployeeID, CustomerID, ProductID, Quantity, OrderID, TotalPrice, PriceDiscount, PaymentTransactionID)
 values (:Status, :DateCreated, :DateApproved, :EmployeeID, :CustomerID, :ProductID, :Quantity, :OrderID, :TotalPrice, :PriceDiscount, :PaymentTransactionID)]]></db:sql>
 			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
@@ -93,9 +93,10 @@ output application/json
 			</ee:message>
 		</ee:transform>
 		<db:update doc:name="Update" doc:id="572b2120-167a-47bd-826f-501e3ee8627e" config-ref="Database_Config">
-			<db:sql ><![CDATA[update offers (Status, DateCreated, DateApproved, EmployeeID, CustomerID, ProductID, Quantity, OrderID, TotalPrice, PriceDiscount, PaymentTransactionID)
-set (:Status, :DateCreated, :DateApproved, :EmployeeID, :CustomerID, :ProductID, :Quantity, :OrderID, :TotalPrice, :PriceDiscount, :PaymentTransactionID)]]></db:sql>
-			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
+			<db:sql ><![CDATA[update offers
+set Status = :Status
+where OfferID = :offerID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{"offerID": attributes.uriParams.offerID, "Status": message.payload.Status}]]]></db:input-parameters>
 		</db:update>
 		<ee:transform doc:name="Offer updated" doc:id="d532c121-df69-43f3-803d-a959919a4947" >
 			<ee:message >
