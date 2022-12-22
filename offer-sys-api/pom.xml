@@ -75,7 +75,7 @@
 		<dependency>
 			<groupId>34a32451-a2eb-4cf2-8e1d-29f8907b6a0d</groupId>
 			<artifactId>offer-sapi</artifactId>
-			<version>1.0.2</version>
+			<version>1.0.4</version>
 			<classifier>raml</classifier>
 			<type>zip</type>
 		</dependency>
