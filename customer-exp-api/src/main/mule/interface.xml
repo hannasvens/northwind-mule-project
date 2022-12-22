@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
-    <apikit:config name="customer-sapi-config" api="customer-sapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
-    <flow name="customer-sapi-main">
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    <apikit:config name="customer-eapi-config" api="customer-eapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <flow name="customer-eapi-main">
         <http:listener config-ref="HTTP_Listener_config" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
@@ -11,7 +11,7 @@
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:router config-ref="customer-sapi-config" />
+        <apikit:router config-ref="customer-eapi-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:BAD_REQUEST">
                 <ee:transform>
@@ -93,7 +93,7 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="customer-sapi-console">
+    <flow name="customer-eapi-console">
         <http:listener config-ref="HTTP_Listener_config" path="/console/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
@@ -103,7 +103,7 @@ output application/json
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:console config-ref="customer-sapi-config" />
+        <apikit:console config-ref="customer-eapi-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:NOT_FOUND">
                 <ee:transform>
@@ -120,13 +120,13 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="get:\customers:customer-sapi-config">
-		<flow-ref doc:name="Flow Reference" doc:id="3d3aa69b-b22d-4565-a0c4-321a072f24b6" name="getCustomersFlow"/>
+    <flow name="get:\customers:customer-eapi-config">
+        <flow-ref doc:name="Flow Reference" doc:id="c285f955-7c28-496d-be8b-d7c88129a31f" name="getCustomersFlow" />
     </flow>
-    <flow name="get:\customers\(ID):customer-sapi-config">
-		<flow-ref doc:name="Flow Reference" doc:id="93f209d0-f05d-4077-b337-e643507782d7" name="getCustomerByIDFlow"/>
+    <flow name="get:\customers\(ID):customer-eapi-config">
+        <flow-ref doc:name="Flow Reference" doc:id="843b75b9-39f1-4658-826c-1344765249c6" name="getCustomerByIDFlow" />
     </flow>
-    <flow name="post:\customers:application\json:customer-sapi-config">
-		<flow-ref doc:name="Flow Reference" doc:id="0df3a642-2f85-48d7-8bd0-b1a4af1d7cde" name="postCustomerFlow"/>
+    <flow name="post:\customers:application\json:customer-eapi-config">
+        <flow-ref doc:name="Flow Reference" doc:id="4c9609a6-5daa-4266-85b8-7b9a4eacc4fb" name="postCustomerFlow" />
     </flow>
 </mule>

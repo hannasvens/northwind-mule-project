@@ -5,9 +5,16 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="0d98ae45-fd36-4d0f-93bf-19d273572e08" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="Lujeen940918" database="Northwind" />
+	</db:config>
 	<flow name="orderflow-POST" doc:id="426fe71c-8751-41f6-9059-281e0426123b" >
 		<logger level="INFO" doc:name="Logger" doc:id="af8c01fc-0578-46d4-999b-b46ce829cdce" />
-		<db:insert doc:name="Insert" doc:id="9a712b90-ccee-4334-bb72-c50d5e5ab315" />
+		<db:insert doc:name="Insert" doc:id="9a712b90-ccee-4334-bb72-c50d5e5ab315" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO order
+VALUES(:CustomerID, :EmployeeID, :OrderDate, :RequiredDate, :ShippedDate, :ShipVia, :Freight, :ShipName, :ShipAddress, :ShipCity, :ShipRegion, :ShipPostalCode, :ShipCountry)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'CustomerID':payload.CustomerID, 'EmployeeID':payload.EmployeeID, 'OrderDate':payload.OrderDate, 'RequiredDate':payload.RequiredDate, 'ShippedDate':payload.ShippedDate, 'ShipVia':payload.ShipVia, 'Freight':payload.Freight, 'ShipName':payload.ShipName, 'ShipAddress':payload.ShipAddress, 'ShipCity':payload.ShipCity, 'ShipRegion':payload.ShipRegion, 'ShipPostalCode':payload.ShipPostalCode, 'ShipCountry':payload.ShipCountry}]]]></db:input-parameters>
+		</db:insert>
 		<ee:transform doc:name="Transform Message" doc:id="29514fca-d8f2-4879-b6b3-823580972ef3" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
