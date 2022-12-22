@@ -32,7 +32,7 @@ output application/json
 values (:Status, :DateCreated, :DateApproved, :EmployeeID, :CustomerID, :ProductID, :Quantity, :OrderID, :TotalPrice, :PriceDiscount, :PaymentTransactionID)]]></db:sql>
 			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
 		</db:insert>
-		<ee:transform doc:name="Transform Message" doc:id="d7e5c788-2b7e-4c1c-9050-c1917ecf4367" >
+		<ee:transform doc:name="Offer request sent" doc:id="d7e5c788-2b7e-4c1c-9050-c1917ecf4367" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
@@ -40,7 +40,7 @@ output application/json
 "An offer request has been sent."]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="d1b8acf8-76ac-4543-b98f-cdfa7aa5f994" />
+		<logger level="INFO" doc:name="payload" doc:id="d1b8acf8-76ac-4543-b98f-cdfa7aa5f994" message="#[payload]"/>
 	</flow>
 	<flow name="get-all-offers" doc:id="2fea5e85-ab97-435d-942b-710e70d8e4c0" >
 		<logger level="INFO" doc:name="Logger" doc:id="90b90f4c-ab5a-4634-8eae-79a80485b7ab" />
@@ -72,6 +72,40 @@ payload map ( property , indexOfproperty ) -> {
 	</flow>
 	<flow name="patch-offer" doc:id="ebffde56-1a1d-4887-853a-41ac1038876c" >
 		<logger level="INFO" doc:name="Logger" doc:id="ce407388-d76d-42a9-9446-f2c079933e48" />
+		<ee:transform doc:name="Transform Message" doc:id="cd3977da-2605-4995-baa5-57cea8ba14c9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: payload.Status,
+	PaymentTransactionID: payload.PaymentTransactionID,
+	TotalPrice: payload.TotalPrice,
+	DateCreated: payload.DateCreated,
+	Quantity: payload.Quantity,
+	ProductID: payload.ProductID,
+	DateApproved: payload.DateApproved,
+	CustomerID: payload.CustomerID,
+	EmployeeID: payload.EmployeeID,
+	OrderID: payload.OrderID,
+	PriceDiscount: payload.PriceDiscount
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:insert doc:name="Insert" doc:id="f5836d2f-b24a-45d0-a89c-d5d20b627005" config-ref="Database_Config" >
+			<db:sql ><![CDATA[update offers (Status, DateCreated, DateApproved, EmployeeID, CustomerID, ProductID, Quantity, OrderID, TotalPrice, PriceDiscount, PaymentTransactionID)
+set (:Status, :DateCreated, :DateApproved, :EmployeeID, :CustomerID, :ProductID, :Quantity, :OrderID, :TotalPrice, :PriceDiscount, :PaymentTransactionID)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Offer updated" doc:id="d532c121-df69-43f3-803d-a959919a4947" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"Offer updated."]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="payload" doc:id="be915009-922f-45f4-bd5d-c55f0f23f592" message="#[payload]"/>
 	</flow>
 	<flow name="get-offer" doc:id="b73535f2-c416-46b4-ba89-54db70076758" >
 		<logger level="INFO" doc:name="Logger" doc:id="24f20c15-30ab-4595-a9ec-da3dec949d06" />
