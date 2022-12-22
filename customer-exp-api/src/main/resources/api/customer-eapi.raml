@@ -1,5 +1,6 @@
 #%RAML 1.0
-title: Customer SAPI
+title: northwind customer exp API
+
 
 types:
   Customer: !include dataType.raml
@@ -9,10 +10,11 @@ types:
     responses:
       200:
         body:
-          application/json:
+          application/json: 
             type: Customer[]
             examples:
               output: !include /customers.raml
+    
   /{ID}:
     get:
       responses:
@@ -21,16 +23,20 @@ types:
             application/json:
               type: Customer
               example: !include customer.raml
-
+        
   post:
     body:
       application/json:
         type: Customer
         examples:
-          input: !include customer.raml
+          input: !include /customer.raml
     responses:
       201:
         body:
           application/json:
+            xml:
+              name: Message
             example:
-              message: Customer added successfully!
+              value: "Customer added successfully"
+            
+  
