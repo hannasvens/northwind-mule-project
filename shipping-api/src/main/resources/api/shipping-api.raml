@@ -1,0 +1,48 @@
+#%RAML 1.0
+title: New API
+types:
+  ShippingRequest:
+    properties:
+      shipperID:
+        example: 1
+        type: number
+        format: int
+      categoryName:
+        example: FOOD
+        type: string
+      postalCode:
+        example: "20063"
+        type: string
+  ShippingResponse:
+    properties:
+      shipperID:
+        example: 1
+        type: number
+        format: int
+      categoryName:
+        example: FOOD
+        type: string
+      postalCode:
+        example: "20063"
+        type: string
+      shippingDate:
+        description: Date is returned as a String in YYYY-MM-DD format
+        example: 2022-12-22
+        type: string
+/ship:
+  post:
+    body:
+      application/json:
+        type: ShippingRequest
+    responses:
+      "200":
+        body:
+          application/json:
+            type: ShippingResponse
+      "400":
+        body:
+          application/json:
+            properties:
+              message:
+                example: Missing parameter shipperID
+                type: string
