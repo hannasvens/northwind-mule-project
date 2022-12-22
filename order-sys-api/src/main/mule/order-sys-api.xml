@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="orderflow-POST" doc:id="426fe71c-8751-41f6-9059-281e0426123b" >
+		<logger level="INFO" doc:name="Logger" doc:id="af8c01fc-0578-46d4-999b-b46ce829cdce" />
+		<db:insert doc:name="Insert" doc:id="9a712b90-ccee-4334-bb72-c50d5e5ab315" />
+		<ee:transform doc:name="Transform Message" doc:id="29514fca-d8f2-4879-b6b3-823580972ef3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="employeeIDflow-GET" doc:id="f0818ca9-2c49-4c3b-89d7-425d321c4810" >
+		<logger level="INFO" doc:name="Logger" doc:id="286a9b71-4729-4b4e-a449-49d2377c0d1c" />
+	</flow>
+	<flow name="customerIDflow-GET" doc:id="f57aab24-d8ab-41b3-ae0c-585d6d0fd65b" >
+		<logger level="INFO" doc:name="Logger" doc:id="6b0e798d-ab03-42fb-9ba8-6937203d6909" />
+	</flow>
+	<flow name="shipAddressflow-GET" doc:id="7aec6639-5d66-480f-b3d0-1748c3377270" >
+		<logger level="INFO" doc:name="Logger" doc:id="d345d799-51b9-45ec-ac8d-7eb733b29d7e" />
+	</flow>
+</mule>

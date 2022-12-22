@@ -32,6 +32,8 @@
 				<extensions>true</extensions>
 				<configuration>
 					<classifier>mule-application</classifier>
+<<<<<<< HEAD
+=======
 					<sharedLibraries>
 						<sharedLibrary>
 							<groupId>mysql</groupId>
@@ -61,6 +63,7 @@
 							<format>html</format>
 						</formats>
 					</coverage>
+>>>>>>> 02cb7e92429ebbe23e37593a1dbb8c3a75320a88
 				</configuration>
 			</plugin>
 		</plugins>
