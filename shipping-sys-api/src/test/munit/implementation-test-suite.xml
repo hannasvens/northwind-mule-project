@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="implementation-test-suite.xml" />
+	<munit:test name="getCustomerInfoTest-happy-path" doc:id="552566b0-3e93-452d-9072-f000ca7244c9" description="Test">
+		<munit:behavior >
+			<munit:set-event doc:name="Set Event" doc:id="124871ac-fa0d-4fcf-8957-bfab34131255" >
+				<munit:attributes value="#[12345]" />
+			</munit:set-event>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="5b6a3a13-a345-4a41-8b8c-bdfa968db188" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6005f275-ee12-41ec-92db-1e14b954f9f7" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[[&#10;	"postalCode": "11223"&#10;]]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to getCustomerInfo" doc:id="bef789f5-2ded-43b7-9041-32a8bf2cb69b" name="getCustomerInfo"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="31a6fb90-b146-447f-9539-28799c35d201" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="getProductTest-happy-path" doc:id="40ba684d-2801-4800-aed9-c093ca7b6d1f">
+		<munit:behavior >
+			<munit:set-event doc:name="Set Event" doc:id="42c5591c-ecd4-49ce-a1c7-3a8b079a2bfa" >
+				<munit:attributes value="#[12345]" />
+			</munit:set-event>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="1570d85c-73f3-4c0b-86c6-20061a2cbdac" processor="db:select" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="eaed32d3-ce17-4881-97a2-65366dd3361e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[[&#10;	"categoryName": "Beverages"&#10;]]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="77133821-37f5-42ea-a510-c26f5a900368" name="getProduct"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="8a97796d-350e-4bfe-9ecc-f38c6ff5d515" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="getCustomerInfoTest-error-path" doc:id="242a88e8-d15b-4ee2-b03d-da676b6862af" expectedErrorType="DB:CONNECTIVITY">
+		<munit:behavior >
+			<munit:set-event doc:name="Set Event" doc:id="d51465c5-08e7-43ed-90a8-4596316f4009" >
+				<munit:attributes value="#[12345]" />
+			</munit:set-event>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="2614c1c2-0bad-47ef-97a9-ef89af95f655" processor="db:select" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6005f275-ee12-41ec-92db-1e14b954f9f7" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="DB:CONNECTIVITY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to getCustomerInfo" doc:id="81e69d78-70dd-4e7f-82b6-ce9a5fa178bd" name="getCustomerInfo" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="5d6f318b-8546-47d5-86b6-f39ac811a92c" actual="#[payload.message]" expected="Could not connect to database, try again"/>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

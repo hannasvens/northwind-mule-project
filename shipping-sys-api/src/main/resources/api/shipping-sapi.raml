@@ -1,0 +1,40 @@
+#%RAML 1.0
+title: Shipping SAPI
+
+
+/shippingDate:
+  get:
+    queryParameters:
+      offerID: integer
+      dateAccepted: date-only
+      shipperID: integer
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {"shippingDate": "2023-01-08"}
+
+/customerInfo:
+  get:
+    queryParameters:
+      offerID:
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {"postalCode": "75217"}
+
+/product:
+  get:
+    queryParameters:
+      offerID:
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {"categoryName": "ABC"}
+
+    
