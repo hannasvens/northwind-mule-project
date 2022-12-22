@@ -8,7 +8,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 		<http:listener-connection host="0.0.0.0" port="8081" />
 	</http:listener-config>
 	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="2f2584c0-c9fc-49a2-a2f3-8d028b7874a0" >
-		<http:request-connection host="/api/shippingDate" port="8081" protocol="HTTPS"/>
+		<http:request-connection host="localhost" port="8080"/>
 	</http:request-config>
 	<flow name="order-pro-apiFlow" doc:id="8a557b10-53f0-4c8d-a11f-f4934c3a0fc1" >
 		<http:listener doc:name="orderPAPI" doc:id="bee308ba-49ea-4df6-9364-b92e0b4eb75d" config-ref="HTTP_Listener_config" path="/orderpapi"/>
@@ -16,14 +16,10 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 		<set-variable value="#[attributes.queryParams.shipperID]" doc:name="shipperID" doc:id="c23d1517-037a-4630-bfe3-0a7496654615" variableName="shipperID"/>
 		<set-variable value="#[attributes.queryparams.dateaccepted]" doc:name="dateAccepted" doc:id="d5dc38c0-02cd-45e8-a18f-40678773f02d" variableName="dateAccepted"/>
 		<logger level="INFO" doc:name="Logger" doc:id="30dd9978-e2df-4bab-bf2f-99677b02e9fb" />
-		<http:request method="POST" doc:name="POST/shipping-sys-api" doc:id="8cd42788-ae80-4e35-8daa-d9a99e2d318c" config-ref="HTTP_Request_configuration" path="/">
-			<http:query-params ><![CDATA[#[output application/json
----
-{
-	"shipperID": vars.shipperID,
+		<http:request method="GET" doc:name="GET/shipping-sys-api" doc:id="8cd42788-ae80-4e35-8daa-d9a99e2d318c" config-ref="HTTP_Request_configuration" path="/api/shippingDate" responseTimeout="300000">
+			<http:query-params ><![CDATA[#["shipperID": vars.shipperID,
 	"dateAccepted": vars.dateAccepted,
-	"offerID": vars.offerID
-}]]]></http:query-params>
+	"offerID": vars.offerID]]]></http:query-params>
 		</http:request>
 	</flow>
 </mule>
