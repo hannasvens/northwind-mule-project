@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<flow name="post-offer" doc:id="096bd494-83d3-4cbc-80fc-2e33f94e96af" >
 		<logger level="INFO" doc:name="Logger" doc:id="679602d0-d7ba-497c-a794-9d82d438062b" />
-		<ee:transform doc:name="Transform Message" doc:id="18ad5c33-bc7f-4471-aa4c-8e7f695c6ae0" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+		<ee:transform doc:name="Transform Message" doc:id="18ad5c33-bc7f-4471-aa4c-8e7f695c6ae0">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
@@ -55,8 +56,8 @@ output application/json
 payload map ( property , indexOfproperty ) -> {
 	"Offer ID": property.OfferID,
 	Status: property.Status,
-	"Date created": property.DateCreated as String,
-	"Date approved": property.DateApproved as String,
+	"Date created": property.DateCreated,
+	"Date approved": property.DateApproved,
 	"Employee ID": property.EmployeeID,
 	"Customer ID": property.CustomerID,
 	"Product ID": property.ProductID,
@@ -122,8 +123,8 @@ output application/json
 payload map ( property , indexOfproperty ) -> {
 	"Offer ID": property.OfferID,
 	Status: property.Status,
-	"Date created": property.DateCreated as String,
-	"Date approved": property.DateApproved as String,
+	"Date created": property.DateCreated,
+	"Date approved": property.DateApproved,
 	"Employee ID": property.EmployeeID,
 	"Customer ID": property.CustomerID,
 	"Product ID": property.ProductID,

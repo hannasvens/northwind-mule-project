@@ -1,0 +1,72 @@
+[
+  {
+    "PriceDiscount": 0,
+    "Quantity": 3,
+    "ProductID": 23,
+    "OrderID": 10692,
+    "TotalPrice": 30,
+    "OfferID": 1,
+    "CustomerID": "ALFKI",
+    "DateCreated": |2022-12-13T16:41:41|,
+    "PaymentTransactionID": 12,
+    "DateApproved": |2022-12-15T12:41:41|,
+    "EmployeeID": 5,
+    "Status": "shipped"
+  },
+  {
+    "PriceDiscount": null,
+    "Quantity": 10,
+    "ProductID": 6,
+    "OrderID": null,
+    "TotalPrice": null,
+    "OfferID": 2,
+    "CustomerID": "ALFKI",
+    "DateCreated": |2022-12-19T00:00:00|,
+    "PaymentTransactionID": null,
+    "DateApproved": null,
+    "EmployeeID": null,
+    "Status": "shipped"
+  },
+  {
+    "PriceDiscount": null,
+    "Quantity": 11,
+    "ProductID": 1,
+    "OrderID": null,
+    "TotalPrice": null,
+    "OfferID": 3,
+    "CustomerID": "ALFKI",
+    "DateCreated": |2022-12-11T00:00:00|,
+    "PaymentTransactionID": null,
+    "DateApproved": null,
+    "EmployeeID": null,
+    "Status": "shipped"
+  },
+  {
+    "PriceDiscount": null,
+    "Quantity": 3,
+    "ProductID": 8,
+    "OrderID": null,
+    "TotalPrice": null,
+    "OfferID": 4,
+    "CustomerID": "ALFKI",
+    "DateCreated": |2022-12-12T00:00:00|,
+    "PaymentTransactionID": null,
+    "DateApproved": null,
+    "EmployeeID": null,
+    "Status": "pending"
+  },
+  {
+    "PriceDiscount": null,
+    "Quantity": 4,
+    "ProductID": 2,
+    "OrderID": null,
+    "TotalPrice": null,
+    "OfferID": 5,
+    "CustomerID": "ALFKI",
+    "DateCreated": |2022-12-22T00:00:00|,
+    "PaymentTransactionID": null,
+    "DateApproved": null,
+    "EmployeeID": null,
+    "Status": "pending"
+  }
+]
