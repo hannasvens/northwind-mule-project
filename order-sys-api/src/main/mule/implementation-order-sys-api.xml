@@ -14,10 +14,10 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	</flow>
 	<flow name="orderflow-POST" doc:id="426fe71c-8751-41f6-9059-281e0426123b" >
 		<logger level="INFO" doc:name="Entering sapi postOrder flow" doc:id="af8c01fc-0578-46d4-999b-b46ce829cdce" message="Entering postOrder flow"/>
-		<db:insert doc:name="Insert" doc:id="9a712b90-ccee-4334-bb72-c50d5e5ab315" config-ref="Database_Config">
+		<db:insert doc:name="Insert into database" doc:id="9a712b90-ccee-4334-bb72-c50d5e5ab315" config-ref="Database_Config">
 			<db:sql ><![CDATA[INSERT INTO order
-VALUES(:CustomerID, :EmployeeID, :OrderDate, :RequiredDate, :ShippedDate, :ShipVia)]]></db:sql>
-			<db:input-parameters ><![CDATA[#[{'CustomerID':payload.CustomerID, 'EmployeeID':payload.EmployeeID, 'OrderDate':payload.OrderDate, 'RequiredDate':payload.RequiredDate, 'ShippedDate':payload.ShippedDate, 'ShipVia':payload.ShipVia}]]]></db:input-parameters>
+WHERE CustomerID = :customerID AND EmployeeID = :employeeID AND OrderDate = :orderDate AND RequiredDate = :requiredDate AND ShippedDate = :shippedDate AND ShipVia = :shipVia]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'customerID':payload.CustomerID, 'employeeID':payload.EmployeeID, 'orderDate':payload.OrderDate, 'requiredDate':payload.RequiredDate, 'shippedDate':payload.ShippedDate, 'shipVia':payload.ShipVia}]]]></db:input-parameters>
 		</db:insert>
 		<ee:transform doc:name="Transform Message" doc:id="29514fca-d8f2-4879-b6b3-823580972ef3">
 			<ee:message>
@@ -28,7 +28,7 @@ output application/java
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="c02ff932-ffa9-4162-8c39-5500170abbc6" />
+		<logger level="INFO" doc:name="Exiting postOrder Flow" doc:id="c02ff932-ffa9-4162-8c39-5500170abbc6" message="Exiting postOrder Flow"/>
 	</flow>
 	<flow name="employeeIDflow-GET" doc:id="f0818ca9-2c49-4c3b-89d7-425d321c4810" >
 		<logger level="INFO" doc:name="Logger" doc:id="286a9b71-4729-4b4e-a449-49d2377c0d1c" />

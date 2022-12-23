@@ -1,9 +1,38 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
   <types:catalog>
-    <types:type name="Object" format="java">
-      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
-type: string]]></types:shape>
+    <types:type name="order" format="json">
+      <types:shape format="weave" example="examples/POST example-3.json"><![CDATA[%dw 2.0
+
+type order = {|
+  OrderID: Number {"typeId": "int"}, 
+  CustomerID: String, 
+  EmployeeID: Number {"typeId": "int"}, 
+  OrderDate: String, 
+  RequiredDate: String, 
+  ShippedDate: String, 
+  ShipVia: Number {"typeId": "int"}
+|} {"example": "{\\\"OrderID\\\":10250,\\\"CustomerID\\\":\\\"HANAR\\\",\\\"EmployeeID\\\":4,\\\"OrderDate\\\":\\\"1996-07-08 00:00:00\\\",\\\"RequiredDate\\\":\\\"1996-08-05 00:00:00\\\",\\\"ShippedDate\\\":\\\"1996-07-12 00:00:00\\\",\\\"ShipVia\\\":2}"}
+
+]]></types:shape>
     </types:type>
   </types:catalog>
+  <types:enrichment select="#9a712b90-ccee-4334-bb72-c50d5e5ab315">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="order"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#29514fca-d8f2-4879-b6b3-823580972ef3">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="order"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
 </types:mule>
