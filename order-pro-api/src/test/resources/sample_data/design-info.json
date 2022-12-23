@@ -1,0 +1,9 @@
+{
+  "sampleData": {
+    "8cd42788-ae80-4e35-8daa-d9a99e2d318c": {
+      "vars-offerID": "sample_data/java.dwl",
+      "vars-dateAccepted": "sample_data/defaultnulltype.dwl",
+      "vars-shipperID": "sample_data/java_1.dwl"
+    }
+  }
+}

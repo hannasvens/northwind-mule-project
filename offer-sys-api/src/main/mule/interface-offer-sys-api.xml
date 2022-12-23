@@ -130,19 +130,7 @@ output application/json
         <flow-ref doc:name="Flow Reference" doc:id="5d78fdd5-084d-4686-8f6f-51a972443b5a" name="get-all-offers" />
     </flow>
     <flow name="patch:\offers\(offerID):application\json:offer-sapi-config">
-        <ee:transform>
-            <ee:variables>
-                <ee:set-variable variableName="offerID">attributes.uriParams.'offerID'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-"Offer status updated."]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+        <flow-ref doc:name="Flow Reference" doc:id="8afaced8-259b-47f9-bd2e-27546396e586" name="patch-offer" />
     </flow>
     <flow name="get:\offers\(offerID):offer-sapi-config">
         <flow-ref doc:name="Flow Reference" doc:id="88939276-1da0-4ceb-bde5-2c829feddb25" name="get-offer" />

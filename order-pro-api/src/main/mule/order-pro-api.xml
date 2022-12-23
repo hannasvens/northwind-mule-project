@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="474aa3c4-bc13-4df8-8851-a7005d9b4eb5" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="2f2584c0-c9fc-49a2-a2f3-8d028b7874a0" >
+		<http:request-connection host="localhost" port="8080"/>
+	</http:request-config>
+	<flow name="order-pro-apiFlow" doc:id="8a557b10-53f0-4c8d-a11f-f4934c3a0fc1" >
+		<http:listener doc:name="orderPAPI" doc:id="bee308ba-49ea-4df6-9364-b92e0b4eb75d" config-ref="HTTP_Listener_config" path="/orderpapi"/>
+		<set-variable value="#[attributes.queryParams.offerID]" doc:name="offerID" doc:id="7257ad4f-eebe-409a-b418-fc0d3a26d752" variableName="offerID"/>
+		<set-variable value="#[attributes.queryParams.shipperID]" doc:name="shipperID" doc:id="c23d1517-037a-4630-bfe3-0a7496654615" variableName="shipperID"/>
+		<set-variable value="#[attributes.queryparams.dateaccepted]" doc:name="dateAccepted" doc:id="d5dc38c0-02cd-45e8-a18f-40678773f02d" variableName="dateAccepted"/>
+		<logger level="INFO" doc:name="Logger" doc:id="30dd9978-e2df-4bab-bf2f-99677b02e9fb" />
+		<http:request method="GET" doc:name="GET/shipping-sys-api" doc:id="8cd42788-ae80-4e35-8daa-d9a99e2d318c" config-ref="HTTP_Request_configuration" path="/api/shippingDate" responseTimeout="300000">
+			<http:query-params ><![CDATA[#["shipperID": vars.shipperID,
+	"dateAccepted": vars.dateAccepted,
+	"offerID": vars.offerID]]]></http:query-params>
+		</http:request>
+	</flow>
+</mule>
