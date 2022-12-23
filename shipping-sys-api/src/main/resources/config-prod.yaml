@@ -1,0 +1,9 @@
+http:
+  port: "8080"
+  
+db: 
+  host: "20.224.50.155"
+  port: "3306"
+  user: "group04"
+  password: "@Br1ghtsGr0up04!"
+  database: "northwind04"

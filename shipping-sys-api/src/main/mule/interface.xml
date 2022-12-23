@@ -2,7 +2,7 @@
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
     <apikit:config name="shipping-sapi-config" api="shipping-sapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="shipping-sapi-main">
-        <http:listener config-ref="HTTP_Listener_config" path="/api/*" allowedMethods="GET, POST">
+        <http:listener path="/api/*" allowedMethods="GET, POST" config-ref="HTTP_Listener_config">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:response>
@@ -126,7 +126,7 @@ output application/json
     <flow name="get:\product:shipping-sapi-config">
         <flow-ref doc:name="Flow Reference" doc:id="24552e22-42c9-4c0e-82e6-dd86cc5cbe7e" name="getProduct" />
     </flow>
-    <flow name="get:\shippingDate:shipping-sapi-config">
-        <flow-ref doc:name="Flow Reference" doc:id="762aac71-6925-49b5-b113-3aa44f2a9772" name="getShippingDate" />
+    <flow name="post:\shipping:application\json:shipping-sapi-config">
+        <flow-ref doc:name="Flow Reference" doc:id="e64e4ef0-78da-4cec-9a22-e751fa02fb61" name="postShipping" />
     </flow>
 </mule>
