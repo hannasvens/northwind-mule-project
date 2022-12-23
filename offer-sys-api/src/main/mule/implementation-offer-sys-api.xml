@@ -29,6 +29,7 @@ output application/json
 			</ee:message>
 		</ee:transform>
 		<db:insert doc:name="Insert" doc:id="da0032df-b0e9-4e5c-aedf-e5979e3d17e5" config-ref="Database_Config">
+			<error-mapping targetType="OSA:ANY" />
 			<db:sql ><![CDATA[insert into offers (Status, DateCreated, DateApproved, EmployeeID, CustomerID, ProductID, Quantity, OrderID, TotalPrice, PriceDiscount, PaymentTransactionID)
 values (:Status, :DateCreated, :DateApproved, :EmployeeID, :CustomerID, :ProductID, :Quantity, :OrderID, :TotalPrice, :PriceDiscount, :PaymentTransactionID)]]></db:sql>
 			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
@@ -46,7 +47,7 @@ output application/json
 	<flow name="get-all-offers" doc:id="2fea5e85-ab97-435d-942b-710e70d8e4c0" >
 		<logger level="INFO" doc:name="Logger" doc:id="90b90f4c-ab5a-4634-8eae-79a80485b7ab" />
 		<db:select doc:name="Select" doc:id="fb18590c-5c12-4368-9716-32a4720fd3d1" config-ref="Database_Config">
-			<db:sql ><![CDATA[select * from offers]]></db:sql>
+			<db:sql ><![CDATA[select * from Offers]]></db:sql>
 		</db:select>
 		<ee:transform doc:name="Transform Message" doc:id="71b2f787-127a-40aa-9f06-a5bc2077c461" >
 			<ee:message >
@@ -94,7 +95,7 @@ output application/json
 			</ee:message>
 		</ee:transform>
 		<db:update doc:name="Update" doc:id="572b2120-167a-47bd-826f-501e3ee8627e" config-ref="Database_Config">
-			<db:sql ><![CDATA[update offers
+			<db:sql ><![CDATA[update Offers
 set Status = :Status
 where OfferID = :offerID]]></db:sql>
 			<db:input-parameters ><![CDATA[#[{"offerID": attributes.uriParams.offerID, "Status": message.payload.Status}]]]></db:input-parameters>
@@ -112,7 +113,7 @@ output application/json
 	<flow name="get-offer" doc:id="b73535f2-c416-46b4-ba89-54db70076758" >
 		<logger level="INFO" doc:name="Logger" doc:id="24f20c15-30ab-4595-a9ec-da3dec949d06" />
 		<db:select doc:name="Select" doc:id="4fb4e708-e8fc-40aa-8624-7d0198a19663" config-ref="Database_Config">
-			<db:sql ><![CDATA[select * from offers where OfferID = :offerID]]></db:sql>
+			<db:sql ><![CDATA[select * from Offers where OfferID = :offerID]]></db:sql>
 			<db:input-parameters ><![CDATA[#["offerID": attributes.uriParams.offerID]]]></db:input-parameters>
 		</db:select>
 		<ee:transform doc:name="Transform Message" doc:id="25cf5756-f86f-491c-889b-860b009ff442" >
