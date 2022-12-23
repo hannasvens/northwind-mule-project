@@ -22,7 +22,6 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 		<set-variable value="#[attributes.queryParams.offerID]" doc:name="offerID" doc:id="7257ad4f-eebe-409a-b418-fc0d3a26d752" variableName="offerID"/>
 		<set-variable value="#[attributes.queryParams.shipperID]" doc:name="shipperID" doc:id="c23d1517-037a-4630-bfe3-0a7496654615" variableName="shipperID"/>
 		<set-variable value="#[attributes.queryparams.dateaccepted]" doc:name="dateAccepted" doc:id="d5dc38c0-02cd-45e8-a18f-40678773f02d" variableName="dateAccepted"/>
-		<logger level="INFO" doc:name="Logger" doc:id="30dd9978-e2df-4bab-bf2f-99677b02e9fb" />
 		<http:request method="GET" doc:name="GET/shipping-sys-api" doc:id="8cd42788-ae80-4e35-8daa-d9a99e2d318c" config-ref="HTTP_Request_configuration" path="/api/shippingDate" responseTimeout="300000">
 			<http:query-params ><![CDATA[#[{	"shipperID": "vars.shipperID",
 	"dateAccepted": "vars.dateAccepted",
