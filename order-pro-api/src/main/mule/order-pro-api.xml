@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="474aa3c4-bc13-4df8-8851-a7005d9b4eb5" >
 		<http:listener-connection host="0.0.0.0" port="8081" />
 	</http:listener-config>
 	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="2f2584c0-c9fc-49a2-a2f3-8d028b7874a0" >
 		<http:request-connection host="localhost" port="8080"/>
 	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="7e37ed83-1c62-4683-9d10-ad565bca8584" >
+		<http:request-connection host="localhost" port="8081" />
+	</http:request-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="6c350080-1825-4b52-8397-749962ff5f1a" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="pongalong" database="northwind" />
+	</db:config>
 	<flow name="order-pro-apiFlow" doc:id="8a557b10-53f0-4c8d-a11f-f4934c3a0fc1" >
 		<http:listener doc:name="orderPAPI" doc:id="bee308ba-49ea-4df6-9364-b92e0b4eb75d" config-ref="HTTP_Listener_config" path="/orderpapi"/>
 		<set-variable value="#[attributes.queryParams.offerID]" doc:name="offerID" doc:id="7257ad4f-eebe-409a-b418-fc0d3a26d752" variableName="offerID"/>
@@ -17,9 +24,33 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 		<set-variable value="#[attributes.queryparams.dateaccepted]" doc:name="dateAccepted" doc:id="d5dc38c0-02cd-45e8-a18f-40678773f02d" variableName="dateAccepted"/>
 		<logger level="INFO" doc:name="Logger" doc:id="30dd9978-e2df-4bab-bf2f-99677b02e9fb" />
 		<http:request method="GET" doc:name="GET/shipping-sys-api" doc:id="8cd42788-ae80-4e35-8daa-d9a99e2d318c" config-ref="HTTP_Request_configuration" path="/api/shippingDate" responseTimeout="300000">
-			<http:query-params ><![CDATA[#["shipperID": vars.shipperID,
-	"dateAccepted": vars.dateAccepted,
-	"offerID": vars.offerID]]]></http:query-params>
+			<http:query-params ><![CDATA[#[{	"shipperID": "vars.shipperID",
+	"dateAccepted": "vars.dateAccepted",
+	"offerID": "vars.offerID"
+	}]]]></http:query-params>
 		</http:request>
+		<set-variable value="#[message.shippingDate]" doc:name="shippingDate" doc:id="d2416158-bf73-41ca-be5f-b0a1ba91ead1" variableName="shippingDate"/>
+		<db:select doc:id="fafaffbf-bfb5-4794-ab15-cde4002ddfb1" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT offers.DateApproved
+FROM offers
+WHERE offerID = :offerID ]]></db:sql>
+		</db:select>
+		<flow-ref doc:name="Flow Reference -  createOrder" doc:id="5c45efbb-3973-41c3-9cd3-af1a7c038473" name="createOrder"/>
+	</flow>
+	<flow name="createOrder" doc:id="4a430c34-75e2-4bdd-b176-b1ce7dafdd97" >
+		<http:request method="POST" doc:name="Request" doc:id="345a8e57-56f3-4001-82c7-f66534298ab5" config-ref="HTTP_Request_configuration1" path="/api/orders">
+			<http:query-params><![CDATA[#[output application/json
+---
+{
+	"customerID" : "vars.customerID"
+	"employeeID" : "vars.employeeID"
+	"acceptedDate" : "vars.acceptedDate"
+	"shippingDate" : "vars.shippingDate"
+	"shipperID" : "vars.shipperID"
+	}]]]></http:query-params>
+		</http:request>
+	</flow>
+	<flow name="updateOffer" doc:id="a9bbc8d4-1254-4d60-8c3e-879f2326b050" >
+		<http:request method="GET" doc:name="Request" doc:id="ec85e1f2-e49b-4dad-a0f7-4de37548fcf5" />
 	</flow>
 </mule>
