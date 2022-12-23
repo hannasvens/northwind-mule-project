@@ -22,10 +22,9 @@ WHERE CustomerID = :customerID AND EmployeeID = :employeeID AND OrderDate = :ord
 		<ee:transform doc:name="Transform Message" doc:id="29514fca-d8f2-4879-b6b3-823580972ef3">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
-output application/java
+output application/json
 ---
-{
-}]]></ee:set-payload>
+"An order request has been sent"]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="Exiting postOrder Flow" doc:id="c02ff932-ffa9-4162-8c39-5500170abbc6" message="Exiting postOrder Flow"/>
@@ -36,6 +35,19 @@ output application/java
 	</flow>
 	<flow name="customerIDflow-GET" doc:id="f57aab24-d8ab-41b3-ae0c-585d6d0fd65b" >
 		<logger level="INFO" doc:name="Logger" doc:id="6b0e798d-ab03-42fb-9ba8-6937203d6909" />
+		<db:select doc:name="Select" doc:id="08550399-c176-429a-9e5b-1e9b241bd1dd" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM orders
+WHERE CustomerID = :customerID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'CustomerID':vars.customerId}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="ce58061e-7452-4d9e-b970-0926573b3fb4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="dd540875-c7cb-43c5-8714-14b79628ec2d" />
 	</flow>
 </mule>
