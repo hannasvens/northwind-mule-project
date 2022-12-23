@@ -18,25 +18,27 @@ types:
           application/json:
              example: 
               {"orderID": 10253} 
-  /{employeeId}:
-    get:
-      description: Get a list of orders for a specific employee
-      responses:
-        200:
-          body:
-            application/json:
-              type: order[] 
-              examples: !include Examples/GET-example.raml    
+  /employee:              
+    /{employeeID}:
+      get:
+        description: Get a list of orders for a specific employee
+        responses:
+          200:
+            body:
+              application/json:
+                type: order[] 
+                examples: !include Examples/GET-example.raml    
 
-  /{customerId}:
-    get:
-      description: Get a list of orders for a specific customer 
-      responses:
-        200:
-          body:
-            application/json:
-              type: order []
-              examples: !include Examples/GET-example.raml
+  /customer:
+    /{customerID}:
+      get:
+        description: Get a list of orders for a specific customer 
+        responses:
+          200:
+            body:
+              application/json:
+                type: order []
+                examples: !include Examples/GET-example.raml
 /shipAddress:
   get:
     queryParameters:

@@ -37,8 +37,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	<flow name="getCustomerByIDFlow" doc:id="21f9be40-24b6-4850-9c8d-6a7e5b0ff9d0" >
 		<db:select doc:name="Select" doc:id="c9eef83e-1d5d-4320-85a5-2ca1f30fd6c9" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT *
-FROM customers
-WHERE customerID = :customerID]]></db:sql>
+FROM Customers
+WHERE CustomerID = :customerID]]></db:sql>
 			<db:input-parameters ><![CDATA[#[{"customerID": attributes.uriParams.ID}]]]></db:input-parameters>
 		</db:select>
 		<ee:transform doc:name="Transform Message" doc:id="2b9854aa-f9e1-4b08-8ce0-2169485c4f7c">
@@ -65,7 +65,7 @@ output application/json
 	<flow name="postCustomerFlow" doc:id="16272340-2b77-4ef8-a44e-d6c8e9d12513" >
 		<logger level="INFO" doc:name="startPostFlow" doc:id="c6689c43-a976-4960-af75-da06765f4b42" />
 		<db:insert doc:name="Insert" doc:id="4267bc8b-118b-417a-a1e8-def671c37a76" config-ref="Database_Config">
-			<db:sql ><![CDATA[INSERT INTO customers 
+			<db:sql ><![CDATA[INSERT INTO Customers 
 VALUES ( :CustomerID, :CompanyName, :ContactName, :ContactTitle, :Address, :City, :PostalCode, :Country, :Region, :Phone, :Fax)]]></db:sql>
 			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
 		</db:insert>
