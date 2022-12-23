@@ -5,10 +5,12 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<configuration-properties doc:name="Configuration properties" doc:id="d2840913-2466-4062-97ae-30b406aeeab5" file="config.yaml" />
+	<configuration-properties doc:name="Configuration properties" doc:id="d2840913-2466-4062-97ae-30b406aeeab5" file="config-${env}.yaml" />
 	<db:config name="Database_Config" doc:name="Database Config" doc:id="5c8d8611-e463-4190-9876-a013a23dc204" >
 		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}" />
 	</db:config>
+	<global-property doc:name="Global Property" doc:id="ea425f2b-8d1d-4184-a348-d46ac67b9b27" name="env" value="dev" />
+	<configuration doc:name="Configuration" doc:id="27c0f081-673f-4b69-a705-2be112d4bf04" defaultErrorHandler-ref="global-offer-sys-apiError_Handler" />
 	<error-handler name="global-offer-sys-apiError_Handler" doc:id="f88cc25f-35a6-426a-96b7-de1e827077fd" >
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="30eb4ef5-a409-4fec-b455-f5355262c793" type="DB:CONNECTIVITY">
 			<ee:transform doc:name="Transform Message" doc:id="f170e22b-a7af-4902-ad12-d1e620e8c819" >
@@ -17,7 +19,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 output application/json
 ---
 {
-	message : "Could not connect to database."
+	message: "Could not connect to database."
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
@@ -34,7 +36,7 @@ output application/json
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
-			<set-variable value="500" doc:name="httpStatus" doc:id="27dc1b93-2108-465f-a698-70da7279b293" variableName="httpStatus" />
+			<set-variable value="400" doc:name="httpStatus" doc:id="27dc1b93-2108-465f-a698-70da7279b293" variableName="httpStatus" />
 		</on-error-propagate>
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="066cd08a-e433-44f9-9508-35ef1f57ed84" type="ANY">
 			<ee:transform doc:name="Transform Message" doc:id="a59c0b76-a273-4adc-a135-8bca6f92eaad">
