@@ -32,8 +32,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<classifier>mule-application</classifier>
-<<<<<<< HEAD
-=======
+
 					<sharedLibraries>
 						<sharedLibrary>
 							<groupId>mysql</groupId>
@@ -63,7 +62,7 @@
 							<format>html</format>
 						</formats>
 					</coverage>
->>>>>>> 02cb7e92429ebbe23e37593a1dbb8c3a75320a88
+
 				</configuration>
 			</plugin>
 		</plugins>
@@ -122,7 +121,7 @@
 		<dependency>
 			<groupId>34a32451-a2eb-4cf2-8e1d-29f8907b6a0d</groupId>
 			<artifactId>shipping-sapi</artifactId>
-			<version>1.0.5</version>
+			<version>1.0.6</version>
 			<classifier>raml</classifier>
 			<type>zip</type>
 		</dependency>
