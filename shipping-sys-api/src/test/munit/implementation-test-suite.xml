@@ -1,19 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xsi:schemaLocation="
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+	xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
 		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
-		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<munit:config name="implementation-test-suite.xml" />
-	<munit:test name="getCustomerInfoTest-happy-path" doc:id="552566b0-3e93-452d-9072-f000ca7244c9" description="Test">
+	<munit:test name="implementation-test-suiteTest" doc:id="07b74bbf-2b4c-4426-9371-633bc0aa9734" >
 		<munit:behavior >
-			<munit:set-event doc:name="Set Event" doc:id="124871ac-fa0d-4fcf-8957-bfab34131255" >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="1193516b-8e08-4cce-b6af-52ea357553df" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d535c64a-d0e7-4828-80ac-e6ba58382d9d" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[12345]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="5b0fe2a8-6557-4d92-bff2-4e88bd4321d5" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d8c03f35-eb3a-4627-9675-711a5eec5df6" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[{"categoryName": "Beverages"}]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="194575ac-602c-4649-838a-069d5879403f" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="3ee624d6-e645-4610-a380-41c20121e657" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[{"shippingDate": "2022-12-22"}]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<http:request method="GET" doc:name="Request" doc:id="ed27250f-891e-42d2-b6bf-f1d6fca6dc9d" config-ref="HTTP_Request_configuration" path="/api/shippingDate">
+				<http:query-params ><![CDATA[#[output application/java
+---
+{
+	shipperID : 2,
+	offerID : 12345,
+	dateAccepted : "2022-12-12"
+}]]]></http:query-params>
+			</http:request>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="50ee79c9-720e-4e09-ae81-c27a7e951e52" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="getCustomerInfoTest-happy-path" doc:id="09e042c8-398f-4a1b-89b7-111a0dfd27fb" description="Test">
+		<munit:behavior >
+			<munit:set-event doc:name="Set Event" doc:id="7af19bab-3f46-4aef-8dba-4f7bb55ae9e4" >
 				<munit:attributes value="#[12345]" />
 			</munit:set-event>
-			<munit-tools:mock-when doc:name="Mock when" doc:id="5b6a3a13-a345-4a41-8b8c-bdfa968db188" processor="db:select">
+			<munit-tools:mock-when doc:name="Mock when" doc:id="8388376d-4fac-47da-80e9-452bd5773661" processor="db:select">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="6005f275-ee12-41ec-92db-1e14b954f9f7" attributeName="doc:id" />
 				</munit-tools:with-attributes>
@@ -23,18 +66,18 @@
 			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
-			<flow-ref doc:name="Flow-ref to getCustomerInfo" doc:id="bef789f5-2ded-43b7-9041-32a8bf2cb69b" name="getCustomerInfo"/>
+			<flow-ref doc:name="Flow-ref to getCustomerInfo" doc:id="a403e892-1af2-47ea-84d9-493d1fdcf1cb" name="getCustomerInfo"/>
 		</munit:execution>
 		<munit:validation >
-			<munit-tools:assert doc:name="Assert expression" doc:id="31a6fb90-b146-447f-9539-28799c35d201" />
+			<munit-tools:assert doc:name="Assert expression" doc:id="8e650b32-b2ba-47ed-8aa2-0a8ebe1f3918" />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="getProductTest-happy-path" doc:id="40ba684d-2801-4800-aed9-c093ca7b6d1f">
+	<munit:test name="getProductTest-happy-path" doc:id="22f90fc0-d18a-46c8-b73c-a7e0fe98b354">
 		<munit:behavior >
-			<munit:set-event doc:name="Set Event" doc:id="42c5591c-ecd4-49ce-a1c7-3a8b079a2bfa" >
+			<munit:set-event doc:name="Set Event" doc:id="f96c8a90-657a-4f2e-8e61-15f4e8efce16" >
 				<munit:attributes value="#[12345]" />
 			</munit:set-event>
-			<munit-tools:mock-when doc:name="Mock when" doc:id="1570d85c-73f3-4c0b-86c6-20061a2cbdac" processor="db:select" >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="ab1b0dcb-32b6-4a1a-a3e6-1cbf7ed1caa5" processor="db:select" >
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="eaed32d3-ce17-4881-97a2-65366dd3361e" attributeName="doc:id" />
 				</munit-tools:with-attributes>
@@ -44,18 +87,18 @@
 			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
-			<flow-ref doc:name="Flow Reference" doc:id="77133821-37f5-42ea-a510-c26f5a900368" name="getProduct"/>
+			<flow-ref doc:name="Flow Reference" doc:id="5bad253f-fd5b-4834-a368-27cba6d53716" name="getProduct"/>
 		</munit:execution>
 		<munit:validation >
-			<munit-tools:assert doc:name="Assert expression" doc:id="8a97796d-350e-4bfe-9ecc-f38c6ff5d515" />
+			<munit-tools:assert doc:name="Assert expression" doc:id="cc3698e4-ad24-4699-9f7b-2abdb2d82a59" />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="getCustomerInfoTest-error-path" doc:id="242a88e8-d15b-4ee2-b03d-da676b6862af" expectedErrorType="DB:CONNECTIVITY">
+	<munit:test name="getCustomerInfoTest-error-path" doc:id="3fa6e0cd-e3ab-4ebe-b4a9-34e94e40104c" expectedErrorType="DB:CONNECTIVITY">
 		<munit:behavior >
-			<munit:set-event doc:name="Set Event" doc:id="d51465c5-08e7-43ed-90a8-4596316f4009" >
+			<munit:set-event doc:name="Set Event" doc:id="9f384b63-3e74-439b-a225-d8a5038e3655" >
 				<munit:attributes value="#[12345]" />
 			</munit:set-event>
-			<munit-tools:mock-when doc:name="Mock when" doc:id="2614c1c2-0bad-47ef-97a9-ef89af95f655" processor="db:select" >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="dce89dfe-248d-4a09-a66d-4bf1fd4f4b5d" processor="db:select" >
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="6005f275-ee12-41ec-92db-1e14b954f9f7" attributeName="doc:id" />
 				</munit-tools:with-attributes>
@@ -65,10 +108,10 @@
 			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
-			<flow-ref doc:name="Flow-ref to getCustomerInfo" doc:id="81e69d78-70dd-4e7f-82b6-ce9a5fa178bd" name="getCustomerInfo" />
+			<flow-ref doc:name="Flow-ref to getCustomerInfo" doc:id="5fc1ea6b-1ddc-44a6-bffa-12ec9f9931ae" name="getCustomerInfo" />
 		</munit:execution>
 		<munit:validation>
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="5d6f318b-8546-47d5-86b6-f39ac811a92c" actual="#[payload.message]" expected="Could not connect to database, try again"/>
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="0572001a-4301-4e1a-9115-cd2bf042464d" actual="#[payload.message]" expected="Could not connect to database, try again"/>
 		</munit:validation>
 	</munit:test>
 
