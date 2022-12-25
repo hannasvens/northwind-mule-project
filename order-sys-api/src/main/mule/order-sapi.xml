@@ -123,7 +123,7 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="get:\shipAddress:order-sapi-config">
+	<flow name="get:\orders\shipAddress:order-sapi-config">
         <ee:transform>
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
@@ -134,7 +134,14 @@ output application/json
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
-		<flow-ref doc:name="Flow Reference" doc:id="e2a10a7b-5425-4bb6-8b40-27c3b0740c55" name="shipAddressflow-GET"/>
+		<ee:transform doc:name="Transform Message" doc:id="8063b25c-4d97-4489-b316-663e88b33424" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="CustomerID" ><![CDATA[message.attributes.queryParams.customerID]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="914d03f6-2cf0-4c3c-9448-01a7805bace7" name="shipAddressflow-GET"/>
     </flow>
     <flow name="get:\orders\customer\(customerID):order-sapi-config">
         <ee:transform>
@@ -142,7 +149,47 @@ output application/json
                 <ee:set-variable variableName="customerID">attributes.uriParams.'customerID'</ee:set-variable>
             </ee:variables>
         </ee:transform>
-		<flow-ref doc:name="Flow Reference" doc:id="b6e60987-e782-4919-b079-4258e05b6440" name="customerIDflow-GET"/>
+        <ee:transform>
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+[
+  {
+    OrderID: 12345,
+    CustomerID: "ALFKI",
+    EmployeeID: 1,
+    OrderDate: "2022-12-01",
+    RequiredDate: "2022-12-05",
+    ShippedDate: "2022-12-10",
+    ShipVia: 2,
+    Freight: 6000,
+    ShipName: "Simons Bistro",
+    ShipAddress: "2817 Milton Dr",
+    ShipCity: "Spokane",
+    ShipRegion: "WA",
+    ShipPostalCode: "123-573",
+    ShipCountry: "USA"
+  }, 
+  {
+    OrderID: 54321,
+    CustomerID: "ANTON",
+    EmployeeID: 3,
+    OrderDate: "2022-12-10",
+    RequiredDate: "2022-12-12",
+    ShippedDate: "2022-12-14",
+    ShipVia: 1,
+    Freight: 8000,
+    ShipName: "Apple Inc",
+    ShipAddress: "20 First Ave",
+    ShipCity: "New York",
+    ShipRegion: "NY",
+    ShipPostalCode: "123-123",
+    ShipCountry: "USA"
+  }
+]]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
     </flow>
     <flow name="get:\orders\employee\(employeeID):order-sapi-config">
         <ee:transform>
@@ -150,7 +197,47 @@ output application/json
                 <ee:set-variable variableName="employeeID">attributes.uriParams.'employeeID'</ee:set-variable>
             </ee:variables>
         </ee:transform>
-		<flow-ref doc:name="Flow Reference" doc:id="ad84c99c-f1fc-4d58-acce-1db766f705be" name="employeeIDflow-GET"/>
+        <ee:transform>
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+[
+  {
+    OrderID: 12345,
+    CustomerID: "ALFKI",
+    EmployeeID: 1,
+    OrderDate: "2022-12-01",
+    RequiredDate: "2022-12-05",
+    ShippedDate: "2022-12-10",
+    ShipVia: 2,
+    Freight: 6000,
+    ShipName: "Simons Bistro",
+    ShipAddress: "2817 Milton Dr",
+    ShipCity: "Spokane",
+    ShipRegion: "WA",
+    ShipPostalCode: "123-573",
+    ShipCountry: "USA"
+  }, 
+  {
+    OrderID: 54321,
+    CustomerID: "ANTON",
+    EmployeeID: 3,
+    OrderDate: "2022-12-10",
+    RequiredDate: "2022-12-12",
+    ShippedDate: "2022-12-14",
+    ShipVia: 1,
+    Freight: 8000,
+    ShipName: "Apple Inc",
+    ShipAddress: "20 First Ave",
+    ShipCity: "New York",
+    ShipRegion: "NY",
+    ShipPostalCode: "123-123",
+    ShipCountry: "USA"
+  }
+]]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
     </flow>
     <flow name="post:\orders:application\json:order-sapi-config">
         <ee:transform>
