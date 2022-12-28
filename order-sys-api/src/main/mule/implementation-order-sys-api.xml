@@ -20,12 +20,10 @@ WHERE CustomerID = :customerID]]></db:sql>
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-payload map (item, index) -> {
-	"ShipAddress": item.ShipAddress
-}]]></ee:set-payload>
+payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="05d41fa1-a7cf-42f0-957c-5be878e32f44" />
+		<logger level="INFO" doc:name="Logger" doc:id="05d41fa1-a7cf-42f0-957c-5be878e32f44"/>
 	</flow>
 	<flow name="orderflow-POST" doc:id="426fe71c-8751-41f6-9059-281e0426123b" >
 		<logger level="INFO" doc:name="Entering sapi postOrder flow" doc:id="af8c01fc-0578-46d4-999b-b46ce829cdce" message="Entering postOrder flow"/>
