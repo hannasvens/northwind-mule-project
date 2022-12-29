@@ -2,6 +2,15 @@
   "sampleData": {
     "247ecf16-4b30-4f73-a2b8-37830b80d8ca": {
       "payload": "sample_data/list_java.dwl"
+    },
+    "95a5327e-d63e-461a-8b98-8ead5a13ce7b": {
+      "payload": "sample_data/list_java_2.dwl"
+    },
+    "472cf8fc-9772-4221-84c0-a010d4df62be": {
+      "payload": "sample_data/list_java_1.dwl"
+    },
+    "d11ebbba-de2e-42f0-bf83-d89c2c864abd": {
+      "payload": "sample_data/list_java_3.dwl"
     }
   }
 }

@@ -138,7 +138,7 @@ output application/json
 			<ee:message >
 			</ee:message>
 			<ee:variables >
-				<ee:set-variable variableName="CustomerID" ><![CDATA[message.attributes.queryParams.customerID]]></ee:set-variable>
+				<ee:set-variable variableName="CustomerID" ><![CDATA[message.attributes.queryParams.'customerID']]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 		<flow-ref doc:name="Flow Reference" doc:id="914d03f6-2cf0-4c3c-9448-01a7805bace7" name="shipAddressflow-GET"/>
