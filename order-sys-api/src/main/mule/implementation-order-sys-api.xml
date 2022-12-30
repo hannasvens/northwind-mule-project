@@ -9,7 +9,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<db:my-sql-connection host="localhost" port="3306" user="root" password="Lujeen940918" database="Northwind" />
 	</db:config>
 	<flow name="shipAddressflow-GET" doc:id="7aec6639-5d66-480f-b3d0-1748c3377270">
-		<logger level="INFO" doc:name="Logger" doc:id="d345d799-51b9-45ec-ac8d-7eb733b29d7e" />
+		<logger level="INFO" doc:name="Entering sapi Get-shipAddress" doc:id="d345d799-51b9-45ec-ac8d-7eb733b29d7e" message="Entering sapi Get-shipAddress"/>
 		<db:select doc:name="Select" doc:id="0587b548-ac9e-4d8a-b9d2-14277fa4ad41" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT ShipAddress FROM Orders
 WHERE CustomerID = :customerID]]></db:sql>
@@ -25,14 +25,21 @@ output application/json
 } ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="05d41fa1-a7cf-42f0-957c-5be878e32f44" message="#[payload]"/>
+		<logger level="INFO" doc:name="Exiting sapi Get-shipAddress" doc:id="05d41fa1-a7cf-42f0-957c-5be878e32f44" message="#[payload]"/>
 	</flow>
 	<flow name="orderflow-POST" doc:id="426fe71c-8751-41f6-9059-281e0426123b" >
 		<logger level="INFO" doc:name="Entering sapi postOrder flow" doc:id="af8c01fc-0578-46d4-999b-b46ce829cdce" message="Entering postOrder flow"/>
 		<db:insert doc:name="Insert into database" doc:id="9a712b90-ccee-4334-bb72-c50d5e5ab315" config-ref="Database_Config">
-			<db:sql ><![CDATA[INSERT INTO Orders
-WHERE CustomerID = :customerID AND EmployeeID = :employeeID AND OrderDate = :orderDate AND RequiredDate = :requiredDate AND ShippedDate = :shippedDate AND ShipVia = :shipVia]]></db:sql>
-			<db:input-parameters ><![CDATA[#[{'customerID':payload.CustomerID, 'employeeID':payload.EmployeeID, 'orderDate':payload.OrderDate, 'requiredDate':payload.RequiredDate, 'shippedDate':payload.ShippedDate, 'shipVia':payload.ShipVia}]]]></db:input-parameters>
+			<db:sql ><![CDATA[INSERT INTO Orders (CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia)
+VALUES(:CustomerID, :EmployeeID, :OrderDate, :RequiredDate, ShippedDate, :ShipVia)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+CustomerID: payload.customerID,
+EmployeeID: payload.employeeID,
+OrderDate: payload.orderDate,
+RequiredDate: payload.requiredDate,
+ShippedDate: payload.shippedDate,
+ShipVia: payload.shipVia
+}]]]></db:input-parameters>
 		</db:insert>
 		<ee:transform doc:name="Transform Message" doc:id="29514fca-d8f2-4879-b6b3-823580972ef3">
 			<ee:message>
@@ -43,17 +50,9 @@ output application/json
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="Exiting postOrder Flow" doc:id="c02ff932-ffa9-4162-8c39-5500170abbc6" message="Exiting postOrder Flow"/>
-		<ee:transform doc:name="Transform Message" doc:id="247ecf16-4b30-4f73-a2b8-37830b80d8ca">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-payload ]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
 	</flow>
 	<flow name="employeeIDflow-GET" doc:id="f0818ca9-2c49-4c3b-89d7-425d321c4810" >
-		<logger level="INFO" doc:name="Logger" doc:id="286a9b71-4729-4b4e-a449-49d2377c0d1c" />
+		<logger level="INFO" doc:name="Entering sapi Get-EmployeeID" doc:id="286a9b71-4729-4b4e-a449-49d2377c0d1c" message="Entering sapi Get-EmployeeID"/>
 		<db:select doc:name="Select" doc:id="6c9c5149-9782-4a54-ba64-3d0bc6f87a52" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT * FROM Orders
 WHERE EmployeeID = :employeeID]]></db:sql>
@@ -67,10 +66,10 @@ output application/json
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="89931057-f2e4-4841-8c72-3fc504fc71e5" />
+		<logger level="INFO" doc:name="Exiting sapi Get-EmployeeID" doc:id="89931057-f2e4-4841-8c72-3fc504fc71e5" message="#[payload]"/>
 	</flow>
 	<flow name="customerIDflow-GET" doc:id="f57aab24-d8ab-41b3-ae0c-585d6d0fd65b" >
-		<logger level="INFO" doc:name="Logger" doc:id="6b0e798d-ab03-42fb-9ba8-6937203d6909" />
+		<logger level="INFO" doc:name="Entering sapi Get-CustomerID" doc:id="6b0e798d-ab03-42fb-9ba8-6937203d6909" message="Entering sapi Get-CustomerID"/>
 		<db:select doc:name="Select" doc:id="08550399-c176-429a-9e5b-1e9b241bd1dd" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT * FROM Orders
 WHERE CustomerID = :customerID]]></db:sql>
@@ -84,6 +83,6 @@ output application/json
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="dd540875-c7cb-43c5-8714-14b79628ec2d" />
+		<logger level="INFO" doc:name="Exiting sapi Get-CustomerID" doc:id="dd540875-c7cb-43c5-8714-14b79628ec2d" message="#[payload]"/>
 	</flow>
 </mule>

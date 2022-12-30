@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_426fe71c_8751_41f6_9059_281e0426123b_Input_Payload = {| orderID: Number |}
+
