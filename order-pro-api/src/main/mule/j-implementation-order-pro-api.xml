@@ -41,7 +41,7 @@ output application/java
 	</flow>
 	<flow name="j-implementation-order-pro-apiFlow1" doc:id="662ce7a8-e24b-4f53-a2ce-2f1e0260a08b" >
 		<http:listener doc:name="Listener" doc:id="2a01e077-0971-4de4-a47c-5481c9bd3ddc" config-ref="HTTP_Listener_config-josefine" path="/offers/{offerID}"/>
-		<db:select doc:name="Select" doc:id="698df168-2650-4ce7-b64a-b626cdca7dbf" config-ref="Database_Config-josefine">
+		<db:select doc:name="Select" doc:id="698df168-2650-4ce7-b64a-b626cdca7dbf" config-ref="Database_Config-global">
 			<db:sql ><![CDATA[select * from Offers where OfferID = :offerID]]></db:sql>
 			<db:input-parameters ><![CDATA[#["offerID": attributes.uriParams.offerID]]]></db:input-parameters>
 		</db:select>
