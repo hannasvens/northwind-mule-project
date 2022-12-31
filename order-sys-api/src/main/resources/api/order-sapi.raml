@@ -39,13 +39,13 @@ types:
               application/json:
                 type: order []
                 examples: !include Examples/GET-example.raml
-/shipAddress:
-  get:
-    queryParameters:
-      customerID:
-    responses:
-      200:
-        body:
-          application/json:
-            example:
-             {"shipAddress": "Maddison Scuare"}
+  /shipAddress:
+    get:
+      queryParameters:
+        customerID: string
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+               {"shipAddress": "Maddison Scuare"}

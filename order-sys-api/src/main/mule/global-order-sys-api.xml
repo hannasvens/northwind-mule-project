@@ -1,5 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<error-handler name="global-order-sys-apiError_Handler" doc:id="ce475545-9fe4-4fc3-8470-d6a082de4438" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="3d1aecc7-27b8-4fa0-a044-13421ecaaac7" type="HTTP:BAD_REQUEST">
+			<ee:transform doc:name="Transform Message" doc:id="3e19e616-5b43-41a9-95c7-283590ff7776" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Required query parameter not specified"
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<set-variable value="400" doc:name="Set Variable" doc:id="e3273959-0fca-4fb1-b6a3-5cb894b7d828" variableName="httpStatus"/>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="9158adf4-aa40-4db9-b57a-374c51268294" type="DB:CONNECTIVITY">
+			<ee:transform doc:name="Transform Message" doc:id="ea4ed106-8f78-4e78-ba16-6febb8646302" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Parameter was not bound by query"
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<set-variable value="500" doc:name="Set Variable" doc:id="3df46dab-0f32-4b3d-91a6-1415773f1a46" variableName="httpStatus"/>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="7fcfd4dd-1393-4c6a-a9fc-3a2907609e3d" type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+			<ee:transform doc:name="Transform Message" doc:id="83d24693-e4b9-4a8e-ac68-d88c31d1b33e" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Media type not supported"
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<set-variable value="415" doc:name="Set Variable" doc:id="b86e3460-b4e5-477f-be46-ede3607d188f" variableName="httpStatus"/>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c0f213ee-a09b-4e86-b230-0db3e18badf3" type="DB:BAD_SQL_SYNTAX">
+			<ee:transform doc:name="Transform Message" doc:id="a0d77689-9b58-4e07-bcae-8f8ca3cf0ca7" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "there is an error in the SQL syntax"
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<set-variable value="500" doc:name="Set Variable" doc:id="f7daf148-039d-4255-a7ee-af3a7e6c1562" variableName="httpStatus"/>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="8f453187-4236-4096-8d58-ef0fe17d2caa" type="ANY">
+			<ee:transform doc:name="Transform Message" doc:id="f11001d1-ad9e-4569-9e6b-2a5509a6a57b" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "An error has occurred!"
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<set-variable value="500" doc:name="Set Variable" doc:id="6ab6e30b-95ae-464b-9695-8fe83e7af9a6" variableName="httpStatus"/>
+		</on-error-propagate>
+	</error-handler>
+</mule>
