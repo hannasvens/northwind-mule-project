@@ -36,6 +36,27 @@ WHERE offerID = :offerID ]]></db:sql>
 		</db:select>
 		<flow-ref doc:name="Flow Reference -  createOrder" doc:id="5c45efbb-3973-41c3-9cd3-af1a7c038473" name="createOrder"/>
 	</flow>
+	<flow name="getShippingDate" doc:id="50e08634-7087-4896-be16-236cbf73cb9c" >
+		<http:listener doc:name="GET/shippingDate" doc:id="0ac5e549-384d-4d41-91c4-d603bdee1b64" config-ref="HTTP_Listener_config1" path="/shipping"/>
+		<set-variable value="#[now() as Date]" doc:name="dateAccepted" doc:id="70a2d7e0-6162-42bb-b81c-dad2d2293680" variableName="dateAccepted"/>
+		<http:request method="GET" doc:name="POST/shipping-sys-api" doc:id="9a152fd7-01d8-45cb-b19b-31739a624cdb" config-ref="HTTP_Request_configuration2" path="/api/shipping" target="shippingDate">
+			<http:body ><![CDATA[#[output application/json
+---
+{
+	"offerID": payload.offerID,
+	"dateAccepted": vars.dateAccepted,
+	"shipperID": payload.shipperID
+}]]]></http:body>
+		</http:request>
+		<choice doc:name="Choice" doc:id="87e02c3f-013e-4913-9b3a-05a7510a3a7c" >
+			<when expression='#[import * from dw::core::Dates&#10;import * from dw::core::Periods&#10;output application/json&#10;&#10;var days = 15&#10;---&#10;vars.shippingDate &lt; vars.dateAccepted + ("P$(days)D" as Period)]'>
+				<flow-ref doc:name="createOrder" doc:id="ad3b9ab4-e633-4a33-bf1d-ac230c942c77" name="createOrder"/>
+			</when>
+			<otherwise >
+				<flow-ref doc:name="Flow Reference" doc:id="c0898271-2aba-443f-82b8-bbea9552e229" name="getShippingDate"/>
+			</otherwise>
+		</choice>
+	</flow>
 	<flow name="createOrder" doc:id="4a430c34-75e2-4bdd-b176-b1ce7dafdd97" >
 		<http:request method="POST" doc:name="Request" doc:id="345a8e57-56f3-4001-82c7-f66534298ab5" config-ref="HTTP_Request_configuration1" path="/api/orders">
 			<http:query-params><![CDATA[#[output application/json

@@ -1,4 +1,4 @@
 %dw 2.0
 
-type auto_f0818ca9_2c49_4c3b_89d7_425d321c4810_Input_Payload = Array<{  ShipName?: String,   RequiredData?: String,   ShippedDate?: String,   ShipCity?: String,   CustomerID?: String,   ShipVia?: Number,   ShipPostalCode?: String,   OrderDate?: String,   ShipRegion?: String,   ShipAddress?: String,   ShipCountry?: String,   EmployeeID?: Number,   Freight?: Number,   _?: Any}>
+type auto_f0818ca9_2c49_4c3b_89d7_425d321c4810_Input_Payload = Array<{|  OrderID: Number,   CustomerID: String,   EmployeeID: Number,   OrderDate: String,   RequiredDate: String,   ShippedDate: String,   ShipVia: Number,   Freight: Number,   ShipName: String,   ShipAddress: String,   ShipCity: String,   ShipRegion: String,   ShipPostalCode: String,   ShipCountry: String|}>
 

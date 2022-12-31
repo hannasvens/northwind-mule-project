@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_50e08634_7087_4896_be16_236cbf73cb9c_Input_Variables_shippingDate = Any
+
