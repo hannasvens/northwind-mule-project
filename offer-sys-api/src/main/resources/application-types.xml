@@ -462,4 +462,13 @@ type: string]]></types:shape>
       </types:output-event>
     </types:processor-declaration>
   </types:enrichment>
+  <types:enrichment select="#e08d6830-9116-48e8-b7a0-57b8223926a0">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="offer-example"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
 </types:mule>

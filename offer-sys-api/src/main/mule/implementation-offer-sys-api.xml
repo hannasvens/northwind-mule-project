@@ -94,12 +94,51 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<db:update doc:name="Update" doc:id="572b2120-167a-47bd-826f-501e3ee8627e" config-ref="Database_Config">
-			<db:sql ><![CDATA[update Offers
+		<choice doc:name="Choice" doc:id="1d15c542-dfb5-49e9-8303-8faefb38b8c3" >
+			<when expression='#["Status": message.payload.Status=="proposed"]'>
+				<db:update doc:name="Update" doc:id="572b2120-167a-47bd-826f-501e3ee8627e" config-ref="Database_Config">
+			<db:sql><![CDATA[update Offers
 set Status = :Status
 where OfferID = :offerID]]></db:sql>
-			<db:input-parameters ><![CDATA[#[{"offerID": attributes.uriParams.offerID, "Status": message.payload.Status}]]]></db:input-parameters>
+			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "Status": message.payload.Status}]]]></db:input-parameters>
 		</db:update>
+			</when>
+			<when expression='#["Status": message.payload.Status=="out of stock"]'>
+				<db:update doc:name="Update" doc:id="81d03294-3797-4595-9a21-70877260f3ca" config-ref="Database_Config">
+			<db:sql><![CDATA[update Offers
+set Status = :Status
+where OfferID = :offerID]]></db:sql>
+			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "Status": message.payload.Status}]]]></db:input-parameters>
+		</db:update>
+			</when>
+			<when expression='#["Status": message.payload.Status=="accepted"]'>
+				<db:update doc:name="Update" doc:id="8cb1bfdf-0f85-4cca-bbaf-26d35b5fccdf" config-ref="Database_Config">
+			<db:sql><![CDATA[update Offers
+set Status = :Status AND PaymentTransactionID = :PaymentTransactionID
+where OfferID = :offerID]]></db:sql>
+			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "Status": message.payload.Status, "PaymentTransactionID": message.payload.PaymentTransactionID}]]]></db:input-parameters>
+		</db:update>
+			</when>
+			<when expression='#["Status": message.payload.Status=="rejected"]'>
+				<db:update doc:name="Update" doc:id="e73e102b-d6f4-47ca-9317-cbfcddc42604" config-ref="Database_Config">
+			<db:sql><![CDATA[update Offers
+set Status = :Status
+where OfferID = :offerID]]></db:sql>
+			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "Status": message.payload.Status}]]]></db:input-parameters>
+		</db:update>
+			</when>
+			<when expression='#["Status": message.payload.Status=="shipped"]'>
+				<db:update doc:name="Update" doc:id="1d096314-1b38-41cc-ae3e-e39240315449" config-ref="Database_Config">
+			<db:sql><![CDATA[update Offers
+set Status = :Status
+where OfferID = :offerID]]></db:sql>
+			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "Status": message.payload.Status}]]]></db:input-parameters>
+		</db:update>
+			</when>
+			<otherwise>
+				<raise-error doc:name="Incorrect input provided" doc:id="150b9668-23b0-450e-a149-2dcb89fdd314" type="ANY"/>
+			</otherwise>
+		</choice>
 		<ee:transform doc:name="Offer updated" doc:id="d532c121-df69-43f3-803d-a959919a4947" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -113,8 +152,8 @@ output application/json
 	<flow name="get-offer" doc:id="b73535f2-c416-46b4-ba89-54db70076758" >
 		<logger level="INFO" doc:name="Logger" doc:id="24f20c15-30ab-4595-a9ec-da3dec949d06" />
 		<db:select doc:name="Select" doc:id="4fb4e708-e8fc-40aa-8624-7d0198a19663" config-ref="Database_Config">
-			<db:sql ><![CDATA[select * from Offers where OfferID = :offerID]]></db:sql>
-			<db:input-parameters ><![CDATA[#["offerID": attributes.uriParams.offerID]]]></db:input-parameters>
+			<db:sql><![CDATA[select * from Offers where OfferID = :offerID]]></db:sql>
+			<db:input-parameters><![CDATA[#["offerID": attributes.uriParams.offerID]]]></db:input-parameters>
 		</db:select>
 		<ee:transform doc:name="Transform Message" doc:id="25cf5756-f86f-491c-889b-860b009ff442" >
 			<ee:message >

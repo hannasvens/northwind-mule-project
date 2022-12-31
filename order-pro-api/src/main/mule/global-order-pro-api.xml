@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<global-property doc:name="Global Property" doc:id="54c1d6cf-5222-440c-8452-bdc0109f88fc" name="env" value="dev" />
+	<configuration-properties doc:name="Configuration properties" doc:id="dab77317-7182-482e-adc8-63d86ffd671c" file="config-{env}.yaml" />
+	<db:config name="Database_Config-josefine" doc:name="Database Config" doc:id="34dc5108-4745-4790-9b56-af4f17254955" >
+		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}" />
+	</db:config>
+</mule>
