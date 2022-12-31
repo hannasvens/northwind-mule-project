@@ -34,15 +34,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	"categoryName": vars.categoryName
 }]]]></http:body>
 		</http:request>
-		<choice doc:name="Choice" doc:id="047c63b9-66f1-4e49-8bf6-7ac846c2a8d5" >
-			<when expression='#[import * from dw::core::Dates&#10;import * from dw::core::Periods&#10;output application/json&#10;&#10;var days = 15&#10;---&#10;payload.shippingDate &lt; vars.dateAccepted + ("P$(days)D" as Period)]'>
-				<set-payload value='#[{&#10;	"ShippingDate": payload.shippingDate&#10;}]' doc:name="Set Payload" doc:id="2c563410-0dba-4b9e-85d2-7e35f7058c32" />
-			</when>
-			<otherwise>
-				<set-payload value="ShippingDate &gt; 15 days away" doc:name="Set Payload" doc:id="a2724f95-a84e-40fe-b92b-1a59c0722174" />
-				<raise-error doc:name="Raise error" doc:id="7c17baa1-b693-49f0-b707-29667bbbab16" type="CUSTOM:CUSTOM_ERROR" description="Shipping date &gt; 15 days away"/>
-			</otherwise>
-		</choice>
+		<set-payload value="#[payload.shippingDate]" doc:name="shippingDate" doc:id="a737e9b0-0be9-4e0d-9276-c875fc52a8fc" />
 	</flow>
 	<flow name="getCustomerInfo" doc:id="96a40a65-0390-4098-aa54-e031fbc0906c" >
 		<logger level="INFO" doc:name="Logger" doc:id="c79f9eca-f601-4716-86e8-5be4230ae637" />

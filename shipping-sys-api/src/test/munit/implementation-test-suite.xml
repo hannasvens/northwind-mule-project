@@ -9,8 +9,11 @@
 		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<munit:config name="implementation-test-suite.xml" />
-	<munit:test name="implementation-test-suiteTest" doc:id="07b74bbf-2b4c-4426-9371-633bc0aa9734" >
+	<munit:test name="postShippingTest-happy-path" doc:id="07b74bbf-2b4c-4426-9371-633bc0aa9734" >
 		<munit:behavior >
+			<munit:set-event doc:name="Set Event" doc:id="30d774be-b4aa-4134-89cf-978aaa7f68be" >
+				<munit:payload value='#[output application/json&#10;---&#10;{&#10;	"offerID": 12345,&#10;	"shipperID": 2,&#10;	"dateAccepted": "2022-12-20"&#10;}]' />
+			</munit:set-event>
 			<munit-tools:mock-when doc:name="Mock when" doc:id="1193516b-8e08-4cce-b6af-52ea357553df" processor="http:request">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="d535c64a-d0e7-4828-80ac-e6ba58382d9d" attributeName="doc:id" />
@@ -32,20 +35,12 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 					<munit-tools:with-attribute whereValue="3ee624d6-e645-4610-a380-41c20121e657" attributeName="doc:id" />
 				</munit-tools:with-attributes>
 				<munit-tools:then-return >
-					<munit-tools:payload value='#[{"shippingDate": "2022-12-22"}]' />
+					<munit-tools:payload value='#[output application/json&#10;---&#10;{&#10;  "shipperID": 60,&#10;  "categoryName": "aspernatur",&#10;  "postalCode": "ullamco",&#10;  "shippingDate": "2023-01-04"&#10;}]' />
 				</munit-tools:then-return>
 			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution>
-			<http:request method="GET" doc:name="Request" doc:id="ed27250f-891e-42d2-b6bf-f1d6fca6dc9d" config-ref="HTTP_Request_configuration" path="/api/shippingDate">
-				<http:query-params ><![CDATA[#[output application/java
----
-{
-	shipperID : 2,
-	offerID : 12345,
-	dateAccepted : "2022-12-12"
-}]]]></http:query-params>
-			</http:request>
+			<flow-ref doc:name="Flow Reference" doc:id="eb8c8c79-69ae-4d78-83b6-710193951130" name="postShipping"/>
 		</munit:execution>
 		<munit:validation >
 			<munit-tools:assert doc:name="Assert expression" doc:id="50ee79c9-720e-4e09-ae81-c27a7e951e52" />
