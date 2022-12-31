@@ -14,6 +14,9 @@
     },
     "a819cbf7-74d0-4ef6-800f-4c832fe3cde8": {
       "payload": "sample_data/java_1.dwl"
+    },
+    "f15a239f-c500-4774-b264-45449381930a": {
+      "payload": "sample_data/json_1.json"
     }
   }
 }
