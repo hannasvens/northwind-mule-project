@@ -5,14 +5,18 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<configuration-properties doc:name="Configuration properties" doc:id="142f6d51-2216-4a0b-b117-25f900759f7a" file="config.yaml" />
+	<configuration-properties doc:name="Configuration properties" doc:id="142f6d51-2216-4a0b-b117-25f900759f7a" file="config-${env}.yaml" />
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e388eb32-e9ac-4e9f-b1a3-5f659a4eb9f1" >
 		<http:listener-connection host="0.0.0.0" port="${http.port}" />
 	</http:listener-config>
-	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="3e3e7901-edc0-455d-aa3c-4a6c7732372c" responseTimeout="100000">
+	<http:request-config name="HTTP_Request_configuration_custSAPI" doc:name="HTTP Request configuration" doc:id="3e3e7901-edc0-455d-aa3c-4a6c7732372c" responseTimeout="100000">
 		<http:request-connection port="${request.port}" host="${request.host}" connectionIdleTimeout="300000"/>
 	</http:request-config>
 	<configuration doc:name="Configuration" doc:id="b10e734d-7ede-4232-8489-fd5db3d3accf" defaultErrorHandler-ref="globalError_Handler" />
+	<global-property doc:name="Global Property" doc:id="e438f0f5-4a2e-42b5-97b3-6bd2f47e8d6a" name="env" value="dev" />
+	<http:request-config name="HTTP_Request_configuration_ordPAPI" doc:name="HTTP Request configuration" doc:id="479f812f-5f95-40bf-9a1d-6abe5107982d" >
+		<http:request-connection host="localhost" port="8084" />
+	</http:request-config>
 	<error-handler name="globalError_Handler" doc:id="f9083fc1-be2a-4072-8003-04215bafad81" >
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c93c4ee6-cda3-4a8e-a97f-8100cf87d1fe" type="HTTP:CONNECTIVITY">
 			<ee:transform doc:name="Transform Message" doc:id="74d9c9c5-1f83-4364-ae4b-ef8bb3c2e39a" >

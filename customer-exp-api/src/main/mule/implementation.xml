@@ -8,7 +8,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<flow name="getCustomersFlow" doc:id="a7856407-7b5b-4825-be5b-a20d6c69c152" >
 		<logger level="INFO" doc:name="startGetCustomerFlow" doc:id="7d6fdece-cbaa-4307-9020-4fba8b65ebce" />
-		<http:request method="GET" doc:name="Request" doc:id="baa1cc98-018a-43e6-800c-7c041641b862" config-ref="HTTP_Request_configuration" path="/api/customers"/>
+		<http:request method="GET" doc:name="Request" doc:id="baa1cc98-018a-43e6-800c-7c041641b862" config-ref="HTTP_Request_configuration_custSAPI" path="/api/customers"/>
 		<ee:transform doc:name="Transform Message" doc:id="631103e2-c828-4fdd-aed8-fc50e10b263c" >
 			<ee:message >
 				<ee:set-payload resource="GetCustomersFlow.dwl" />
@@ -17,7 +17,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 		<logger level="INFO" doc:name="endGetCustomerFlow" doc:id="7b1ba026-2bfb-441f-843d-6adbe0df5266" />
 	</flow>
 	<flow name="getCustomerByIDFlow" doc:id="e2d72521-c37f-4825-b03b-da0fb4fe5091" >
-		<http:request method="GET" doc:name="Request" doc:id="898f63ec-cfd0-4ac5-a104-2e5790533e7e" config-ref="HTTP_Request_configuration" path="/api/customers/{ID}" >
+		<http:request method="GET" doc:name="Request" doc:id="898f63ec-cfd0-4ac5-a104-2e5790533e7e" config-ref="HTTP_Request_configuration_custSAPI" path="/api/customers/{ID}" >
 			<http:uri-params ><![CDATA[#[output application/java
 ---
 {
@@ -49,7 +49,7 @@ output application/json
 				<ee:set-payload resource="PostCustomerFlow.dwl" />
 			</ee:message>
 		</ee:transform> [STUDIO] -->
-		<http:request method="POST" doc:name="Request" doc:id="71c88a2f-b4d8-41eb-b421-e64be222a814" config-ref="HTTP_Request_configuration" path="/api/customers">
+		<http:request method="POST" doc:name="Request" doc:id="71c88a2f-b4d8-41eb-b421-e64be222a814" config-ref="HTTP_Request_configuration_custSAPI" path="/api/customers">
 			<http:body ><![CDATA[#[%dw 2.0
 output application/json
 ---
@@ -76,5 +76,10 @@ output application/json
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="endpostCustomerFlow" doc:id="e5809168-ac22-4895-9d9f-4e9acf051455" />
+	</flow>
+	<flow name="postOfferRequest" doc:id="191cd106-e89a-4f44-b9ba-247541cfb69e" >
+		<http:listener doc:name="Listener" doc:id="abf10400-447d-4e93-add3-f76cc0ce4abd" config-ref="HTTP_Listener_config" path="/offer" allowedMethods="POST"/>
+		<http:request method="GET" doc:name="Request" doc:id="39acfcec-d443-41c1-932a-5369d0762a74" config-ref="HTTP_Request_configuration_ordPAPI" path="/offer"/>
+		<set-payload value="#[payload]" doc:name="payload(offerID)" doc:id="cff391fc-5849-42df-9b92-fd739a4712e8" />
 	</flow>
 </mule>

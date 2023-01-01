@@ -140,15 +140,6 @@ output application/json
         </ee:transform>
     </flow>
     <flow name="post:\offer:application\json:customer-eapi-config">
-        <ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  offerID: 12345
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="67b2c3d8-7f25-4d5e-841d-8d52b7663d13" name="postOfferRequest"/>
     </flow>
 </mule>
