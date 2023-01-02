@@ -15,6 +15,9 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	<http:request-config name="HTTP_Request_configuration2" doc:name="HTTP Request configuration" doc:id="6634ec42-4fdd-4d26-94e0-c0ee96a8e830" >
 		<http:request-connection host="localhost" port="8080" />
 	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration3" doc:name="HTTP Request configuration" doc:id="a5dde45f-5923-447a-9468-1411e9e1dd63" >
+		<http:request-connection port="${http.port}" host="${http.host}"/>
+	</http:request-config>
 	<db:config name="Database_Config-global" doc:name="Database Config" doc:id="34dc5108-4745-4790-9b56-af4f17254955" >
 		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}" />
 	</db:config>
