@@ -415,9 +415,14 @@ type: string]]></types:shape>
   </types:enrichment>
   <types:enrichment select="#95a5327e-d63e-461a-8b98-8ead5a13ce7b">
     <types:processor-declaration>
-      <types:output-event>
+      <types:input-event>
         <types:message>
           <types:payload type="order[]"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="order"/>
         </types:message>
       </types:output-event>
     </types:processor-declaration>

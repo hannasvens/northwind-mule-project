@@ -74,11 +74,12 @@ payload map ( property , indexOfproperty ) -> {
 	</flow>
 	<flow name="patch-offer" doc:id="ebffde56-1a1d-4887-853a-41ac1038876c" >
 		<logger level="INFO" doc:name="Logger" doc:id="ce407388-d76d-42a9-9446-f2c079933e48" />
-		<ee:transform doc:name="Transform Message" doc:id="cd3977da-2605-4995-baa5-57cea8ba14c9" >
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="cdee158a-a329-4374-b075-17baea5eb148" />
+<!-- [STUDIO:"Transform Message"]		<ee:transform doc:name="Transform Message" doc:id="cd3977da-2605-4995-baa5-57cea8ba14c9" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
----
+&#45;&#45;-
 {
 	Status: payload.Status,
 	PaymentTransactionID: payload.PaymentTransactionID,
@@ -93,7 +94,7 @@ output application/json
 	PriceDiscount: payload.PriceDiscount
 }]]></ee:set-payload>
 			</ee:message>
-		</ee:transform>
+		</ee:transform> [STUDIO] -->
 		<choice doc:name="Choice" doc:id="1d15c542-dfb5-49e9-8303-8faefb38b8c3" >
 			<when expression='#["Status": message.payload.Status=="proposed"]'>
 				<db:update doc:name="Update" doc:id="572b2120-167a-47bd-826f-501e3ee8627e" config-ref="Database_Config">
@@ -111,12 +112,12 @@ where OfferID = :offerID]]></db:sql>
 			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "Status": message.payload.Status}]]]></db:input-parameters>
 		</db:update>
 			</when>
-			<when expression='#["Status": message.payload.Status=="accepted"]'>
+			<when expression='#[attributes.uriParams.offerID ++ message.payload.PaymentTransactionID ++ message.payload.DateApproved]' doc:id="08df1c75-6320-4eb7-b667-e9211f8150a1">
 				<db:update doc:name="Update" doc:id="8cb1bfdf-0f85-4cca-bbaf-26d35b5fccdf" config-ref="Database_Config">
 			<db:sql><![CDATA[update Offers
-set Status = :Status AND PaymentTransactionID = :PaymentTransactionID
+set (Status = "accepted", PaymentTransactionID = :PaymentTransactionID, DateApproved = :DateApproved)
 where OfferID = :offerID]]></db:sql>
-			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "Status": message.payload.Status, "PaymentTransactionID": message.payload.PaymentTransactionID}]]]></db:input-parameters>
+			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "PaymentTransactionID": message.payload.PaymentTransactionID}]]]></db:input-parameters>
 		</db:update>
 			</when>
 			<when expression='#["Status": message.payload.Status=="rejected"]'>

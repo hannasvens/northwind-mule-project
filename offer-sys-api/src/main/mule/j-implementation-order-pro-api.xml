@@ -14,12 +14,16 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<http:listener-connection host="0.0.0.0" port="8082" />
 	</http:listener-config>
 	<validation:config name="Validation_Config" doc:name="Validation Config" doc:id="6e194e10-cfef-4596-995b-edb8d32812d5" />
+	<http:request-config name="HTTP_Request_configuration-josefine-offersSapi" doc:name="HTTP Request configuration" doc:id="b6e8d736-b396-4f39-9eeb-321e6fd8825e" >
+		<http:request-connection host="localhost" port="8081" />
+	</http:request-config>
 	<flow name="j-implementation-order-pro-apiFlow" doc:id="475b5aa5-8af6-47c5-ad27-a8e309d473ce">
 		<http:listener doc:name="Listener" doc:id="a16555f2-1b24-48cd-8b08-e0b63e819067" config-ref="HTTP_Listener_config-josefine" path="/orders/acceptoffer" >
 		</http:listener>
 		<logger level="INFO" doc:name="StartFlow" doc:id="cb4d90f0-1573-442d-b88b-520b62aeb422" />
 		<set-variable value="#[payload.OfferID]" doc:name="offerID" doc:id="7afa5afa-e537-4154-8039-c9750128efb9" variableName="offerID"/>
 		<set-variable value="#[payload.CustomerID]" doc:name="customerID" doc:id="2f928bfd-a0cd-406f-a6dd-db4893b882cf" variableName="customerID"/>
+		<set-variable value="#[payload.PaymentTransactionID]" doc:name="paymentTransactionID" doc:id="3ae9cbcd-ccc1-44c3-ae91-9c164393def6" variableName="paymentTransactionID"/>
 		<http:request method="GET" doc:name="Request to offers-sapi (GET offer matching offerID)" doc:id="a39ea1c6-c4a9-48d5-95c3-66c9e9198667" config-ref="HTTP_Request_configuration-josefine" path="/offers/{offerID}" >
 			<http:uri-params ><![CDATA[#[output application/java
 ---
@@ -27,38 +31,29 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	offerID : vars.offerID
 }]]]></http:uri-params>
 		</http:request>
-		<logger level="INFO" doc:name="What is in the payload here?" doc:id="ed123476-6f39-41ba-b6c3-ad546c3f5151" />
+		<logger level="INFO" doc:name="What is in the payload here?" doc:id="ed123476-6f39-41ba-b6c3-ad546c3f5151" message="#[payload]"/>
 		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="add24020-29ad-4863-b5bf-242571e936c9" />
 		<validation:is-true doc:name="Payload matches CustomerID?" doc:id="81972159-9136-4682-a94d-784c8e4c021f" expression="#[payload.CustomerID == vars.customerID]" config-ref="Validation_Config"/>
-		<ee:transform doc:name="Change status to ACCEPTED and set transactionID" doc:id="f9855a92-630f-43a0-a655-117ca0c082a2" >
+		<ee:transform doc:name="Set transactionID, set current date as DateApproved" doc:id="f9855a92-630f-43a0-a655-117ca0c082a2" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-payload map ( property , indexOfproperty ) -> {
-	Status: "accepted",
-	"Payment transaction ID": property.PaymentTransactionID
+{
+	"Payment transaction ID": vars.paymentTransactionID,
+	DateApproved: now()
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<http:request method="PATCH" doc:name="Request to offers-sapi (PATCH fields status (accepted) and transaction ID (xxxxx))" doc:id="a4c58539-df4f-4d02-a496-3667e1317d57" config-ref="HTTP_Request_configuration-josefine" path="/offers/{offerID}">
+		<logger level="INFO" doc:name="What is in the payload here?" doc:id="b1591719-7df3-4a19-81c4-95d43f5b90f5" message="#[payload]"/>
+		<http:request method="PATCH" doc:name="Request to offers-sapi (PATCH fields transaction ID (xxxxx) and DateApproved, changes status to ACCEPTED)" doc:id="a4c58539-df4f-4d02-a496-3667e1317d57" config-ref="HTTP_Request_configuration-josefine-offersSapi" path="/offers/{offerID}">
 			<http:uri-params ><![CDATA[#[output application/java
 ---
 {
 	offerID : vars.offerID
 }]]]></http:uri-params>
 		</http:request>
-		<ee:transform doc:name="Transform Message (yet to be done from here)" doc:id="d8533128-da03-4ec0-96fb-b3377ace87d5">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/java
----
-{
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="4caa183a-e349-468e-a930-2cd6e5211536" />
-		<set-payload value="The status has been updated to accepted." doc:name="status updated to accepted" doc:id="8c9636ee-ddf5-44ed-9b45-0b12e3896ad5" />
+		<set-payload value="Offer updated to ACCEPTED state." doc:name="status updated to accepted" doc:id="8c9636ee-ddf5-44ed-9b45-0b12e3896ad5" />
 		<logger level="INFO" doc:name="EndFlow" doc:id="9fed5a52-47da-4cdc-a30b-b13a28925339" />
 	</flow>
 	<flow name="j-implementation-order-pro-apiFlow1" doc:id="662ce7a8-e24b-4f53-a2ce-2f1e0260a08b" >
