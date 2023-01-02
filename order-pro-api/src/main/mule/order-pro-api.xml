@@ -6,9 +6,9 @@
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
 	<flow name="getShippingDate" doc:id="50e08634-7087-4896-be16-236cbf73cb9c" >
-		<http:listener doc:name="GET/shippingDate" doc:id="0ac5e549-384d-4d41-91c4-d603bdee1b64" config-ref="HTTP_Listener_config1" path="/shipping"/>
+		<http:listener doc:name="GET/shippingDate" doc:id="0ac5e549-384d-4d41-91c4-d603bdee1b64" config-ref="HTTP_Listener_config-global" path="/shipping"/>
 		<set-variable value="#[now() as Date]" doc:name="dateAccepted" doc:id="70a2d7e0-6162-42bb-b81c-dad2d2293680" variableName="dateAccepted"/>
-		<http:request method="GET" doc:name="POST/shipping-sys-api" doc:id="9a152fd7-01d8-45cb-b19b-31739a624cdb" config-ref="HTTP_Request_configuration2" path="/api/shipping" target="shippingDate">
+		<http:request method="GET" doc:name="POST/shipping-sys-api" doc:id="9a152fd7-01d8-45cb-b19b-31739a624cdb" config-ref="HTTP_Request_configuration2-global" path="/api/shipping" target="shippingDate">
 			<http:body ><![CDATA[#[output application/json
 ---
 {
@@ -28,7 +28,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 		<flow-ref doc:name="Flow Reference" doc:id="c08beb51-3435-4c3d-bd96-b29a5be94a3f" name="updateOffer"/>
 	</flow>
 	<flow name="createOrder" doc:id="4a430c34-75e2-4bdd-b176-b1ce7dafdd97" >
-		<http:request method="POST" doc:name="Request to order SAPI (insert order)" doc:id="345a8e57-56f3-4001-82c7-f66534298ab5" config-ref="HTTP_Request_configuration3" path="/api/orders">
+		<http:request method="POST" doc:name="Request to order SAPI (insert order)" doc:id="345a8e57-56f3-4001-82c7-f66534298ab5" config-ref="HTTP_Request_configuration3-global" path="/api/orders">
 			<http:query-params><![CDATA[#[output application/json
 ---
 {
@@ -43,7 +43,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	</flow>
 	<flow name="updateOffer" doc:id="a9bbc8d4-1254-4d60-8c3e-879f2326b050" >
 		<logger level="INFO" doc:name="Logger" doc:id="a1226c86-7bd7-4952-bf59-63989adca9f3" />
-		<http:request method="GET" doc:name="Request" doc:id="a8ad0ee9-da24-4eb9-9d19-78b265d5d825" config-ref="HTTP_Request_configuration3" path="/offer"/>
+		<http:request method="GET" doc:name="Request" doc:id="a8ad0ee9-da24-4eb9-9d19-78b265d5d825" config-ref="HTTP_Request_configuration3-global" path="/offer"/>
 		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="2078fbe3-92a8-463b-9785-9a3018676b00" />
 	</flow>
 </mule>
