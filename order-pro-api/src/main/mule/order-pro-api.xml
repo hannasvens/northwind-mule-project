@@ -58,7 +58,7 @@ WHERE offerID = :offerID ]]></db:sql>
 		</choice>
 	</flow>
 	<flow name="createOrder" doc:id="4a430c34-75e2-4bdd-b176-b1ce7dafdd97" >
-		<http:request method="POST" doc:name="Request" doc:id="345a8e57-56f3-4001-82c7-f66534298ab5" config-ref="HTTP_Request_configuration1" path="/api/orders">
+		<http:request method="POST" doc:name="Request to order SAPI (insert order)" doc:id="345a8e57-56f3-4001-82c7-f66534298ab5" config-ref="HTTP_Request_configuration1" path="/api/orders">
 			<http:query-params><![CDATA[#[output application/json
 ---
 {
@@ -69,6 +69,7 @@ WHERE offerID = :offerID ]]></db:sql>
 	"shipperID" : "vars.shipperID"
 	}]]]></http:query-params>
 		</http:request>
+		<set-payload value="#[payload]" doc:name="payload (orderID)" doc:id="1487e3a1-5979-4656-8647-9e11f44c6f8f" />
 	</flow>
 	<flow name="updateOffer" doc:id="a9bbc8d4-1254-4d60-8c3e-879f2326b050" >
 		<http:request method="GET" doc:name="Request" doc:id="ec85e1f2-e49b-4dad-a0f7-4de37548fcf5" />

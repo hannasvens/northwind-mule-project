@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<db:config name="Database_Config" doc:name="Database Config" doc:id="0d98ae45-fd36-4d0f-93bf-19d273572e08" >
 		<db:my-sql-connection host="localhost" port="3306" user="root" password="Lujeen940918" database="Northwind" />
 	</db:config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="1b42c007-2586-447f-bf21-ed129e0ff2b7" >
+		<http:request-connection host="localhost" port="${http.port}" />
+	</http:request-config>
 	<flow name="shipAddressflow-GET" doc:id="7aec6639-5d66-480f-b3d0-1748c3377270">
 		<logger level="INFO" doc:name="Entering sapi Get-shipAddress" doc:id="d345d799-51b9-45ec-ac8d-7eb733b29d7e" message="Entering sapi Get-shipAddress"/>
 		<db:select doc:name="Select" doc:id="0587b548-ac9e-4d8a-b9d2-14277fa4ad41" config-ref="Database_Config">
-			<db:sql ><![CDATA[SELECT ShipAddress FROM Orders
+			<db:sql ><![CDATA[SELECT Address FROM Customers 
 WHERE CustomerID = :customerID]]></db:sql>
 			<db:input-parameters ><![CDATA[#[{ "customerID": message.attributes.queryParams.customerID}]]]></db:input-parameters>
 		</db:select>
@@ -21,25 +25,21 @@ WHERE CustomerID = :customerID]]></db:sql>
 output application/json
 ---
 {
-	ShipAddress: payload[0].ShipAddress
-} ]]></ee:set-payload>
+	message: payload[0].Address
+}
+
+]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="Exiting sapi Get-shipAddress" doc:id="05d41fa1-a7cf-42f0-957c-5be878e32f44" message="#[payload]"/>
 	</flow>
 	<flow name="orderflow-POST" doc:id="426fe71c-8751-41f6-9059-281e0426123b" >
 		<logger level="INFO" doc:name="Entering sapi postOrder flow" doc:id="af8c01fc-0578-46d4-999b-b46ce829cdce" message="Entering postOrder flow"/>
+		<http:request method="GET" doc:name="Request" doc:id="6e13c9b8-bb0a-4311-8e42-8b99740ef9bf" config-ref="HTTP_Request_configuration" path="/api/orders"/>
 		<db:insert doc:name="Insert into database" doc:id="9a712b90-ccee-4334-bb72-c50d5e5ab315" config-ref="Database_Config">
-			<db:sql ><![CDATA[INSERT INTO Orders (CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia)
-VALUES(:CustomerID, :EmployeeID, :OrderDate, :RequiredDate, ShippedDate, :ShipVia)]]></db:sql>
-			<db:input-parameters ><![CDATA[#[{
-CustomerID: payload.customerID,
-EmployeeID: payload.employeeID,
-OrderDate: payload.orderDate,
-RequiredDate: payload.requiredDate,
-ShippedDate: payload.shippedDate,
-ShipVia: payload.shipVia
-}]]]></db:input-parameters>
+			<db:sql ><![CDATA[INSERT INTO Orders (CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, ShipAddress)
+VALUES(:CustomerID, :EmployeeID, :OrderDate, :RequiredDate, ShippedDate, :ShipVia, :ShipAddress)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
 		</db:insert>
 		<ee:transform doc:name="Transform Message" doc:id="29514fca-d8f2-4879-b6b3-823580972ef3">
 			<ee:message>
