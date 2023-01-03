@@ -24,4 +24,9 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	<http:request-config name="HTTP_Request_configuration-offersSapi" doc:name="HTTP Request configuration" doc:id="9b5fede9-22c8-4d6b-b2df-72329b1d67da" basePath="/api" >
 		<http:request-connection host="localhost" port="8083" />
 	</http:request-config>
+	<error-handler name="global-order-pro-apiError_Handler">
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c9461afe-6ac5-4bce-bd4a-ff642140731e" type="VALIDATION:INVALID_BOOLEAN">
+				<set-payload value="OfferID and CustomerID do not match!" doc:name="Set Payload" doc:id="cea4e2f4-48dd-47ff-ac0e-30c55c00922c" />
+			</on-error-propagate>
+		</error-handler>
 </mule>

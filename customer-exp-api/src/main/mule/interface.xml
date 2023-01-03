@@ -130,16 +130,9 @@ output application/json
         <flow-ref doc:name="Flow Reference" doc:id="4c9609a6-5daa-4266-85b8-7b9a4eacc4fb" name="postCustomerFlow" />
     </flow>
     <flow name="patch:\offer:application\json:customer-eapi-config">
-        <ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-"Offer status = ACCEPTED"]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="3f5e9097-ea76-4e31-b9b1-f6e87ab1b2b7" name="acceptOfferFlow"/>
     </flow>
     <flow name="post:\offer:application\json:customer-eapi-config">
-		<flow-ref doc:name="Flow Reference" doc:id="67b2c3d8-7f25-4d5e-841d-8d52b7663d13" name="postOfferRequest"/>
+		<flow-ref doc:name="Flow Reference" doc:id="67b2c3d8-7f25-4d5e-841d-8d52b7663d13" name="postOfferRequestFlow"/>
     </flow>
 </mule>
