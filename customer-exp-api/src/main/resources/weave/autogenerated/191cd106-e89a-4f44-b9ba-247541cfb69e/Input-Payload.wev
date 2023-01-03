@@ -1,0 +1,8 @@
+%dw 2.0
+
+type auto_191cd106_e89a_4f44_b9ba_247541cfb69e_Input_Payload = {|
+  productID: Number, 
+  quantity: Number, 
+  customerID: String
+|}
+
