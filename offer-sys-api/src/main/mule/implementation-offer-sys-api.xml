@@ -96,6 +96,14 @@ output application/json
 			</ee:message>
 		</ee:transform> [STUDIO] -->
 		<choice doc:name="Choice" doc:id="1d15c542-dfb5-49e9-8303-8faefb38b8c3" >
+		<when expression='#[attributes.uriParams.offerID ++ message.payload.PaymentTransactionID ++ message.payload.DateApproved ++ message.payload.Status]' doc:id="7e2f0d7d-d059-4cc6-84f3-621395f58d25">
+				<db:update doc:name="Update" doc:id="747153b8-e506-49fe-baf6-e7add15cfa44" config-ref="Database_Config">
+			<db:sql><![CDATA[update Offers
+set (Status = "accepted", PaymentTransactionID = :PaymentTransactionID, DateApproved = :DateApproved)
+where OfferID = :offerID]]></db:sql>
+			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "PaymentTransactionID": message.payload.PaymentTransactionID}]]]></db:input-parameters>
+		</db:update>
+			</when>
 			<when expression='#["Status": message.payload.Status=="proposed"]'>
 				<db:update doc:name="Update" doc:id="572b2120-167a-47bd-826f-501e3ee8627e" config-ref="Database_Config">
 			<db:sql><![CDATA[update Offers
@@ -110,14 +118,6 @@ where OfferID = :offerID]]></db:sql>
 set Status = :Status
 where OfferID = :offerID]]></db:sql>
 			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "Status": message.payload.Status}]]]></db:input-parameters>
-		</db:update>
-			</when>
-			<when expression='#[attributes.uriParams.offerID ++ message.payload.PaymentTransactionID ++ message.payload.DateApproved]' doc:id="08df1c75-6320-4eb7-b667-e9211f8150a1">
-				<db:update doc:name="Update" doc:id="8cb1bfdf-0f85-4cca-bbaf-26d35b5fccdf" config-ref="Database_Config">
-			<db:sql><![CDATA[update Offers
-set (Status = "accepted", PaymentTransactionID = :PaymentTransactionID, DateApproved = :DateApproved)
-where OfferID = :offerID]]></db:sql>
-			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "PaymentTransactionID": message.payload.PaymentTransactionID}]]]></db:input-parameters>
 		</db:update>
 			</when>
 			<when expression='#["Status": message.payload.Status=="rejected"]'>

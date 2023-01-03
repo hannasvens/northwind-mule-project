@@ -26,9 +26,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 }]]]></http:uri-params>
 		</http:request>
 		<logger level="INFO" doc:name="What is in the payload here?" doc:id="ed123476-6f39-41ba-b6c3-ad546c3f5151" message="#[payload]"/>
-		<logger level="INFO" doc:name="Whats is customerID here?" doc:id="0c7e9602-4846-493b-95af-9d44d8b64226" message="#[vars.customerID]"/>
-		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="add24020-29ad-4863-b5bf-242571e936c9" />
-		<validation:is-true doc:name="Payload matches CustomerID?" doc:id="81972159-9136-4682-a94d-784c8e4c021f" expression="#[message.payload.'Customer ID' == vars.customerID as String]" config-ref="Validation_Config"/>
+		<validation:is-true doc:name="Payload matches CustomerID?" doc:id="81972159-9136-4682-a94d-784c8e4c021f" expression="#[message.payload[0].'Customer ID' == vars.customerID]" config-ref="Validation_Config"/>
 		<ee:transform doc:name="Set transactionID, set current date as DateApproved" doc:id="f9855a92-630f-43a0-a655-117ca0c082a2" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -50,11 +48,6 @@ output application/json
 		</http:request>
 		<set-payload value="Offer updated to ACCEPTED state." doc:name="status updated to accepted" doc:id="8c9636ee-ddf5-44ed-9b45-0b12e3896ad5" />
 		<logger level="INFO" doc:name="EndFlow" doc:id="9fed5a52-47da-4cdc-a30b-b13a28925339" />
-		<error-handler >
-			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="dd733b11-3d7c-4f92-94b9-5659edadd05b" type="VALIDATION:INVALID_BOOLEAN">
-				<set-payload value="OfferID and CustomerID do not match!" doc:name="Set Payload" doc:id="543e088c-df21-45cb-a677-b355643f8688" />
-			</on-error-propagate>
-		</error-handler>
 	</flow>
 	<flow name="j-implementation-order-pro-apiFlow1" doc:id="662ce7a8-e24b-4f53-a2ce-2f1e0260a08b" initialState="stopped">
 		<http:listener doc:name="Listener" doc:id="2a01e077-0971-4de4-a47c-5481c9bd3ddc" config-ref="HTTP_Listener_config-global" path="/offers/{offerID}"/>
