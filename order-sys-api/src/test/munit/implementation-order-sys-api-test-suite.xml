@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xsi:schemaLocation="
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+	xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
 		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
-		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<munit:config name="implementation-order-sys-api-test-suite.xml" />
 	<munit:test name="employeeIDflow-GETTest-suite" doc:id="c5993335-4463-485a-95c8-4e1aa4903e72" description="Test">
 		<munit:behavior >
@@ -56,10 +57,29 @@
 			<munit-tools:assert doc:name="Assert expression" doc:id="56446633-f45f-47ed-8f09-e48dc422e689" />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="orderflow-POSTTest-suite" doc:id="057ded5b-1139-4176-9ef3-515b9af22832" description="Test">
-		<munit:execution >
-			<flow-ref doc:name="Flow-ref to orderflow-POST" doc:id="52d05419-11c4-4d70-959c-a76913ccf088" name="orderflow-POST"/>
+	<munit:test name="orderflow-POSTTest-suite" doc:id="b3de1caf-6bfe-4754-99ba-fe6b865bd0f5" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="0a7bb707-a9ef-4648-bfc3-a79b15711a55" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="9a712b90-ccee-4334-bb72-c50d5e5ab315" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<set-payload value='#[{&#10;    "CustomerID": "HANAR",&#10;    "EmployeeID": 1,&#10;    "OrderDate": "2022-12-30",&#10;    "RequiredDate": "1994-09-18",&#10;    "ShippedDate": "2024-01-01",&#10;    "ShipVia": 1,&#10;    "Freight": 5,&#10;    "ShipName": "Simons bistro",&#10;    "ShipCity": "Seattle",&#10;    "ShipRegion": "WA",&#10;    "ShipPostalCode": "98124",&#10;    "ShipCountry": "USA" &#10;}]' doc:name="Set Payload" doc:id="1441b794-ddbb-4c9f-a80b-b7bc5bfcd7df" />
+			<munit-tools:mock-when doc:name="Mock when" doc:id="db24c7d0-cc65-4f1d-8bfa-1334b7e88ee4" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6e13c9b8-bb0a-4311-8e42-8b99740ef9bf" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[output application/json&#10;---&#10;{message: "write an shipAddress"}]' mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<flow-ref doc:name="Flow Reference" doc:id="d8f18f99-2835-41ec-8c8e-72784b8c57f3" name="orderflow-POST"/>
 		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert doc:name="Assert expression" doc:id="2486aea0-67d7-4f91-9db7-f9151c92f606" />
+		</munit:validation>
 	</munit:test>
 
 
