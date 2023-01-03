@@ -10,14 +10,12 @@
 	<munit:config name="implementation-test-suite.xml" />
 	<munit:test name="get-flow-happy-path" doc:id="9b5ddf31-c567-421c-ad79-e5a076e219df" >
 		<munit:behavior >
-			<munit:set-event doc:name="Set Event" doc:id="f5910bac-977f-4ab0-92db-c2171fb8684f" >
-			</munit:set-event>
 			<munit-tools:mock-when doc:name="Mock when" doc:id="c36c35e1-2554-41c3-83fa-484dbbdda532" processor="http:request">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="baa1cc98-018a-43e6-800c-7c041641b862" attributeName="doc:id" />
 				</munit-tools:with-attributes>
 				<munit-tools:then-return >
-					<munit-tools:payload value="#[payload]" />
+					<munit-tools:payload value='#[[&#10;  {&#10;    "customerID": "ALFKI",&#10;    "companyName": "Alfreds Futterkiste",&#10;    "contactName": "Maria Anders"&#10;  },&#10;  {&#10;    "customerID": "ANATR",&#10;    "companyName": "Ana Trujillo Emparedados y helados",&#10;    "contactName": "Ana Trujillo"&#10;  }&#10;]]' />
 				</munit-tools:then-return>
 			</munit-tools:mock-when>
 		</munit:behavior>
@@ -28,10 +26,28 @@
 			<munit-tools:assert doc:name="Assert expression" doc:id="b67efd6d-fbdb-497d-8c7d-159a91654580" />
 		</munit:validation>
 	</munit:test>
+	<munit:test name="getByID-happy-path" doc:id="153ab072-fbe4-4c82-b62d-5b24f6f8a6ea">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="8baef91c-1973-4394-a61a-70c36ac91f65" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="898f63ec-cfd0-4ac5-a104-2e5790533e7e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[{&#10;  "customerID": "ANTON",&#10;  "companyName": "Antonio Moreno Taquera",&#10;  "contactName": "Antonio Moreno",&#10;  "contactTitle": "Owner",&#10;  "address": "Mataderos  2312",&#10;  "PostalCode": 5023,&#10;  "country": "Mexico",&#10;  "phone": "(5) 555-3932"&#10;}]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="ab9f73a1-6ac3-451f-be9b-936974cc910f" name="getCustomerByIDFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="3937ad6c-02d2-401a-8c75-e167fcecbb7b" />
+		</munit:validation>
+	</munit:test>
 	<munit:test name="post-flow-happy-path" doc:id="e6b062d5-15e0-4257-8951-ed4071e7641f" description="Test">
 		<munit:behavior >
 			<munit:set-event doc:name="Set Event" doc:id="e028fe60-28d2-4cf5-9443-1daef1ffeef8" >
-				<munit:payload value='#[output application/xml&#10;---&#10;Customer: {&#10;  "customerID": "ANTON",&#10;  "companyName": "Antonio Moreno Taquera",&#10;  "contactName": "Antonio Moreno",&#10;  "contactTitle": "Owner",&#10;  "address": "Mataderos 2312",&#10;  "postalCode": 5023,&#10;  "country": "Mexico",&#10;  "phone": "(5) 555-3932"&#10;}]' mediaType="application/xml" />
+				<munit:payload value='#[{&#10;  "customerID": "ANTON",&#10;  "companyName": "Antonio Moreno Taquera",&#10;  "contactName": "Antonio Moreno",&#10;  "contactTitle": "Owner",&#10;  "address": "Mataderos  2312",&#10;  "postalCode": 5023,&#10;  "country": "Mexico",&#10;  "phone": "(5) 555-3932"&#10;}]' mediaType="application/xml" />
 			</munit:set-event>
 			<munit-tools:mock-when doc:name="Mock when" doc:id="c1f4522e-1fc0-4057-85ad-9986ac9fa492" processor="http:request">
 				<munit-tools:with-attributes >
@@ -128,6 +144,48 @@
 		</munit:execution>
 		<munit:validation >
 			<munit-tools:assert-equals doc:name="Assert equals" doc:id="93d93bcb-55c5-40b4-a513-2b46d039cb17" actual="#[payload.message]" expected="#[error.description]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="post-offer-happy-path" doc:id="d18e081c-4dc7-4cfd-be69-01c87f7c7c70" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Event" doc:id="450aac2f-6656-4ef7-bb6a-4ccedfce367c" >
+				<munit:payload value='#[{"productID": 2, "quantity": 10, "customerID": "ANTON"}]' />
+			</munit:set-event>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="e18caf5b-054a-466c-8c4e-d7e1ef5b0b1b" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="39acfcec-d443-41c1-932a-5369d0762a74" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[{"offerID": 3}]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="1127c08a-6422-430d-9eed-bd2aca82ca42" name="postOfferRequestFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="7d038c2f-5e9e-4928-bfbe-b366d72c70ea" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="patch-offer-happy-path" doc:id="9c1a8c1e-2805-4236-9f15-5a0c21c5adba" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Event" doc:id="107dde97-57bd-4fe5-853c-d338319c58e4" >
+				<munit:payload value='#[{"offerID": 2, "paymentTransactionID": 10, "customerID": "ANTON"}]' />
+			</munit:set-event>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="3d496a0a-8687-40c2-a5a7-2e0c27c4a395" processor="http:request" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="574e3663-bf18-4350-9b57-6a30b82d9a91" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[payload]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="ab992f1f-eb89-440e-b645-47dad333fd60" name="acceptOfferFlow" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="84ddf438-1680-471b-ad92-75f27602ed4f" actual="#[payload]" expected="Offer status = ACCEPTED"/>
 		</munit:validation>
 	</munit:test>
 

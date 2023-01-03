@@ -33,8 +33,8 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 output application/json
 ---
 {
-	"Payment transaction ID": vars.paymentTransactionID,
-	DateApproved: now()
+	PaymentTransactionID: vars.paymentTransactionID,
+	DateApproved: now() as Date
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
@@ -46,35 +46,6 @@ output application/json
 	offerID : vars.offerID
 }]]]></http:uri-params>
 		</http:request>
-		<set-payload value="Offer updated to ACCEPTED state." doc:name="status updated to accepted" doc:id="8c9636ee-ddf5-44ed-9b45-0b12e3896ad5" />
 		<logger level="INFO" doc:name="EndFlow" doc:id="9fed5a52-47da-4cdc-a30b-b13a28925339" />
-	</flow>
-	<flow name="j-implementation-order-pro-apiFlow1" doc:id="662ce7a8-e24b-4f53-a2ce-2f1e0260a08b" initialState="stopped">
-		<http:listener doc:name="Listener" doc:id="2a01e077-0971-4de4-a47c-5481c9bd3ddc" config-ref="HTTP_Listener_config-global" path="/offers/{offerID}"/>
-		<db:select doc:name="Select" doc:id="698df168-2650-4ce7-b64a-b626cdca7dbf" config-ref="Database_Config-global">
-			<db:sql ><![CDATA[select * from Offers where OfferID = :offerID]]></db:sql>
-			<db:input-parameters ><![CDATA[#["offerID": attributes.uriParams.offerID]]]></db:input-parameters>
-		</db:select>
-		<ee:transform doc:name="Transform Message" doc:id="e08d6830-9116-48e8-b7a0-57b8223926a0" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-payload map ( property , indexOfproperty ) -> {
-	"Offer ID": property.OfferID,
-	Status: property.Status,
-	"Date created": property.DateCreated,
-	"Date approved": property.DateApproved,
-	"Employee ID": property.EmployeeID,
-	"Customer ID": property.CustomerID,
-	"Product ID": property.ProductID,
-	Quantity: property.Quantity,
-	"Order ID": property.OrderID,
-	"Total price": property.TotalPrice,
-	"Price discount": property.PriceDiscount,
-	"Payment transaction ID": property.PaymentTransactionID
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
 	</flow>
 </mule>

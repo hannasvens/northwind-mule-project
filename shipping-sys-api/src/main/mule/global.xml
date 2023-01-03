@@ -39,7 +39,7 @@ output application/json
 			<ee:transform doc:name="Transform Message" doc:id="98bfb143-5d6c-4132-a9d2-8ead49a505d3" >
 				<ee:message >
 					<ee:set-payload ><![CDATA[%dw 2.0
-output application/java
+output application/json
 ---
 {
 	message: error.description as String
@@ -47,5 +47,6 @@ output application/java
 				</ee:message>
 			</ee:transform>
 		</on-error-propagate>
+		
 	</error-handler>
 </mule>
