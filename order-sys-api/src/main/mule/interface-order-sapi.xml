@@ -142,7 +142,7 @@ output application/json
         </ee:transform>
         <flow-ref doc:name="Flow Reference" doc:id="914d03f6-2cf0-4c3c-9448-01a7805bace7" name="shipAddressflow-GET" />
     </flow>
-    <flow name="get:\orders\customer\(customerID):order-sapi-config">
+    <flow name="get:\orders\customer\(customerID):order-sapi-config" doc:id="41249b1d-650f-403e-9357-1a54fb6b7f05">
         <ee:transform>
             <ee:variables>
                 <ee:set-variable variableName="customerID">attributes.uriParams.'customerID'</ee:set-variable>

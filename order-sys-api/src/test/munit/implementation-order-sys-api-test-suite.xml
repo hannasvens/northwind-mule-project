@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="implementation-order-sys-api-test-suite.xml" />
+	<munit:test name="employeeIDflow-GETTest-suite" doc:id="c5993335-4463-485a-95c8-4e1aa4903e72" description="Test">
+		<munit:behavior >
+			<munit:set-event doc:name="Set Event" doc:id="ee13c4ed-c4dc-4e9d-bb23-6235d141810a" />
+			<munit-tools:mock-when doc:name="Mock when" doc:id="dd29e519-962f-4ee1-8d3f-1e3a6b2c946a" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="f0818ca9-2c49-4c3b-89d7-425d321c4810" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to employeeIDflow-GET" doc:id="43006a0b-69f6-435e-87fa-c09b52b6c41f" name="employeeIDflow-GET"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert doc:name="Assert expression" doc:id="303f9938-c0a5-4764-8dd0-c0aa514739cc" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="customerIDflow-GETTest-suite" doc:id="d3de6426-f385-4855-bf75-aac9da6ef6a6" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="e78132fd-1143-4841-8306-48003bb9da57" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="08550399-c176-429a-9e5b-1e9b241bd1dd" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<set-variable value="HANAR" doc:name="Set Variable" doc:id="36159039-0621-411f-b10c-d86b9dc5c2e0" variableName="customerId"/>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to customerIDflow-GET" doc:id="33d3769c-eda4-4bc9-ba85-591b9c468f7f" name="customerIDflow-GET"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert doc:name="Assert expression" doc:id="b7186f92-5511-407e-b212-e1171b1392b9" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="shipAddressflow-GETTest-suite" doc:id="c1fc1bb4-3015-4bfa-bbbd-f26f137f057e" description="Test">
+		<munit:behavior >
+			<munit:set-event doc:name="Set Event" doc:id="7b5bddf0-73f3-445b-ab87-08b668aaba4d" />
+			<munit-tools:mock-when doc:name="Mock when" doc:id="d6067866-c146-490e-aa1c-a69280c99d79" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="0587b548-ac9e-4d8a-b9d2-14277fa4ad41" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to shipAddressflow-GET" doc:id="e98ab263-6a1d-43fe-9770-866bd69813cf" name="shipAddressflow-GET"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="56446633-f45f-47ed-8f09-e48dc422e689" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="orderflow-POSTTest-suite" doc:id="057ded5b-1139-4176-9ef3-515b9af22832" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to orderflow-POST" doc:id="52d05419-11c4-4d70-959c-a76913ccf088" name="orderflow-POST"/>
+		</munit:execution>
+	</munit:test>
+
+
+</mule>
