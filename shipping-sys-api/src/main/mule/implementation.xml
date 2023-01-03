@@ -9,6 +9,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	
 	<flow name="postShipping" doc:id="3681e400-04ee-424c-9bba-7e96390c09f0" >
 		<http:listener doc:name="Listener" doc:id="1f8a6cf5-4b94-4849-899a-03acac7d830e" config-ref="HTTP_Listener_config" path="/shipping"/>
+		<logger level="INFO" doc:name="StartingShippingFlow" doc:id="6186ee93-dff7-4aeb-85f8-d2c5d2790d65" />
 		<set-variable value="#[payload.dateAccepted as Date]" doc:name="dateAccepted" doc:id="b5ffe920-d24d-46fb-b18b-831a0dbd82ee" variableName="dateAccepted"/>
 		<http:request method="GET" doc:name="GET/postalCode" doc:id="d535c64a-d0e7-4828-80ac-e6ba58382d9d" config-ref="HTTP_Request_configuration" path="/api/customerInfo" target="postalCode">
 			<http:query-params ><![CDATA[#[output application/java
@@ -35,9 +36,10 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 }]]]></http:body>
 		</http:request>
 		<set-payload value="#[payload.shippingDate]" doc:name="shippingDate" doc:id="a737e9b0-0be9-4e0d-9276-c875fc52a8fc" />
+		<logger level="INFO" doc:name="ExitingShippingFlow" doc:id="c329a028-e881-433b-9f9c-b5f93e745514" />
 	</flow>
 	<flow name="getCustomerInfo" doc:id="96a40a65-0390-4098-aa54-e031fbc0906c" >
-		<logger level="INFO" doc:name="Logger" doc:id="c79f9eca-f601-4716-86e8-5be4230ae637" />
+		<logger level="INFO" doc:name="StartingCustomerInfoFlow" doc:id="c79f9eca-f601-4716-86e8-5be4230ae637" />
 		<db:select doc:name="Select" doc:id="6005f275-ee12-41ec-92db-1e14b954f9f7" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT Customers.PostalCode
 FROM Offers, Customers
@@ -54,10 +56,10 @@ payload[0].postalCode as String
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="75a540b6-83a7-4c3f-a459-e17ca5915282" />
+		<logger level="INFO" doc:name="ExitingCustomerInfoFlow" doc:id="75a540b6-83a7-4c3f-a459-e17ca5915282" />
 	</flow>
 	<flow name="getProduct" doc:id="2c69889a-8414-4e13-ac14-8835fdf4d3c7" >
-		<logger level="INFO" doc:name="Logger" doc:id="084d423d-d213-4dc8-b326-929d952d261f" />
+		<logger level="INFO" doc:name="StartingProductFlow" doc:id="084d423d-d213-4dc8-b326-929d952d261f" />
 		<db:select doc:name="Select" doc:id="eaed32d3-ce17-4881-97a2-65366dd3361e" config-ref="Database_Config" >
 			<db:sql ><![CDATA[SELECT C.CategoryName 
 from Offers O, Products P, Categories C
@@ -74,6 +76,6 @@ payload[0].categoryName as String
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="3bff199a-93d0-4311-ad38-763c8a247daa" />
+		<logger level="INFO" doc:name="ExitingProductFlow" doc:id="3bff199a-93d0-4311-ad38-763c8a247daa" />
 	</flow>
 </mule>
