@@ -8,6 +8,9 @@
     },
     "71b2f787-127a-40aa-9f06-a5bc2077c461": {
       "payload": "sample_data/list_java_1.dwl"
+    },
+    "08df1c75-6320-4eb7-b667-e9211f8150a1": {
+      "payload": "sample_data/json_1.json"
     }
   }
 }

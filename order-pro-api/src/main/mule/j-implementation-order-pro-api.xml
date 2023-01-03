@@ -7,44 +7,81 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<validation:config name="Validation_Config" doc:name="Validation Config" doc:id="21f32032-c068-4d05-aba0-2a7e281a8a52" />
-	<http:request-config name="HTTP_Request_configuration-josefine" doc:name="HTTP Request configuration" doc:id="a9d30cb8-3388-4299-a4b8-ad693f7ba622" >
-		<http:request-connection host="localhost" port="8082" />
-	</http:request-config>
-	<http:listener-config name="HTTP_Listener_config-josefine" doc:name="HTTP Listener config" doc:id="1d1f0743-71e4-4115-af6c-f9d96f21c8b9" >
-		<http:listener-connection host="0.0.0.0" port="8082" />
-	</http:listener-config>
+	<validation:config name="Validation_Config" doc:name="Validation Config" doc:id="6e194e10-cfef-4596-995b-edb8d32812d5" />
 	<flow name="j-implementation-order-pro-apiFlow" doc:id="475b5aa5-8af6-47c5-ad27-a8e309d473ce">
-		<http:listener doc:name="Listener" doc:id="a16555f2-1b24-48cd-8b08-e0b63e819067" config-ref="HTTP_Listener_config" path="/test" />
-		<logger level="INFO" doc:name="Logger" doc:id="cb4d90f0-1573-442d-b88b-520b62aeb422" />
-		<http:request method="GET" doc:name="Request to offers-sapi (GET offer matching offerID)" doc:id="a39ea1c6-c4a9-48d5-95c3-66c9e9198667" config-ref="HTTP_Request_configuration-josefine" path="/offers/{offerID}" >
+		<http:listener doc:name="Listener" doc:id="a16555f2-1b24-48cd-8b08-e0b63e819067" config-ref="HTTP_Listener_config-global" path="/orders/acceptoffer" >
+			<http:error-response statusCode="400">
+				<http:body ><![CDATA[#[payload]]]></http:body>
+			</http:error-response>
+		</http:listener>
+		<logger level="INFO" doc:name="StartFlow" doc:id="cb4d90f0-1573-442d-b88b-520b62aeb422" />
+		<set-variable value="#[payload.OfferID]" doc:name="offerID" doc:id="7afa5afa-e537-4154-8039-c9750128efb9" variableName="offerID"/>
+		<set-variable value="#[payload.CustomerID]" doc:name="customerID" doc:id="2f928bfd-a0cd-406f-a6dd-db4893b882cf" variableName="customerID"/>
+		<set-variable value="#[payload.PaymentTransactionID]" doc:name="paymentTransactionID" doc:id="3ae9cbcd-ccc1-44c3-ae91-9c164393def6" variableName="paymentTransactionID"/>
+		<http:request method="GET" doc:name="Request to offers-sapi (GET offer matching offerID)" doc:id="a39ea1c6-c4a9-48d5-95c3-66c9e9198667" config-ref="HTTP_Request_configuration-offersSapi" path="/offers/{offerID}" >
 			<http:uri-params ><![CDATA[#[output application/java
 ---
 {
-	offerID : attributes.uriParams.offerID
+	offerID : vars.offerID
 }]]]></http:uri-params>
 		</http:request>
-		<logger level="INFO" doc:name="Logger" doc:id="2bc2d0ed-e519-41f1-8d48-e1a5d2b034f0" />
-		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="af7072ff-5ee9-4c45-ad3e-a4a66ce083a0" />
-		<ee:transform doc:name="Transform Message" doc:id="d8533128-da03-4ec0-96fb-b3377ace87d5">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/java
+		<logger level="INFO" doc:name="What is in the payload here?" doc:id="ed123476-6f39-41ba-b6c3-ad546c3f5151" message="#[payload]"/>
+		<logger level="INFO" doc:name="Whats is customerID here?" doc:id="0c7e9602-4846-493b-95af-9d44d8b64226" message="#[vars.customerID]"/>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="add24020-29ad-4863-b5bf-242571e936c9" />
+		<validation:is-true doc:name="Payload matches CustomerID?" doc:id="81972159-9136-4682-a94d-784c8e4c021f" expression="#[message.payload.'Customer ID' == vars.customerID as String]" config-ref="Validation_Config"/>
+		<ee:transform doc:name="Set transactionID, set current date as DateApproved" doc:id="f9855a92-630f-43a0-a655-117ca0c082a2" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
 ---
 {
+	"Payment transaction ID": vars.paymentTransactionID,
+	DateApproved: now()
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="4caa183a-e349-468e-a930-2cd6e5211536" />
-		<set-payload value="The status has been updated to accepted." doc:name="status updated to accepted" doc:id="8c9636ee-ddf5-44ed-9b45-0b12e3896ad5" />
-		<logger level="INFO" doc:name="Logger" doc:id="9fed5a52-47da-4cdc-a30b-b13a28925339" />
+		<logger level="INFO" doc:name="What is in the payload here?" doc:id="b1591719-7df3-4a19-81c4-95d43f5b90f5" message="#[payload]"/>
+		<http:request method="PATCH" doc:name="Request to offers-sapi (PATCH fields transaction ID (xxxxx) and DateApproved, changes status to ACCEPTED)" doc:id="a4c58539-df4f-4d02-a496-3667e1317d57" path="/offers/{offerID}" config-ref="HTTP_Request_configuration-offersSapi">
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	offerID : vars.offerID
+}]]]></http:uri-params>
+		</http:request>
+		<set-payload value="Offer updated to ACCEPTED state." doc:name="status updated to accepted" doc:id="8c9636ee-ddf5-44ed-9b45-0b12e3896ad5" />
+		<logger level="INFO" doc:name="EndFlow" doc:id="9fed5a52-47da-4cdc-a30b-b13a28925339" />
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="dd733b11-3d7c-4f92-94b9-5659edadd05b" type="VALIDATION:INVALID_BOOLEAN">
+				<set-payload value="OfferID and CustomerID do not match!" doc:name="Set Payload" doc:id="543e088c-df21-45cb-a677-b355643f8688" />
+			</on-error-propagate>
+		</error-handler>
 	</flow>
-	<flow name="j-implementation-order-pro-apiFlow1" doc:id="662ce7a8-e24b-4f53-a2ce-2f1e0260a08b" >
-		<http:listener doc:name="Listener" doc:id="2a01e077-0971-4de4-a47c-5481c9bd3ddc" config-ref="HTTP_Listener_config-josefine" path="/offers/{offerID}"/>
+	<flow name="j-implementation-order-pro-apiFlow1" doc:id="662ce7a8-e24b-4f53-a2ce-2f1e0260a08b" initialState="stopped">
+		<http:listener doc:name="Listener" doc:id="2a01e077-0971-4de4-a47c-5481c9bd3ddc" config-ref="HTTP_Listener_config-global" path="/offers/{offerID}"/>
 		<db:select doc:name="Select" doc:id="698df168-2650-4ce7-b64a-b626cdca7dbf" config-ref="Database_Config-global">
 			<db:sql ><![CDATA[select * from Offers where OfferID = :offerID]]></db:sql>
 			<db:input-parameters ><![CDATA[#["offerID": attributes.uriParams.offerID]]]></db:input-parameters>
 		</db:select>
-		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="a3b6f086-2643-4a15-a62f-eea9af68686a" />
+		<ee:transform doc:name="Transform Message" doc:id="e08d6830-9116-48e8-b7a0-57b8223926a0" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( property , indexOfproperty ) -> {
+	"Offer ID": property.OfferID,
+	Status: property.Status,
+	"Date created": property.DateCreated,
+	"Date approved": property.DateApproved,
+	"Employee ID": property.EmployeeID,
+	"Customer ID": property.CustomerID,
+	"Product ID": property.ProductID,
+	Quantity: property.Quantity,
+	"Order ID": property.OrderID,
+	"Total price": property.TotalPrice,
+	"Price discount": property.PriceDiscount,
+	"Payment transaction ID": property.PaymentTransactionID
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 	</flow>
 </mule>
