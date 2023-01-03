@@ -28,20 +28,19 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<db:insert doc:name="Insert" doc:id="da0032df-b0e9-4e5c-aedf-e5979e3d17e5" config-ref="Database_Config">
+<!-- [STUDIO:"pending"]		<db:insert doc:name="pending" doc:id="da0032df-b0e9-4e5c-aedf-e5979e3d17e5" config-ref="Database_Config">
+			<error-mapping targetType="OSA:ANY" />
+			<db:sql ><![CDATA[insert into offers (CustomerID, ProductID, Quantity, Status)
+values (:CustomerID, :ProductID, :Quantity, "pending")]]></db:sql>
+			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
+		</db:insert> [STUDIO] -->
+		<db:insert doc:name="any fields" doc:id="92159751-3543-4f3b-8133-789bf77b4075" config-ref="Database_Config" >
 			<error-mapping targetType="OSA:ANY" />
 			<db:sql ><![CDATA[insert into offers (Status, DateCreated, DateApproved, EmployeeID, CustomerID, ProductID, Quantity, OrderID, TotalPrice, PriceDiscount, PaymentTransactionID)
 values (:Status, :DateCreated, :DateApproved, :EmployeeID, :CustomerID, :ProductID, :Quantity, :OrderID, :TotalPrice, :PriceDiscount, :PaymentTransactionID)]]></db:sql>
 			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
 		</db:insert>
-		<ee:transform doc:name="Offer request sent" doc:id="d7e5c788-2b7e-4c1c-9050-c1917ecf4367" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-"An offer request has been sent."]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
+		<set-payload value="An offer request has been sent." doc:name="Offer request sent" doc:id="8bdb7b46-3de8-40ee-b598-6d9944c68311" />
 		<logger level="INFO" doc:name="Logger" doc:id="d1b8acf8-76ac-4543-b98f-cdfa7aa5f994"/>
 	</flow>
 	<flow name="get-all-offers" doc:id="2fea5e85-ab97-435d-942b-710e70d8e4c0" >
@@ -74,11 +73,11 @@ payload map ( property , indexOfproperty ) -> {
 	</flow>
 	<flow name="patch-offer" doc:id="ebffde56-1a1d-4887-853a-41ac1038876c" >
 		<logger level="INFO" doc:name="Logger" doc:id="ce407388-d76d-42a9-9446-f2c079933e48" message="#[payload]"/>
-		<!-- [STUDIO:"Transform Message"]		<ee:transform doc:name="Transform Message" doc:id="cd3977da-2605-4995-baa5-57cea8ba14c9" >
+				<ee:transform doc:name="Transform Message" doc:id="cd3977da-2605-4995-baa5-57cea8ba14c9" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
-&#45;&#45;-
+---
 {
 	Status: payload.Status,
 	PaymentTransactionID: payload.PaymentTransactionID,
@@ -93,7 +92,7 @@ output application/json
 	PriceDiscount: payload.PriceDiscount
 }]]></ee:set-payload>
 			</ee:message>
-		</ee:transform> [STUDIO] -->
+		</ee:transform>
 		<choice doc:name="Choice" doc:id="1d15c542-dfb5-49e9-8303-8faefb38b8c3" >
 		<when expression='#[payload.PaymentTransactionID != null and payload.DateApproved != null]' doc:id="7e2f0d7d-d059-4cc6-84f3-621395f58d25">
 				<db:update doc:name="Update" doc:id="747153b8-e506-49fe-baf6-e7add15cfa44" config-ref="Database_Config">
@@ -104,86 +103,46 @@ where OfferID = :offerID]]></db:sql>
 		</db:update>
 				<set-payload value="Offer updated to ACCEPTED state." doc:name="ACCEPTED" doc:id="1c5d5390-c409-4c2b-94e4-9ae75b3d7dc1" />
 			</when>
-			<when expression='#[payload.Status == "proposed"]'>
-				<db:update doc:name="Update" doc:id="572b2120-167a-47bd-826f-501e3ee8627e" config-ref="Database_Config">
+			<when expression='#[payload.EmployeeID != null and payload.TotalPrice != null and payload.DateCreated != null]'>
+				<db:update doc:name="Update (including discount)" doc:id="572b2120-167a-47bd-826f-501e3ee8627e" config-ref="Database_Config">
 			<db:sql><![CDATA[update Offers
-set Status = :Status
+set Status = "proposed", EmployeeID = :EmployeeID, TotalPrice = :TotalPrice, DateCreated = :DateCreated, PriceDiscount = :PriceDiscount
 where OfferID = :offerID]]></db:sql>
-			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "Status": message.payload.Status}]]]></db:input-parameters>
+			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID} ++ payload]]]></db:input-parameters>
 		</db:update>
-				<ee:transform doc:name="Transform Message" doc:id="c871199e-3c9c-4952-be0a-42fda2bff94e" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
-output application/java
----
-{
-}]]></ee:set-payload>
-					</ee:message>
-				</ee:transform>
+				<set-payload value="Offer updated to PROPOSED state." doc:name="PROPOSED" doc:id="aee75dc0-581f-4f9f-9eaf-adf222da2be4" />
 			</when>
-			<when expression='#[payload.Status == "out of stock"]'>
+			<when expression='#[payload.CustomerID != null]'>
 				<db:update doc:name="Update" doc:id="81d03294-3797-4595-9a21-70877260f3ca" config-ref="Database_Config">
 			<db:sql><![CDATA[update Offers
-set Status = :Status
+set Status = "out of stock"
 where OfferID = :offerID]]></db:sql>
-			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "Status": message.payload.Status}]]]></db:input-parameters>
+			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID}]]]></db:input-parameters>
 		</db:update>
-				<ee:transform doc:name="Transform Message" doc:id="79146970-5329-4b51-8b92-aafeb8aec980" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
-output application/java
----
-{
-}]]></ee:set-payload>
-					</ee:message>
-				</ee:transform>
+				<set-payload value="Offer updated to OUT OF STOCK state." doc:name="OUT OF STOCK" doc:id="7cf9c2aa-acbd-4ce8-9bef-f8c9efe6f84f" />
 			</when>
-			<when expression='#[payload.Status == "rejected"]'>
+			<when expression='#[payload.OrderID != null]'>
 				<db:update doc:name="Update" doc:id="e73e102b-d6f4-47ca-9317-cbfcddc42604" config-ref="Database_Config">
 			<db:sql><![CDATA[update Offers
-set Status = :Status
+set Status = "shipped", OrderID = :OrderID
 where OfferID = :offerID]]></db:sql>
-			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "Status": message.payload.Status}]]]></db:input-parameters>
+			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "OrderID": message.payload.OrderID}]]]></db:input-parameters>
 		</db:update>
-				<ee:transform doc:name="Transform Message" doc:id="53ab45c8-81d3-48fe-b50c-84ac1b0d2081" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
-output application/java
----
-{
-}]]></ee:set-payload>
-					</ee:message>
-				</ee:transform>
+				<set-payload value="Offer updated to SHIPPED state." doc:name="SHIPPED" doc:id="97983417-9fad-4e69-8a9e-d6662d9b8263" />
 			</when>
-			<when expression='#[payload.Status == "shipped"]'>
+			<when expression='#[payload.Status == "rejected"]'>
 				<db:update doc:name="Update" doc:id="1d096314-1b38-41cc-ae3e-e39240315449" config-ref="Database_Config">
 			<db:sql><![CDATA[update Offers
-set Status = :Status
+set Status = "rejected"
 where OfferID = :offerID]]></db:sql>
-			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "Status": message.payload.Status}]]]></db:input-parameters>
+			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID}]]]></db:input-parameters>
 		</db:update>
-				<ee:transform doc:name="Transform Message" doc:id="7808a1fb-b70e-441f-a0ba-d945fa0e54c5" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
-output application/java
----
-{
-}]]></ee:set-payload>
-					</ee:message>
-				</ee:transform>
+				<set-payload value="Offer updated to REJECTED state." doc:name="REJECTED" doc:id="634050d8-3bce-406f-a3da-7db63e808204" />
 			</when>
 			<otherwise>
 				<raise-error doc:name="Incorrect input provided" doc:id="150b9668-23b0-450e-a149-2dcb89fdd314" type="ANY"/>
 			</otherwise>
 		</choice>
-<!-- [STUDIO:"Offer updated"]		<ee:transform doc:name="Offer updated" doc:id="d532c121-df69-43f3-803d-a959919a4947" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
-&#45;&#45;-
-"Offer updated."]]></ee:set-payload>
-			</ee:message>
-		</ee:transform> [STUDIO] -->
 		<logger level="INFO" doc:name="Logger" doc:id="be915009-922f-45f4-bd5d-c55f0f23f592"/>
 	</flow>
 	<flow name="get-offer" doc:id="b73535f2-c416-46b4-ba89-54db70076758" >
