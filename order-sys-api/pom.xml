@@ -92,11 +92,6 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.30</version>
-		</dependency>
-		<dependency>
 			<groupId>34a32451-a2eb-4cf2-8e1d-29f8907b6a0d</groupId>
 			<artifactId>order-sapi</artifactId>
 			<version>1.0.5</version>
@@ -122,6 +117,11 @@
 			<artifactId>assertions</artifactId>
 			<version>1.0.2</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.30</version>
 		</dependency>
 	</dependencies>
 

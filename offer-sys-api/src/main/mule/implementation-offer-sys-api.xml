@@ -73,9 +73,8 @@ payload map ( property , indexOfproperty ) -> {
 		<logger level="INFO" doc:name="Logger" doc:id="2d9b1ae7-9340-4af1-8a6e-ad7257b9cc75" message="#[payload]"/>
 	</flow>
 	<flow name="patch-offer" doc:id="ebffde56-1a1d-4887-853a-41ac1038876c" >
-		<logger level="INFO" doc:name="Logger" doc:id="ce407388-d76d-42a9-9446-f2c079933e48" />
-		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="cdee158a-a329-4374-b075-17baea5eb148" />
-<!-- [STUDIO:"Transform Message"]		<ee:transform doc:name="Transform Message" doc:id="cd3977da-2605-4995-baa5-57cea8ba14c9" >
+		<logger level="INFO" doc:name="Logger" doc:id="ce407388-d76d-42a9-9446-f2c079933e48" message="#[payload]"/>
+		<!-- [STUDIO:"Transform Message"]		<ee:transform doc:name="Transform Message" doc:id="cd3977da-2605-4995-baa5-57cea8ba14c9" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
@@ -85,9 +84,9 @@ output application/json
 	PaymentTransactionID: payload.PaymentTransactionID,
 	TotalPrice: payload.TotalPrice,
 	DateCreated: payload.DateCreated,
+	DateApproved: payload.DateApproved,
 	Quantity: payload.Quantity,
 	ProductID: payload.ProductID,
-	DateApproved: payload.DateApproved,
 	CustomerID: payload.CustomerID,
 	EmployeeID: payload.EmployeeID,
 	OrderID: payload.OrderID,
@@ -96,58 +95,95 @@ output application/json
 			</ee:message>
 		</ee:transform> [STUDIO] -->
 		<choice doc:name="Choice" doc:id="1d15c542-dfb5-49e9-8303-8faefb38b8c3" >
-		<when expression='#[attributes.uriParams.offerID ++ message.payload.PaymentTransactionID ++ message.payload.DateApproved ++ message.payload.Status]' doc:id="7e2f0d7d-d059-4cc6-84f3-621395f58d25">
+		<when expression='#[payload.PaymentTransactionID != null and payload.DateApproved != null]' doc:id="7e2f0d7d-d059-4cc6-84f3-621395f58d25">
 				<db:update doc:name="Update" doc:id="747153b8-e506-49fe-baf6-e7add15cfa44" config-ref="Database_Config">
 			<db:sql><![CDATA[update Offers
-set (Status = "accepted", PaymentTransactionID = :PaymentTransactionID, DateApproved = :DateApproved)
+set Status = "accepted", PaymentTransactionID = :PaymentTransactionID, DateApproved = :DateApproved
 where OfferID = :offerID]]></db:sql>
-			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "PaymentTransactionID": message.payload.PaymentTransactionID}]]]></db:input-parameters>
+			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "PaymentTransactionID": message.payload.PaymentTransactionID, "DateApproved": message.payload.DateApproved}]]]></db:input-parameters>
 		</db:update>
+				<set-payload value="Offer updated to ACCEPTED state." doc:name="ACCEPTED" doc:id="1c5d5390-c409-4c2b-94e4-9ae75b3d7dc1" />
 			</when>
-			<when expression='#["Status": message.payload.Status=="proposed"]'>
+			<when expression='#[payload.Status == "proposed"]'>
 				<db:update doc:name="Update" doc:id="572b2120-167a-47bd-826f-501e3ee8627e" config-ref="Database_Config">
 			<db:sql><![CDATA[update Offers
 set Status = :Status
 where OfferID = :offerID]]></db:sql>
 			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "Status": message.payload.Status}]]]></db:input-parameters>
 		</db:update>
+				<ee:transform doc:name="Transform Message" doc:id="c871199e-3c9c-4952-be0a-42fda2bff94e" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
 			</when>
-			<when expression='#["Status": message.payload.Status=="out of stock"]'>
+			<when expression='#[payload.Status == "out of stock"]'>
 				<db:update doc:name="Update" doc:id="81d03294-3797-4595-9a21-70877260f3ca" config-ref="Database_Config">
 			<db:sql><![CDATA[update Offers
 set Status = :Status
 where OfferID = :offerID]]></db:sql>
 			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "Status": message.payload.Status}]]]></db:input-parameters>
 		</db:update>
+				<ee:transform doc:name="Transform Message" doc:id="79146970-5329-4b51-8b92-aafeb8aec980" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
 			</when>
-			<when expression='#["Status": message.payload.Status=="rejected"]'>
+			<when expression='#[payload.Status == "rejected"]'>
 				<db:update doc:name="Update" doc:id="e73e102b-d6f4-47ca-9317-cbfcddc42604" config-ref="Database_Config">
 			<db:sql><![CDATA[update Offers
 set Status = :Status
 where OfferID = :offerID]]></db:sql>
 			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "Status": message.payload.Status}]]]></db:input-parameters>
 		</db:update>
+				<ee:transform doc:name="Transform Message" doc:id="53ab45c8-81d3-48fe-b50c-84ac1b0d2081" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
 			</when>
-			<when expression='#["Status": message.payload.Status=="shipped"]'>
+			<when expression='#[payload.Status == "shipped"]'>
 				<db:update doc:name="Update" doc:id="1d096314-1b38-41cc-ae3e-e39240315449" config-ref="Database_Config">
 			<db:sql><![CDATA[update Offers
 set Status = :Status
 where OfferID = :offerID]]></db:sql>
 			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "Status": message.payload.Status}]]]></db:input-parameters>
 		</db:update>
+				<ee:transform doc:name="Transform Message" doc:id="7808a1fb-b70e-441f-a0ba-d945fa0e54c5" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
 			</when>
 			<otherwise>
 				<raise-error doc:name="Incorrect input provided" doc:id="150b9668-23b0-450e-a149-2dcb89fdd314" type="ANY"/>
 			</otherwise>
 		</choice>
-		<ee:transform doc:name="Offer updated" doc:id="d532c121-df69-43f3-803d-a959919a4947" >
+<!-- [STUDIO:"Offer updated"]		<ee:transform doc:name="Offer updated" doc:id="d532c121-df69-43f3-803d-a959919a4947" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
----
+&#45;&#45;-
 "Offer updated."]]></ee:set-payload>
 			</ee:message>
-		</ee:transform>
+		</ee:transform> [STUDIO] -->
 		<logger level="INFO" doc:name="Logger" doc:id="be915009-922f-45f4-bd5d-c55f0f23f592"/>
 	</flow>
 	<flow name="get-offer" doc:id="b73535f2-c416-46b4-ba89-54db70076758" >

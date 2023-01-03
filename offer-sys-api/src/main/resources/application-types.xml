@@ -436,6 +436,11 @@ type: string]]></types:shape>
           <types:payload type="noID-offer-example"/>
         </types:message>
       </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="noID-offer-example"/>
+        </types:message>
+      </types:output-event>
     </types:processor-declaration>
   </types:enrichment>
   <types:enrichment select="#ebffde56-1a1d-4887-853a-41ac1038876c">
