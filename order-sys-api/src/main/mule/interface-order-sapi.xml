@@ -241,16 +241,16 @@ output application/json
         <flow-ref doc:name="Flow Reference" doc:id="633b58dd-909d-4deb-a9bd-72a50f5957ae" name="employeeIDflow-GET" />
     </flow>
     <flow name="post:\orders:application\json:order-sapi-config">
-        <ee:transform>
+<!-- [STUDIO:"Transform Message"]        <ee:transform>
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
----
+&#45;&#45;-
 {
-  orderID: 10253
+	orderID: 10253
 }]]></ee:set-payload>
             </ee:message>
-        </ee:transform>
+        </ee:transform> [STUDIO] -->
 		<flow-ref doc:name="Flow Reference" doc:id="a43cad83-7717-4887-b2cf-1c0479f5286b" name="orderflow-POST"/>
     </flow>
 </mule>

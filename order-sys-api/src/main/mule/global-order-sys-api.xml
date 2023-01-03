@@ -58,10 +58,23 @@ output application/json
 			</ee:transform>
 			<set-variable value="500" doc:name="Set Variable" doc:id="f7daf148-039d-4255-a7ee-af3a7e6c1562" variableName="httpStatus"/>
 		</on-error-propagate>
-		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="8f453187-4236-4096-8d58-ef0fe17d2caa" type="ANY">
-			<ee:transform doc:name="Transform Message" doc:id="f11001d1-ad9e-4569-9e6b-2a5509a6a57b" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="8f453187-4236-4096-8d58-ef0fe17d2caa" type="DB:QUERY_EXECUTION">
+			<ee:transform doc:name="Transform Message" doc:id="b442a9a2-c412-4cfe-9513-0f367da67c97" >
 				<ee:message >
 					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message : "Unable to perform SQL query. Check your input values!"
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<set-variable value="400" doc:name="Set Variable" doc:id="20eadc6b-d083-4ad6-9af0-18328ec820cd" variableName="httpStatus"/>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="28cc2417-e440-44e2-9c15-cb24f663b432" type="ANY">
+			<ee:transform doc:name="Transform Message" doc:id="f11001d1-ad9e-4569-9e6b-2a5509a6a57b">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
@@ -69,7 +82,7 @@ output application/json
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
-			<set-variable value="500" doc:name="Set Variable" doc:id="6ab6e30b-95ae-464b-9695-8fe83e7af9a6" variableName="httpStatus"/>
+			<set-variable value="500" doc:name="Set Variable" doc:id="6ab6e30b-95ae-464b-9695-8fe83e7af9a6" variableName="httpStatus" />
 		</on-error-propagate>
 	</error-handler>
 </mule>
