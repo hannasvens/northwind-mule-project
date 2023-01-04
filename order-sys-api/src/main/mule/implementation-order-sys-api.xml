@@ -93,7 +93,7 @@ payload]]></ee:set-payload>
 		<db:select doc:name="Select" doc:id="08550399-c176-429a-9e5b-1e9b241bd1dd" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT * FROM Orders
 WHERE CustomerID = :customerID]]></db:sql>
-			<db:input-parameters ><![CDATA[#[{'customerID':vars.customerId}]]]></db:input-parameters>
+			<db:input-parameters ><![CDATA[#[{'customerID': vars.customerId}]]]></db:input-parameters>
 		</db:select>
 		<ee:transform doc:name="Transform Message" doc:id="ce58061e-7452-4d9e-b970-0926573b3fb4" >
 			<ee:message >
