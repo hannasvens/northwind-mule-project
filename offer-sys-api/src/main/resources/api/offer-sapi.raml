@@ -26,6 +26,40 @@ types:
                 application/json:
                   examples:
                     !include Examples/offers-example.raml
+  /customers:
+    /{ID}:
+      get:
+        queryParameters:
+          status:
+            enum:
+              - pending
+              - proposed
+              - accepted
+              - out of stock
+              - shipped
+        responses:
+          200:
+            body:
+              application/json:
+                examples:
+                  !include Examples/offers-by-status-example.raml
+  /employees:
+    /{ID}:
+      get:
+        queryParameters:
+          status:
+            enum:
+              - pending
+              - proposed
+              - accepted
+              - out of stock
+              - shipped
+        responses:
+          200:
+            body:
+              application/json:
+                examples:
+                  !include Examples/offers-by-status-example.raml
 
   /{offerID}:
     patch:
