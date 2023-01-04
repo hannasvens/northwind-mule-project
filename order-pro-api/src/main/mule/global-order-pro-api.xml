@@ -14,8 +14,8 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 		<http:listener-config name="HTTP_Listener_config-global" doc:name="HTTP Listener config" doc:id="1edcb697-1dfb-4ba2-a434-ced6c38a601e" >
 		<http:listener-connection host="0.0.0.0" port="${http.port}" />
 	</http:listener-config>
-	<http:request-config name="HTTP_Request_configuration2-global" doc:name="HTTP Request configuration" doc:id="6634ec42-4fdd-4d26-94e0-c0ee96a8e830" >
-		<http:request-connection host="localhost" port="8080" />
+	<http:request-config name="HTTP_Request_configuration-shipSAPI" doc:name="HTTP Request configuration" doc:id="6634ec42-4fdd-4d26-94e0-c0ee96a8e830" >
+		<http:request-connection host="${requestss.host}" port="${requestss.port}" />
 	</http:request-config>
 	<http:request-config name="HTTP_Request_configuration3-global" doc:name="HTTP Request configuration" doc:id="a5dde45f-5923-447a-9468-1411e9e1dd63" >
 		<http:request-connection port="${http.port}" host="localhost"/>
@@ -24,7 +24,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}" />
 	</db:config>
 	<http:request-config name="HTTP_Request_configuration-offersSapi" doc:name="HTTP Request configuration" doc:id="9b5fede9-22c8-4d6b-b2df-72329b1d67da" basePath="/api" >
-		<http:request-connection host="localhost" port="8083" />
+		<http:request-connection host="${requestoffs.host}" port="${requestoffs.port}" />
 	</http:request-config>
 	<error-handler name="global-order-pro-apiError_Handler">
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c9461afe-6ac5-4bce-bd4a-ff642140731e" type="VALIDATION:INVALID_BOOLEAN">

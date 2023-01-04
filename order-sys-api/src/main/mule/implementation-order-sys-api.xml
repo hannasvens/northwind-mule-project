@@ -10,9 +10,9 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}" />
 	</db:config>
 	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="1b42c007-2586-447f-bf21-ed129e0ff2b7" >
-		<http:request-connection host="localhost" port="8081" />
+		<http:request-connection host="localhost" port="8085" />
 	</http:request-config>
-	<configuration-properties doc:name="Configuration properties" doc:id="1d102711-3e47-490d-a8e2-865369d2bff6" file="config.yaml" />
+	<configuration-properties doc:name="Configuration properties" doc:id="1d102711-3e47-490d-a8e2-865369d2bff6" file="config-dev.yaml" />
 	<flow name="shipAddressflow-GET" doc:id="7aec6639-5d66-480f-b3d0-1748c3377270">
 		<logger level="INFO" doc:name="Entering sapi Get-shipAddress" doc:id="d345d799-51b9-45ec-ac8d-7eb733b29d7e" message="Entering sapi Get-shipAddress"/>
 		<db:select doc:name="Select" doc:id="0587b548-ac9e-4d8a-b9d2-14277fa4ad41" config-ref="Database_Config">

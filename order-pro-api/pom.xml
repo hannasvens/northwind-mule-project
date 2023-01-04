@@ -44,11 +44,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.30</version>
-		</dependency>
-		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-validation-module</artifactId>
 			<version>2.0.2</version>
@@ -71,6 +66,11 @@
 			<artifactId>mule-sockets-connector</artifactId>
 			<version>1.2.3</version>
 			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.16</version>
 		</dependency>
 	</dependencies>
 

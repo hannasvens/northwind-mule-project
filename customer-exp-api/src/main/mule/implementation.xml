@@ -18,6 +18,7 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 		<logger level="INFO" doc:name="endGetCustomerFlow" doc:id="7b1ba026-2bfb-441f-843d-6adbe0df5266" />
 	</flow>
 	<flow name="getCustomerByIDFlow" doc:id="e2d72521-c37f-4825-b03b-da0fb4fe5091" >
+		<logger level="INFO" doc:name="startGetCustomerByIDFlow" doc:id="9e37e9df-9b53-4271-a0ab-84776ada8ce2" />
 		<http:request method="GET" doc:name="Request" doc:id="898f63ec-cfd0-4ac5-a104-2e5790533e7e" config-ref="HTTP_Request_configuration_custSAPI" path="/api/customers/{ID}" >
 			<http:uri-params ><![CDATA[#[output application/java
 ---
@@ -42,14 +43,10 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<logger level="INFO" doc:name="endGetCustomerByIDFlow" doc:id="7f5bedd6-2d55-4108-a26e-482e4252856f" />
 	</flow>
 	<flow name="postCustomerFlow" doc:id="7b2ee7eb-9720-4490-8590-adfbc6e23569" >
 		<logger level="INFO" doc:name="startPostCustomerFlow" doc:id="dea01201-2581-4fb6-854e-49d48af3f9f9" />
-<!-- [STUDIO:"Transform Message"]		<ee:transform doc:name="Transform Message" doc:id="d448e838-0ea6-404f-be5a-50e7d57c6bd4">
-			<ee:message>
-				<ee:set-payload resource="PostCustomerFlow.dwl" />
-			</ee:message>
-		</ee:transform> [STUDIO] -->
 		<http:request method="POST" doc:name="Request" doc:id="71c88a2f-b4d8-41eb-b421-e64be222a814" config-ref="HTTP_Request_configuration_custSAPI" path="/api/customers">
 			<http:body ><![CDATA[#[%dw 2.0
 output application/json
@@ -80,13 +77,48 @@ output application/json
 	</flow>
 	<flow name="postOfferRequestFlow" doc:id="191cd106-e89a-4f44-b9ba-247541cfb69e" >
 		<http:listener doc:name="Listener" doc:id="abf10400-447d-4e93-add3-f76cc0ce4abd" config-ref="HTTP_Listener_config" path="/requestoffer" allowedMethods="POST"/>
-		<http:request method="POST" doc:name="Request" doc:id="39acfcec-d443-41c1-932a-5369d0762a74" config-ref="HTTP_Request_configuration_offerPAPI" path="/offer"/>
+		<logger level="INFO" doc:name="startpostOfferRequestFlow" doc:id="af723bf2-4305-4271-9731-473010a92794" />
+		<http:request method="POST" doc:name="Request" doc:id="39acfcec-d443-41c1-932a-5369d0762a74" config-ref="HTTP_Request_configuration_ordPAPI" path="/offer"/>
 		<set-payload value="#[payload]" doc:name="payload(offerID)" doc:id="cff391fc-5849-42df-9b92-fd739a4712e8" />
+		<logger level="INFO" doc:name="endPostOfferRequestFlow" doc:id="8010afee-a945-4736-bf0d-6b2b40ea992f" />
 	</flow>
 	<flow name="acceptOfferFlow" doc:id="6838ddcb-1204-4925-9547-fa7a562af461" >
 		<http:listener doc:name="Listener" doc:id="f1f9c06b-d71c-45e7-8342-56a63fe681b7" config-ref="HTTP_Listener_config" path="/acceptoffer" allowedMethods="PATCH"/>
+		<logger level="INFO" doc:name="startAcceptOfferFlow" doc:id="cca1995b-cbb1-462c-aa92-430a3d8a0493" />
 		<validation:is-number numberType="INTEGER" doc:name="Is number" doc:id="a745c84f-fa79-4fb5-9800-e6d5deaa7172" value="#[payload.paymentTransactionID]" message="paymentTransactionID must be a number"/>
-		<http:request method="PATCH" doc:name="Request" doc:id="574e3663-bf18-4350-9b57-6a30b82d9a91" config-ref="HTTP_Request_configuration_offerPAPI" path="/offer"/>
+		<http:request method="PATCH" doc:name="Request" doc:id="574e3663-bf18-4350-9b57-6a30b82d9a91" config-ref="HTTP_Request_configuration_ordPAPI" path="/offer"/>
 		<set-payload value="Offer status = ACCEPTED" doc:name="Set Payload" doc:id="af0017cd-9a47-47f1-ae8b-7724492e5d04" />
+		<logger level="INFO" doc:name="endAcceptOfferFlow" doc:id="a2ee0825-8ccb-447d-9c44-b7169902449f" />
+	</flow>
+	<flow name="getOffersByIDFlow" doc:id="f5cf0836-5f60-4a1b-91cb-301f715bd6ab" >
+		<http:listener doc:name="Listener" doc:id="c76654a5-44cf-45e4-896a-436971f0befe" config-ref="HTTP_Listener_config" path="/offersbystatus/{ID}"/>
+		<logger level="INFO" doc:name="startGetOffersByID" doc:id="a743d51e-a82d-440e-ae1a-34ef1138fa1f" />
+		<http:request method="GET" doc:name="Request" doc:id="4db7160c-9c95-43be-8439-49fa3879d3fa" config-ref="HTTP_Request_configuration_offSAPI" path="/offers/customers/{ID}">
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	ID : attributes.uriParams.ID default "accepted"
+}]]]></http:uri-params>
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	status : attributes.queryParams.status
+}]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="f763bbba-b676-447f-a29e-aa3e8dfcc428" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="endGetOffersByID" doc:id="ddad7011-d64a-4c94-9257-48e3f7a9e255" />
+	</flow>
+	<flow name="getProducts" doc:id="fcad2581-41a0-45e8-b0a3-2519220b46cc" >
+		<http:listener doc:name="Listener" doc:id="bf4c3cc3-4001-4f13-a22a-4e63d4878e9c" config-ref="HTTP_Listener_config" path="/products"/>
+		<logger level="INFO" doc:name="Logger" doc:id="dba35da4-d2e8-4627-8727-b9aed4a6b590" />
+		<http:request method="GET" doc:name="Request" doc:id="0d278b39-587c-4a0d-8447-72691ab289ca" config-ref="HTTP_Request_configuration_prodSAPI" path="/products"/>
+		<logger level="INFO" doc:name="Logger" doc:id="f90b791e-c3ee-4d00-a6cc-3f3b17b013a2" />
 	</flow>
 </mule>

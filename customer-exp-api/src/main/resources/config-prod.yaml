@@ -1,10 +1,21 @@
 http:
   port: "8080"
   
-request: 
+requestcs: 
   host: "localhost"
   port: "8082"
-
   
+requestordp:
+  host: "localhost"
+  port: "8086"
+  
+requestoffs:
+  host: "localhost"
+  port: "8083"
+  
+requestps:
+  host: "localhost"
+  port: "8087"
+
 
   

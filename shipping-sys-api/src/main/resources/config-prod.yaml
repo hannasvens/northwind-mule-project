@@ -1,5 +1,5 @@
 http:
-  port: "8080"
+  port: "8084"
   
 db: 
   host: "20.224.50.155"
@@ -7,3 +7,7 @@ db:
   user: "group04"
   password: "@Br1ghtsGr0up04!"
   database: "northwind04"
+  
+requestext:
+  host: "localhost"
+  port: "8081"

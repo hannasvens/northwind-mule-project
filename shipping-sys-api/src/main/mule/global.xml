@@ -12,11 +12,11 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="9a95410a-ce66-474a-98d3-fee2b8749d0e" >
 		<http:listener-connection host="0.0.0.0" port="${http.port}" />
 	</http:listener-config>
-	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="b4e87cc9-c298-48ee-a595-af394938efdb" >
+	<http:request-config name="HTTP_Request_configuration_own" doc:name="HTTP Request configuration" doc:id="b4e87cc9-c298-48ee-a595-af394938efdb" >
 		<http:request-connection host="localhost" port="${http.port}" />
 	</http:request-config>
-	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="c58937cc-8091-400e-bdb0-c9eec5a816cb" >
-		<http:request-connection host="localhost" port="8081" />
+	<http:request-config name="HTTP_Request_configuration_extAPI" doc:name="HTTP Request configuration" doc:id="c58937cc-8091-400e-bdb0-c9eec5a816cb" >
+		<http:request-connection host="${requestext.host}" port="${requestext.port}" />
 	</http:request-config>
 	<db:config name="Database_Config" doc:name="Database Config" doc:id="67879525-8c83-4988-8adc-fff383af4e79" >
 		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}" />
