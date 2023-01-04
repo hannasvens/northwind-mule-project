@@ -8,7 +8,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	<flow name="getShippingDate" doc:id="50e08634-7087-4896-be16-236cbf73cb9c" >
 		<http:listener doc:name="GET/shippingDate" doc:id="0ac5e549-384d-4d41-91c4-d603bdee1b64" config-ref="HTTP_Listener_config-global" path="/shipping"/>
 		<set-variable value="#[now() as Date]" doc:name="dateAccepted" doc:id="70a2d7e0-6162-42bb-b81c-dad2d2293680" variableName="dateAccepted"/>
-		<http:request method="GET" doc:name="POST/shipping-sys-api" doc:id="9a152fd7-01d8-45cb-b19b-31739a624cdb" config-ref="HTTP_Request_configuration2-global" path="/api/shipping" target="shippingDate">
+		<http:request method="POST" doc:name="POST/shipping-sys-api" doc:id="9a152fd7-01d8-45cb-b19b-31739a624cdb" config-ref="HTTP_Request_configuration-shipSAPI" path="/api/shipping" target="shippingDate" responseTimeout="30000000">
 			<http:body ><![CDATA[#[output application/json
 ---
 {

@@ -1,5 +1,5 @@
 http:
-  port: "8080"
+  port: "8084"
   
 db: 
   host: "localhost"
@@ -7,3 +7,7 @@ db:
   user: "root"
   password: "root"
   database: "northwind"
+  
+requestext:
+  host: "localhost"
+  port: "8081"

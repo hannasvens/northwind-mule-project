@@ -1,9 +1,13 @@
 http:
   port: "8080"
   
-request: 
+requestcs: 
   host: "localhost"
   port: "8082"
+  
+requestos:
+  host: "localhost"
+  port: "8083"
 
   
 
