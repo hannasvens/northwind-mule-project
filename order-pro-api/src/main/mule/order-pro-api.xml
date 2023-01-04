@@ -80,6 +80,26 @@ output application/json
 		</http:request>
 		<logger level="INFO" doc:name="EndFlow" doc:id="3f53c569-e723-476d-8b6b-a1d0e6334073" />
 	</flow>
+	<flow name="rejectOffer" doc:id="b80a175b-507f-45d6-8dc2-a6dd0d74528f" >
+		<http:listener doc:name="POST /rejectoffer" doc:id="e73ddc7c-c4f7-4b1e-8fdd-8dde2f33c7cf" config-ref="HTTP_Listener_config-global" path="/orders/rejectoffer"/>
+		<logger level="INFO" doc:name="StartFlow" doc:id="0e0899c3-9958-4d3e-9e7f-6f70b8c57e97" />
+		<set-variable value="#[payload.OfferID]" doc:name="offerID" doc:id="2551df97-1f13-4b70-bde6-593ff81d8a6c" variableName="offerID" />
+		<flow-ref doc:name="matchCustomerID" doc:id="07280948-eed3-49cf-96f5-a4835b13d8e2" name="matchCustomerID" />
+		<http:request method="PATCH" doc:name="Update Offer to REJECTED state" doc:id="4a090dc4-5b38-4fa3-aa04-b77f271e2c70" config-ref="HTTP_Request_configuration-offersSapi" path="/offers/{offerID}" >
+			<http:body ><![CDATA[#[%dw 2.0
+output application/json
+---
+{
+	Status: "rejected"
+}]]]></http:body>
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	offerID : vars.offerID
+}]]]></http:uri-params>
+		</http:request>
+		<logger level="INFO" doc:name="EndFlow" doc:id="81f5a503-cb10-4fca-bb11-413326f1d12b" />
+	</flow>
 	<sub-flow name="matchCustomerID" doc:id="77df4cf1-0d60-47fb-bb44-698e3eb172b4">
 		<set-variable value="#[message.payload.CustomerID]" doc:name="customerID" doc:id="afcd04bf-125a-4acb-a082-44bedddd2775" variableName="customerID"/>
 		<http:request method="GET" doc:name="GET offer matching offerID" doc:id="ae41fdb2-aed8-4a51-ad55-079f1700796a" config-ref="HTTP_Request_configuration-offersSapi" path="/offers/{offerID}">

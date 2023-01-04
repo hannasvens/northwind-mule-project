@@ -14,30 +14,16 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 output application/json
 ---
 {
-	Status: payload.Status,
-	PaymentTransactionID: payload.PaymentTransactionID,
-	TotalPrice: payload.TotalPrice,
-	DateCreated: payload.DateCreated,
-	Quantity: payload.Quantity,
-	ProductID: payload.ProductID,
-	DateApproved: payload.DateApproved,
 	CustomerID: payload.CustomerID,
-	EmployeeID: payload.EmployeeID,
-	OrderID: payload.OrderID,
-	PriceDiscount: payload.PriceDiscount
+	ProductID: payload.ProductID,
+	Quantity: payload.Quantity
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-<!-- [STUDIO:"pending"]		<db:insert doc:name="pending" doc:id="da0032df-b0e9-4e5c-aedf-e5979e3d17e5" config-ref="Database_Config">
+		<db:insert doc:name="pending" doc:id="da0032df-b0e9-4e5c-aedf-e5979e3d17e5" config-ref="Database_Config">
 			<error-mapping targetType="OSA:ANY" />
 			<db:sql ><![CDATA[insert into offers (CustomerID, ProductID, Quantity, Status)
 values (:CustomerID, :ProductID, :Quantity, "pending")]]></db:sql>
-			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
-		</db:insert> [STUDIO] -->
-		<db:insert doc:name="any fields" doc:id="92159751-3543-4f3b-8133-789bf77b4075" config-ref="Database_Config" >
-			<error-mapping targetType="OSA:ANY" />
-			<db:sql ><![CDATA[insert into offers (Status, DateCreated, DateApproved, EmployeeID, CustomerID, ProductID, Quantity, OrderID, TotalPrice, PriceDiscount, PaymentTransactionID)
-values (:Status, :DateCreated, :DateApproved, :EmployeeID, :CustomerID, :ProductID, :Quantity, :OrderID, :TotalPrice, :PriceDiscount, :PaymentTransactionID)]]></db:sql>
 			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
 		</db:insert>
 		<set-payload value="An offer request has been sent." doc:name="Offer request sent" doc:id="8bdb7b46-3de8-40ee-b598-6d9944c68311" />
@@ -99,7 +85,7 @@ output application/json
 			<db:sql><![CDATA[update Offers
 set Status = "accepted", PaymentTransactionID = :PaymentTransactionID, DateApproved = :DateApproved
 where OfferID = :offerID]]></db:sql>
-			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "PaymentTransactionID": message.payload.PaymentTransactionID, "DateApproved": message.payload.DateApproved}]]]></db:input-parameters>
+			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID} ++ payload]]]></db:input-parameters>
 		</db:update>
 				<set-payload value="Offer updated to ACCEPTED state." doc:name="ACCEPTED" doc:id="1c5d5390-c409-4c2b-94e4-9ae75b3d7dc1" />
 			</when>
@@ -126,7 +112,7 @@ where OfferID = :offerID]]></db:sql>
 			<db:sql><![CDATA[update Offers
 set Status = "shipped", OrderID = :OrderID
 where OfferID = :offerID]]></db:sql>
-			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID, "OrderID": message.payload.OrderID}]]]></db:input-parameters>
+			<db:input-parameters><![CDATA[#[{"offerID": attributes.uriParams.offerID} ++ payload]]]></db:input-parameters>
 		</db:update>
 				<set-payload value="Offer updated to SHIPPED state." doc:name="SHIPPED" doc:id="97983417-9fad-4e69-8a9e-d6662d9b8263" />
 			</when>

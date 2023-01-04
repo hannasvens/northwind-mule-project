@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
-    <http:listener-config name="offer-sapi-httpListenerConfig">
-        <http:listener-connection host="0.0.0.0" port="8083" />
-    </http:listener-config>
     <apikit:config name="offer-sapi-config" api="offer-sapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="offer-sapi-main">
-        <http:listener config-ref="offer-sapi-httpListenerConfig" path="/api/*">
+        <http:listener config-ref="HTTP_ListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:response>
             <http:error-response statusCode="#[vars.httpStatus default 500]">
-                <http:body>#[payload]</http:body>
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
         <apikit:router config-ref="offer-sapi-config" />
@@ -97,13 +94,13 @@ output application/json
         </error-handler>
     </flow>
     <flow name="offer-sapi-console">
-        <http:listener config-ref="offer-sapi-httpListenerConfig" path="/console/*">
+        <http:listener config-ref="HTTP_ListenerConfig" path="/console/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:response>
             <http:error-response statusCode="#[vars.httpStatus default 500]">
-                <http:body>#[payload]</http:body>
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
         <apikit:console config-ref="offer-sapi-config" />
@@ -134,5 +131,93 @@ output application/json
     </flow>
     <flow name="get:\offers\(offerID):offer-sapi-config">
         <flow-ref doc:name="Flow Reference" doc:id="88939276-1da0-4ceb-bde5-2c829feddb25" name="get-offer" />
+    </flow>
+    <flow name="get:\offers\employees\(ID):offer-sapi-config">
+        <ee:transform>
+            <ee:variables>
+                <ee:set-variable variableName="ID">attributes.uriParams.'ID'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform>
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+[
+  {
+    OfferID: 1,
+    Status: "accepted",
+    DateCreated: "2022-12-13T16:41:41Z",
+    DateApproved: "2022-12-16T12:41:41Z",
+    EmployeeID: 5,
+    CustomerID: "ALKWE",
+    ProductID: 23,
+    Quantity: 3,
+    OrderID: 11086,
+    TotalPrice: 30.0,
+    PriceDiscount: 0,
+    PaymentTransactionID: 12
+  }, 
+  {
+    OfferID: 2,
+    Status: "accepted",
+    DateCreated: "2022-12-16T08:41:41Z",
+    DateApproved: "2022-12-19T11:41:41Z",
+    EmployeeID: 5,
+    CustomerID: "ALKWE",
+    ProductID: 23,
+    Quantity: 5,
+    OrderID: 11078,
+    TotalPrice: 400.0,
+    PriceDiscount: 0,
+    PaymentTransactionID: 6
+  }
+]]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="get:\offers\customers\(ID):offer-sapi-config">
+        <ee:transform>
+            <ee:variables>
+                <ee:set-variable variableName="ID">attributes.uriParams.'ID'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform>
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+[
+  {
+    OfferID: 1,
+    Status: "accepted",
+    DateCreated: "2022-12-13T16:41:41Z",
+    DateApproved: "2022-12-16T12:41:41Z",
+    EmployeeID: 5,
+    CustomerID: "ALKWE",
+    ProductID: 23,
+    Quantity: 3,
+    OrderID: 11086,
+    TotalPrice: 30.0,
+    PriceDiscount: 0,
+    PaymentTransactionID: 12
+  }, 
+  {
+    OfferID: 2,
+    Status: "accepted",
+    DateCreated: "2022-12-16T08:41:41Z",
+    DateApproved: "2022-12-19T11:41:41Z",
+    EmployeeID: 5,
+    CustomerID: "ALKWE",
+    ProductID: 23,
+    Quantity: 5,
+    OrderID: 11078,
+    TotalPrice: 400.0,
+    PriceDiscount: 0,
+    PaymentTransactionID: 6
+  }
+]]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
     </flow>
 </mule>
