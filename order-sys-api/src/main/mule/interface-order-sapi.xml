@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+<<<<<<< HEAD
+=======
+    <http:listener-config name="order-sapi-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="${http.port}" />
+    </http:listener-config>
+>>>>>>> 89bf5e161271ab9e8b069c74019de0d0ca653592
     <apikit:config name="order-sapi-config" api="order-sapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="order-sapi-main">
         <http:listener config-ref="order-sapi-httpListenerConfig" path="/api/*">
@@ -11,7 +17,7 @@
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:router config-ref="order-sapi-config" />
+        <apikit:router config-ref="order-sapi-config" doc:id="401acacb-ec42-49f3-b09b-2ff6d12622f7"/>
         <error-handler>
             <on-error-propagate type="APIKIT:BAD_REQUEST">
                 <ee:transform>
@@ -121,22 +127,6 @@ output application/json
         </error-handler>
     </flow>
     <flow name="get:\orders\shipAddress:order-sapi-config">
-        <ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  shipAddress: "Maddison Scuare"
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-        <ee:transform doc:name="Transform Message" doc:id="8063b25c-4d97-4489-b316-663e88b33424">
-            <ee:message />
-            <ee:variables>
-                <ee:set-variable variableName="CustomerID"><![CDATA[message.attributes.queryParams.'customerID']]></ee:set-variable>
-            </ee:variables>
-        </ee:transform>
         <flow-ref doc:name="Flow Reference" doc:id="914d03f6-2cf0-4c3c-9448-01a7805bace7" name="shipAddressflow-GET" />
     </flow>
     <flow name="get:\orders\customer\(customerID):order-sapi-config" doc:id="41249b1d-650f-403e-9357-1a54fb6b7f05">
@@ -144,47 +134,6 @@ output application/json
             <ee:variables>
                 <ee:set-variable variableName="customerID">attributes.uriParams.'customerID'</ee:set-variable>
             </ee:variables>
-        </ee:transform>
-        <ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-[
-  {
-    OrderID: 12345,
-    CustomerID: "ALFKI",
-    EmployeeID: 1,
-    OrderDate: "2022-12-01",
-    RequiredDate: "2022-12-05",
-    ShippedDate: "2022-12-10",
-    ShipVia: 2,
-    Freight: 6000,
-    ShipName: "Simons Bistro",
-    ShipAddress: "2817 Milton Dr",
-    ShipCity: "Spokane",
-    ShipRegion: "WA",
-    ShipPostalCode: "123-573",
-    ShipCountry: "USA"
-  }, 
-  {
-    OrderID: 54321,
-    CustomerID: "ANTON",
-    EmployeeID: 3,
-    OrderDate: "2022-12-10",
-    RequiredDate: "2022-12-12",
-    ShippedDate: "2022-12-14",
-    ShipVia: 1,
-    Freight: 8000,
-    ShipName: "Apple Inc",
-    ShipAddress: "20 First Ave",
-    ShipCity: "New York",
-    ShipRegion: "NY",
-    ShipPostalCode: "123-123",
-    ShipCountry: "USA"
-  }
-]]]></ee:set-payload>
-            </ee:message>
         </ee:transform>
         <flow-ref doc:name="Flow Reference" doc:id="3402bb14-3612-4d31-8080-3f7a74b34139" name="customerIDflow-GET" />
     </flow>
@@ -194,60 +143,9 @@ output application/json
                 <ee:set-variable variableName="employeeID">attributes.uriParams.'employeeID'</ee:set-variable>
             </ee:variables>
         </ee:transform>
-        <ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-[
-  {
-    OrderID: 12345,
-    CustomerID: "ALFKI",
-    EmployeeID: 1,
-    OrderDate: "2022-12-01",
-    RequiredDate: "2022-12-05",
-    ShippedDate: "2022-12-10",
-    ShipVia: 2,
-    Freight: 6000,
-    ShipName: "Simons Bistro",
-    ShipAddress: "2817 Milton Dr",
-    ShipCity: "Spokane",
-    ShipRegion: "WA",
-    ShipPostalCode: "123-573",
-    ShipCountry: "USA"
-  }, 
-  {
-    OrderID: 54321,
-    CustomerID: "ANTON",
-    EmployeeID: 3,
-    OrderDate: "2022-12-10",
-    RequiredDate: "2022-12-12",
-    ShippedDate: "2022-12-14",
-    ShipVia: 1,
-    Freight: 8000,
-    ShipName: "Apple Inc",
-    ShipAddress: "20 First Ave",
-    ShipCity: "New York",
-    ShipRegion: "NY",
-    ShipPostalCode: "123-123",
-    ShipCountry: "USA"
-  }
-]]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
         <flow-ref doc:name="Flow Reference" doc:id="633b58dd-909d-4deb-a9bd-72a50f5957ae" name="employeeIDflow-GET" />
     </flow>
     <flow name="post:\orders:application\json:order-sapi-config">
-<!-- [STUDIO:"Transform Message"]        <ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
-&#45;&#45;-
-{
-	orderID: 10253
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform> [STUDIO] -->
 		<flow-ref doc:name="Flow Reference" doc:id="a43cad83-7717-4887-b2cf-1c0479f5286b" name="orderflow-POST"/>
     </flow>
 </mule>
