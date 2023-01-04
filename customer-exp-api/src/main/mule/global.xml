@@ -20,6 +20,9 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<http:request-config name="HTTP_Request_configuration_offSAPI" doc:name="HTTP Request configuration" doc:id="48f56071-c51b-472a-a045-0498e8c8423c" >
 		<http:request-connection host="${requestoffs.host}" port="${requestoffs.port}" />
 	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration_prodSAPI" doc:name="HTTP Request configuration" doc:id="31ac7025-b322-4133-8435-7487c4937898" >
+		<http:request-connection host="${requestps.host}" port="${requestps.port}" />
+	</http:request-config>
 	<error-handler name="globalError_Handler" doc:id="f9083fc1-be2a-4072-8003-04215bafad81" >
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c93c4ee6-cda3-4a8e-a97f-8100cf87d1fe" type="HTTP:CONNECTIVITY">
 			<ee:transform doc:name="Transform Message" doc:id="74d9c9c5-1f83-4364-ae4b-ef8bb3c2e39a" >

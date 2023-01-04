@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_f5cf0836_5f60_4a1b_91cb_301f715bd6ab_Output_Payload = Array<{  Status?: "shipped" | "proposed" | "pending" | "accepted" | "out of stock",   PaymentTransactionID?: Number,   TotalPrice?: Number,   DateCreated?: String,   Quantity?: Number,   ProductID?: Number,   DateApproved?: String,   CustomerID?: String,   EmployeeID?: Number,   OrderID?: Number,   PriceDiscount?: Number,   _?: Any}>
+
