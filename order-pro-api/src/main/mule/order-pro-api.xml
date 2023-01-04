@@ -182,4 +182,38 @@ output application/json
 				</http:request>
 		<logger level="INFO" doc:name="EndFlow" doc:id="0a1a1097-b566-46c2-a673-c434d55e097c" />
 	</flow>
+	<flow name="getTotalPrice" doc:id="08c79522-e826-4ed7-adeb-86f6160a805f" >
+		<http:listener doc:name="Listener" doc:id="31f4bf4b-a663-46f1-a5d0-7550d601f98f" config-ref="HTTP_Listener_config-global" path="/totalprice"/>
+		<validation:is-not-null doc:name="Is not null" doc:id="c4ff7b08-a9b0-498f-98c7-9b5d17500193" config-ref="Validation_Config" value="#[payload.priceDiscount]" message="Discount not specified"/>
+		<http:request method="GET" doc:name="Request" doc:id="1a7ac154-4d56-4188-9b7a-d35ac611572e" config-ref="HTTP_Request_configuration_prodSAPI" path="/price" target="price" responseTimeout="300000">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	offerID : payload.offerID
+}]]]></http:query-params>
+		</http:request>
+		<http:request method="GET" doc:name="Request" doc:id="c51b18c7-eb21-4832-8036-11115a5d0983" config-ref="HTTP_Request_configuration_prodSAPI" path="/unitsinstock" target="unitsInStock" responseTimeout="300000">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	offerID : payload.offerID
+}]]]></http:query-params>
+		</http:request>
+		<http:request method="GET" doc:name="Request" doc:id="fe938e46-399b-4014-9c35-4050cd2eadd4" config-ref="HTTP_Request_configuration-offersSapi" path="/offers/{offerID}" target="quantity" targetValue="#[payload[0].Quantity]" responseTimeout="300000">
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	offerID : payload.offerID
+}]]]></http:uri-params>
+		</http:request>
+		<choice doc:name="Choice" doc:id="35ad7c8e-e22d-43bd-8b4b-f5272adc509d" >
+			<when expression="#[vars.unitsInStock &gt;= vars.quantity]">
+				<set-variable value="#[vars.quantity * vars.price * (1- payload.priceDiscount)]" doc:name="Set Variable" doc:id="dc6a231c-b9d7-4961-9fa2-4c608c06a5ba" variableName="totalPrice" />
+				<set-payload value="#[vars.totalPrice]" doc:name="Set Payload" doc:id="a54b59fa-47c3-439c-987b-7dc96ce158e9" />
+			</when>
+			<otherwise>
+				<raise-error doc:name="Raise error" doc:id="723a29c2-b656-440f-9f62-5e7a4fe99829" type="CUSTOM:CUSTOM_ERROR"/>
+			</otherwise>
+		</choice>
+	</flow>
 </mule>
