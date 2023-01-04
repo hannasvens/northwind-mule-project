@@ -111,4 +111,50 @@ output application/json
 		</http:request>
 		<validation:is-true doc:name="Payload matches CustomerID?" doc:id="c2b2f3e2-7005-4d6b-b859-d80130d15923" expression="#[message.payload[0].'Customer ID' == vars.customerID]" config-ref="Validation_Config" />
 	</sub-flow>
+	<flow name="proposedOffer" doc:id="cc5ba157-dc15-4069-a684-6bb5ed193067" >
+		<http:listener doc:name="POST /proposedoffer" doc:id="63c99ae0-1061-454f-a745-959fb24e1ae5" config-ref="HTTP_Listener_config-global" path="/orders/proposedoffer"/>
+		<logger level="INFO" doc:name="StartFlow" doc:id="f17b6898-244d-4f69-ba58-3f37f9e80915" />
+<set-variable value="#[payload.OfferID]" doc:name="offerID" doc:id="e0b2da21-7915-4b39-aa73-d7f6c3107152" variableName="offerID" />
+		<!-- [STUDIO:"Check things (Hanna)"]		<flow-ref doc:name="Check things (Hanna)" doc:id="d931066e-c8e9-4906-95af-a625644aede7" name="updateOffer"/> [STUDIO] -->
+		<choice doc:name="Choice" doc:id="fb8c1030-61a4-4ebe-a8ba-6086e3cf7515" >
+			<when expression="#[payload.TotalPrice != null]">
+				<ee:transform doc:name="Set payload for PROPOSED" doc:id="0690f8bd-4aaa-46e5-a941-0fdfc92ec47a" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	EmployeeID: payload.EmployeeID,
+	PriceDiscount: payload.PriceDiscount default 0,
+	TotalPrice: payload.TotalPrice,
+	DateCreated: now() as Date
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression="payload.EmployeeID != null">
+				<ee:transform doc:name="Set payload for OUT OF STOCK" doc:id="63fa4e49-ac39-420c-bee4-7300c92b58b5">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	EmployeeID: payload.EmployeeID
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise>
+				<raise-error doc:name="Incorrect input provided" doc:id="19f8fa97-68fb-4f26-b9f5-5b370d9674f2" type="ANY"/>
+			</otherwise>
+		</choice>
+		<http:request method="PATCH" doc:name="Update Offer (PROPOSED or OUT OF STOCK)" doc:id="ebe41e07-a55c-41fb-a098-234bd2b53cfc" config-ref="HTTP_Request_configuration-offersSapi" path="/offers/{offerID}">
+					<http:uri-params><![CDATA[#[output application/java
+---
+{
+	offerID : vars.offerID
+}]]]></http:uri-params>
+				</http:request>
+		<logger level="INFO" doc:name="EndFlow" doc:id="0a1a1097-b566-46c2-a673-c434d55e097c" />
+	</flow>
 </mule>

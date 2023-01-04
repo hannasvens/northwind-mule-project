@@ -98,7 +98,7 @@ where OfferID = :offerID]]></db:sql>
 		</db:update>
 				<set-payload value="Offer updated to PROPOSED state." doc:name="PROPOSED" doc:id="aee75dc0-581f-4f9f-9eaf-adf222da2be4" />
 			</when>
-			<when expression='#[payload.CustomerID != null]'>
+			<when expression='#[payload.EmployeeID != null]'>
 				<db:update doc:name="Update" doc:id="81d03294-3797-4595-9a21-70877260f3ca" config-ref="Database_Config">
 			<db:sql><![CDATA[update Offers
 set Status = "out of stock"
