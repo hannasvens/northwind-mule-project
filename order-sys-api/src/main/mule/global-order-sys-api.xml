@@ -10,9 +10,11 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}" />
 	</db:config>
 	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="6c8fb35e-b91c-4fa0-9726-61a914de72a8" >
-		<http:request-connection host="localhost" port="8085" />
+		<http:request-connection host="localhost" port="${http.port}" />
 	</http:request-config>
-	<configuration-properties doc:name="Configuration properties" doc:id="49397f4d-7e7f-42d8-89a3-783fd2ea6758" file="config-dev.yaml" />
+	<configuration-properties doc:name="Configuration properties" doc:id="49397f4d-7e7f-42d8-89a3-783fd2ea6758" file="config-${env}.yaml" />
+	<configuration doc:name="Configuration" doc:id="d12983cd-03b9-4257-9116-57b20c860962" defaultErrorHandler-ref="global-order-sys-apiError_Handler" />
+	<global-property doc:name="Global Property" doc:id="c2899ed1-3afd-4e62-a063-214f31af775a" name="env" value="dev" />
 	<error-handler name="global-order-sys-apiError_Handler" doc:id="ce475545-9fe4-4fc3-8470-d6a082de4438" >
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="3d1aecc7-27b8-4fa0-a044-13421ecaaac7" type="HTTP:BAD_REQUEST">
 			<ee:transform doc:name="Transform Message" doc:id="3e19e616-5b43-41a9-95c7-283590ff7776" >
@@ -39,19 +41,6 @@ output application/json
 				</ee:message>
 			</ee:transform>
 			<set-variable value="500" doc:name="Set Variable" doc:id="3df46dab-0f32-4b3d-91a6-1415773f1a46" variableName="httpStatus"/>
-		</on-error-propagate>
-		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="7fcfd4dd-1393-4c6a-a9fc-3a2907609e3d" type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
-			<ee:transform doc:name="Transform Message" doc:id="83d24693-e4b9-4a8e-ac68-d88c31d1b33e" >
-				<ee:message >
-					<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{
-	message: "Media type not supported"
-}]]></ee:set-payload>
-				</ee:message>
-			</ee:transform>
-			<set-variable value="415" doc:name="Set Variable" doc:id="b86e3460-b4e5-477f-be46-ede3607d188f" variableName="httpStatus"/>
 		</on-error-propagate>
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c0f213ee-a09b-4e86-b230-0db3e18badf3" type="DB:BAD_SQL_SYNTAX">
 			<ee:transform doc:name="Transform Message" doc:id="a0d77689-9b58-4e07-bcae-8f8ca3cf0ca7" >
