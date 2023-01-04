@@ -14,8 +14,11 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	</http:request-config>
 	<configuration doc:name="Configuration" doc:id="b10e734d-7ede-4232-8489-fd5db3d3accf" defaultErrorHandler-ref="globalError_Handler" />
 	<global-property doc:name="Global Property" doc:id="e438f0f5-4a2e-42b5-97b3-6bd2f47e8d6a" name="env" value="dev" />
-	<http:request-config name="HTTP_Request_configuration_offerPAPI" doc:name="HTTP Request configuration" doc:id="479f812f-5f95-40bf-9a1d-6abe5107982d" >
-		<http:request-connection host="${requestos.host}" port="${requestos.port}" />
+	<http:request-config name="HTTP_Request_configuration_ordPAPI" doc:name="HTTP Request configuration" doc:id="479f812f-5f95-40bf-9a1d-6abe5107982d" >
+		<http:request-connection host="${requestos.host}" port="${requestordp.port}" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration_offSAPI" doc:name="HTTP Request configuration" doc:id="48f56071-c51b-472a-a045-0498e8c8423c" >
+		<http:request-connection host="${requestoffs.host}" port="${requestoffs.port}" />
 	</http:request-config>
 	<error-handler name="globalError_Handler" doc:id="f9083fc1-be2a-4072-8003-04215bafad81" >
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c93c4ee6-cda3-4a8e-a97f-8100cf87d1fe" type="HTTP:CONNECTIVITY">

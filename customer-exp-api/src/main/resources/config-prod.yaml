@@ -5,8 +5,13 @@ requestcs:
   host: "localhost"
   port: "8082"
   
-requestos:
+requestordp:
+  host: "localhost"
+  port: "8086"
+  
+requestoffs:
   host: "localhost"
   port: "8083"
+
 
   
