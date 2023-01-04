@@ -132,4 +132,92 @@ output application/json
     <flow name="get:\offers\(offerID):offer-sapi-config">
         <flow-ref doc:name="Flow Reference" doc:id="88939276-1da0-4ceb-bde5-2c829feddb25" name="get-offer" />
     </flow>
+    <flow name="get:\offers\employees\(ID):offer-sapi-config">
+        <ee:transform>
+            <ee:variables>
+                <ee:set-variable variableName="ID">attributes.uriParams.'ID'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform>
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+[
+  {
+    OfferID: 1,
+    Status: "accepted",
+    DateCreated: "2022-12-13T16:41:41Z",
+    DateApproved: "2022-12-16T12:41:41Z",
+    EmployeeID: 5,
+    CustomerID: "ALKWE",
+    ProductID: 23,
+    Quantity: 3,
+    OrderID: 11086,
+    TotalPrice: 30.0,
+    PriceDiscount: 0,
+    PaymentTransactionID: 12
+  }, 
+  {
+    OfferID: 2,
+    Status: "accepted",
+    DateCreated: "2022-12-16T08:41:41Z",
+    DateApproved: "2022-12-19T11:41:41Z",
+    EmployeeID: 5,
+    CustomerID: "ALKWE",
+    ProductID: 23,
+    Quantity: 5,
+    OrderID: 11078,
+    TotalPrice: 400.0,
+    PriceDiscount: 0,
+    PaymentTransactionID: 6
+  }
+]]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="get:\offers\customers\(ID):offer-sapi-config">
+        <ee:transform>
+            <ee:variables>
+                <ee:set-variable variableName="ID">attributes.uriParams.'ID'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform>
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+[
+  {
+    OfferID: 1,
+    Status: "accepted",
+    DateCreated: "2022-12-13T16:41:41Z",
+    DateApproved: "2022-12-16T12:41:41Z",
+    EmployeeID: 5,
+    CustomerID: "ALKWE",
+    ProductID: 23,
+    Quantity: 3,
+    OrderID: 11086,
+    TotalPrice: 30.0,
+    PriceDiscount: 0,
+    PaymentTransactionID: 12
+  }, 
+  {
+    OfferID: 2,
+    Status: "accepted",
+    DateCreated: "2022-12-16T08:41:41Z",
+    DateApproved: "2022-12-19T11:41:41Z",
+    EmployeeID: 5,
+    CustomerID: "ALKWE",
+    ProductID: 23,
+    Quantity: 5,
+    OrderID: 11078,
+    TotalPrice: 400.0,
+    PriceDiscount: 0,
+    PaymentTransactionID: 6
+  }
+]]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
 </mule>
