@@ -6,13 +6,6 @@
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
-	<db:config name="Database_Config" doc:name="Database Config" doc:id="0d98ae45-fd36-4d0f-93bf-19d273572e08" >
-		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}" />
-	</db:config>
-	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="1b42c007-2586-447f-bf21-ed129e0ff2b7" >
-		<http:request-connection host="localhost" port="8085" />
-	</http:request-config>
-	<configuration-properties doc:name="Configuration properties" doc:id="1d102711-3e47-490d-a8e2-865369d2bff6" file="config-dev.yaml" />
 	<flow name="shipAddressflow-GET" doc:id="7aec6639-5d66-480f-b3d0-1748c3377270">
 		<logger level="INFO" doc:name="Entering sapi Get-shipAddress" doc:id="d345d799-51b9-45ec-ac8d-7eb733b29d7e" message="Entering sapi Get-shipAddress"/>
 		<db:select doc:name="Select" doc:id="0587b548-ac9e-4d8a-b9d2-14277fa4ad41" config-ref="Database_Config">
@@ -36,14 +29,14 @@ output application/json
 	</flow>
 	<flow name="orderflow-POST" doc:id="426fe71c-8751-41f6-9059-281e0426123b" >
 		<logger level="INFO" doc:name="Entering sapi postOrder flow" doc:id="af8c01fc-0578-46d4-999b-b46ce829cdce" message="Entering postOrder flow"/>
-		<http:request method="GET" doc:name="Request" doc:id="6e13c9b8-bb0a-4311-8e42-8b99740ef9bf" config-ref="HTTP_Request_configuration" path="/api/orders/shipAddress" target="ShipAddress" targetValue="#[payload.message]" responseTimeout="6000000">
+		<http:request method="GET" doc:name="Request" doc:id="6e13c9b8-bb0a-4311-8e42-8b99740ef9bf" path="/api/orders/shipAddress" target="ShipAddress" targetValue="#[payload.message]" responseTimeout="6000000" config-ref="HTTP_Request_configuration1">
 			<http:query-params ><![CDATA[#[output application/java
 ---
 {
 	"customerID" : payload.CustomerID
 }]]]></http:query-params>
 		</http:request>
-		<db:insert doc:name="Insert into database" doc:id="9a712b90-ccee-4334-bb72-c50d5e5ab315" config-ref="Database_Config" autoGenerateKeys="true">
+		<db:insert doc:name="Insert into database" doc:id="9a712b90-ccee-4334-bb72-c50d5e5ab315" autoGenerateKeys="true" config-ref="Database_Config">
 			<db:sql ><![CDATA[INSERT INTO Orders (CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, ShipAddress, Freight, ShipName, ShipCity, ShipRegion, ShipPostalCode, ShipCountry)
 VALUES(:CustomerID, :EmployeeID, :OrderDate, :RequiredDate, ShippedDate, :ShipVia, :ShipAddress, :Freight, :ShipName, :ShipCity, :ShipRegion, :ShipPostalCode, :ShipCountry)]]></db:sql>
 			<db:input-parameters ><![CDATA[#[{
