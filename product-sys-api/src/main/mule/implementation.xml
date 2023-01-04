@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<flow name="getProducts" doc:id="8925d85a-869b-49e6-8014-f29f0e4591e5" >
-		<http:listener doc:name="Listener" doc:id="1074a0cd-68e9-49f1-a4be-f2a23a1130ab" config-ref="HTTP_Listener_config" path="/products"/>
 		<logger level="INFO" doc:name="Logger" doc:id="6fcf96e9-44c2-4182-9e10-a210fbaf16e8" />
 		<db:select doc:name="Select" doc:id="9c2407f7-ec5b-4325-8b44-c09b2b22df9e" config-ref="Database_Config">
 			<db:sql ><![CDATA[select *
@@ -24,7 +24,6 @@ payload]]></ee:set-payload>
 		<logger level="INFO" doc:name="Logger" doc:id="af0e010a-7ae0-435f-a2c4-750c27b58b4d" />
 	</flow>
 	<flow name="getProductsByID" doc:id="48a40a5b-a0f0-4f9b-9b70-b33545c08813" >
-		<http:listener doc:name="Listener" doc:id="acff2974-2b36-4da7-8693-6d4d3d399647" config-ref="HTTP_Listener_config" path="/products/{ID}"/>
 		<logger level="INFO" doc:name="Logger" doc:id="c8d9a39d-c984-4ffb-821e-5b2ed045bea7" />
 		<db:select doc:name="Select" doc:id="9a4e75d6-70f5-4821-b1bb-fc127d7db858" config-ref="Database_Config">
 			<db:sql ><![CDATA[select *
@@ -41,5 +40,37 @@ payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="61d7891b-9ebf-4a9b-ad1d-d346498175fe" />
+	</flow>
+	<flow name="getUnitsInStock" doc:id="739d20f3-a513-4e32-9868-9c66ef126b8d" >
+		<db:select doc:name="Select" doc:id="7af9584c-b455-4e07-b876-0cfa8faffdad" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT P.UnitsInStock
+FROM Products P, Offers O
+WHERE P.ProductID = O.ProductID AND O.OfferID = :offerID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{"offerID": attributes.queryParams.offerID}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="93a13549-fa0a-4d15-a1ba-a0dc2cf53f2d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload[0].UnitsInStock]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getPrice" doc:id="ff101b88-8d8b-4489-af33-7be1f78c22ba" >
+		<db:select doc:name="Select" doc:id="94424483-7750-4a85-863a-2e719c3cda11" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT P.UnitPrice
+FROM Products P, Offers O
+WHERE P.ProductID = O.ProductID AND O.OfferID = :offerID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{"offerID": attributes.queryParams.offerID}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="a2ca4a5e-9024-4455-8940-92d326f1c1fe" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload[0].UnitPrice]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 	</flow>
 </mule>

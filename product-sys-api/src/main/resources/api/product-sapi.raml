@@ -20,6 +20,28 @@ types:
             application/json:
               type: product
               example: !include Examples/productByID.raml
+
+/price:
+  get:
+    queryParameters:
+      offerID:
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {"unitPrice": 200}
+
+/unitsInStock:
+  get:
+    queryParameters:
+      offerID:
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              
                 
 
               

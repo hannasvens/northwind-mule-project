@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
     <apikit:config name="product-sapi-config" api="product-sapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="product-sapi-main">
         <http:listener config-ref="HTTP_Listener_config" path="/api/*">
@@ -120,10 +120,16 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-	<flow name="get:\products:product-sapi-config">
-		<flow-ref doc:name="Flow Reference" doc:id="f3dd50f3-3897-4175-997a-b1907e235883" name="getProducts"/>
+    <flow name="get:\products:product-sapi-config">
+        <flow-ref doc:name="Flow Reference" doc:id="f3dd50f3-3897-4175-997a-b1907e235883" name="getProducts" />
     </flow>
     <flow name="get:\products\(ID):product-sapi-config">
-		<flow-ref doc:name="Flow Reference" doc:id="2fc9a98f-c175-4875-9f9d-e6f920c8217c" name="getProductsByID"/>
+        <flow-ref doc:name="Flow Reference" doc:id="2fc9a98f-c175-4875-9f9d-e6f920c8217c" name="getProductsByID" />
+    </flow>
+    <flow name="get:\price:product-sapi-config">
+		<flow-ref doc:name="Flow Reference" doc:id="a6bc8ac4-6a7f-43c7-9ed5-66a84008a61f" name="getPrice"/>
+    </flow>
+    <flow name="get:\unitsInStock:product-sapi-config">
+		<flow-ref doc:name="Flow Reference" doc:id="79b6b938-90b3-4d08-96b9-3116f77a32b6" name="getUnitsInStock"/>
     </flow>
 </mule>
