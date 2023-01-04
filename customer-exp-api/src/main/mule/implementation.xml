@@ -115,4 +115,10 @@ payload]]></ee:set-payload>
 		</ee:transform>
 		<logger level="INFO" doc:name="endGetOffersByID" doc:id="ddad7011-d64a-4c94-9257-48e3f7a9e255" />
 	</flow>
+	<flow name="getProducts" doc:id="fcad2581-41a0-45e8-b0a3-2519220b46cc" >
+		<http:listener doc:name="Listener" doc:id="bf4c3cc3-4001-4f13-a22a-4e63d4878e9c" config-ref="HTTP_Listener_config" path="/products"/>
+		<logger level="INFO" doc:name="Logger" doc:id="dba35da4-d2e8-4627-8727-b9aed4a6b590" />
+		<http:request method="GET" doc:name="Request" doc:id="0d278b39-587c-4a0d-8447-72691ab289ca" config-ref="HTTP_Request_configuration_prodSAPI" path="/products"/>
+		<logger level="INFO" doc:name="Logger" doc:id="f90b791e-c3ee-4d00-a6cc-3f3b17b013a2" />
+	</flow>
 </mule>

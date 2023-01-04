@@ -1,0 +1,26 @@
+#%RAML 1.0
+title: Product SAPI
+
+types: 
+  product: !include Datatypes/product.raml
+
+/products:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: product[]
+            examples: !include Examples/products.raml
+  /{ID}:
+    get: 
+      responses:
+        200:
+          body:
+            application/json:
+              type: product
+              example: !include Examples/productByID.raml
+                
+
+              
+      

@@ -3,7 +3,9 @@ title: northwind customer exp API
 
 
 types:
-  Customer: !include dataType.raml
+  Customer: !include Datatypes/customer.raml
+  Offer: !include Datatypes/offer.raml
+  Product: !include Datatypes/product.raml
 
 /customers:
   get:
@@ -13,7 +15,7 @@ types:
           application/json: 
             type: Customer[]
             examples:
-              output: !include /customers.raml
+              output: !include Examples/customers.raml
     
   /{ID}:
     get:
@@ -22,21 +24,72 @@ types:
           body:
             application/json:
               type: Customer
-              example: !include customer.raml
+              example: !include Examples/customer.raml
         
   post:
     body:
       application/json:
         type: Customer
         examples:
-          input: !include /customer.raml
+          input: !include Examples/customer.raml
     responses:
       201:
         body:
           application/json:
-            xml:
-              name: Message
             example:
               value: "Customer added successfully"
+
+/offers:
+  post:
+    body:
+      application/json:
+        type: Offer
+        example: !include Examples/offer-post.raml
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              {"offerID": 12345}
+  patch:
+    body:
+      application/json:
+        type: Offer
+        example: !include Examples/offer-patch.raml
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              value: "Offer status = ACCEPTED"
+  /{ID}:
+    get:
+      queryParameters:
+        status:
+          enum:
+            - pending
+            - proposed
+            - accepted
+            - out of stock
+            - shipped
+      responses:
+        200:
+          body:
+            application/json:
+              type: Offer[]
+              examples: !include Examples/offers-by-status.raml
+
+/products: 
+  get: 
+    responses:
+      200:
+        body:
+          application/json:
+            type: Product[]
+            examples: !include Examples/products.raml
+              
+            
+    
+    
             
   

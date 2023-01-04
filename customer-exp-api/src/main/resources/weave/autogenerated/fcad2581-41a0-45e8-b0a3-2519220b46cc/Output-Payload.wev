@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_fcad2581_41a0_45e8_b0a3_2519220b46cc_Output_Payload = Array<{  CategoryID: Number,   Discontinued?: Number,   SupplierID: Number,   UnitPrice?: Number,   ProductName: String,   QuantityPerUnit?: String,   UnitsOnOrder?: Number,   ProductID: Number,   ReorderLevel?: Number,   UnitsInStock?: Number,   _?: Any}>
+
