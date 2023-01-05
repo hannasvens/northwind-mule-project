@@ -88,11 +88,17 @@ output application/json
 		<logger level="INFO" doc:name="Logger" doc:id="61adc071-1e4e-4240-abb3-be6db3179db5" />
 	</flow>
 	<flow name="acceptOfferFlow" doc:id="6838ddcb-1204-4925-9547-fa7a562af461" >
-		<http:listener doc:name="Listener" doc:id="f1f9c06b-d71c-45e7-8342-56a63fe681b7" config-ref="HTTP_Listener_config" path="{ID}/acceptoffer" allowedMethods="PATCH"/>
+		<http:listener doc:name="Listener" doc:id="f1f9c06b-d71c-45e7-8342-56a63fe681b7" config-ref="HTTP_Listener_config" path="/acceptoffer" allowedMethods="PATCH"/>
 		<logger level="INFO" doc:name="startAcceptOfferFlow" doc:id="cca1995b-cbb1-462c-aa92-430a3d8a0493" />
 		<validation:is-number numberType="INTEGER" doc:name="Is number" doc:id="a745c84f-fa79-4fb5-9800-e6d5deaa7172" value="#[payload.PaymentTransactionID]" message="PaymentTransactionID must be a number" config-ref="Validation_Config"/>
-		<http:request method="POST" doc:name="Request" doc:id="574e3663-bf18-4350-9b57-6a30b82d9a91" config-ref="HTTP_Request_configuration_ordPAPI" path="/orders/acceptoffer" responseTimeout="3000000"/>
-		<set-payload value="Offer status = ACCEPTED" doc:name="Accepted" doc:id="af0017cd-9a47-47f1-ae8b-7724492e5d04" />
+		<http:request method="POST" doc:name="Request" doc:id="574e3663-bf18-4350-9b57-6a30b82d9a91" config-ref="HTTP_Request_configuration_ordPAPI" path="/orders/acceptoffer" responseTimeout="3000000">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	CustomerID : attributes.queryParams.CustomerID
+}]]]></http:query-params>
+		</http:request>
+		<set-payload value="#[payload]" doc:name="Accepted" doc:id="af0017cd-9a47-47f1-ae8b-7724492e5d04" />
 		<logger level="INFO" doc:name="endAcceptOfferFlow" doc:id="a2ee0825-8ccb-447d-9c44-b7169902449f" />
 	</flow>
 	<flow name="rejectOfferFlow" doc:id="5e9aacc2-bef9-4ea3-854b-5ec3ff43ac4e" >

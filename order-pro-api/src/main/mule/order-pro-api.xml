@@ -126,7 +126,7 @@ output application/json
 		<logger level="INFO" doc:name="EndFlow" doc:id="81f5a503-cb10-4fca-bb11-413326f1d12b" />
 	</flow>
 	<sub-flow name="matchCustomerID" doc:id="77df4cf1-0d60-47fb-bb44-698e3eb172b4">
-		<set-variable value="#[payload.CustomerID]" doc:name="customerID" doc:id="afcd04bf-125a-4acb-a082-44bedddd2775" variableName="customerID"/>
+		<set-variable value="#[attributes.queryParams.CustomerID]" doc:name="customerID" doc:id="afcd04bf-125a-4acb-a082-44bedddd2775" variableName="customerID"/>
 		<http:request method="GET" doc:name="GET offer matching offerID" doc:id="ae41fdb2-aed8-4a51-ad55-079f1700796a" config-ref="HTTP_Request_configuration-offersSapi" path="/offers/{offerID}">
 			<http:uri-params><![CDATA[#[output application/java
 ---
