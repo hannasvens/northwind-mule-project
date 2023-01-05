@@ -21,12 +21,11 @@ output application/json
 			</ee:message>
 		</ee:transform>
 		<db:insert doc:name="pending" doc:id="da0032df-b0e9-4e5c-aedf-e5979e3d17e5" config-ref="Database_Config">
-			<error-mapping targetType="OSA:ANY" />
 			<db:sql ><![CDATA[insert into offers (CustomerID, ProductID, Quantity, Status)
 values (:CustomerID, :ProductID, :Quantity, "pending")]]></db:sql>
 			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
 		</db:insert>
-		<set-payload value="An offer request has been sent." doc:name="Offer request sent" doc:id="8bdb7b46-3de8-40ee-b598-6d9944c68311" />
+		<set-variable value="payload.generatedKeys[0]" doc:name="offerID" doc:id="bc04c3ea-8b4f-4c29-9da3-77b2baccf814" variableName="offerID"/>
 		<logger level="INFO" doc:name="Logger" doc:id="d1b8acf8-76ac-4543-b98f-cdfa7aa5f994"/>
 	</flow>
 	<flow name="get-all-offers" doc:id="2fea5e85-ab97-435d-942b-710e70d8e4c0" >
