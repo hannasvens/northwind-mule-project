@@ -48,6 +48,21 @@ types:
           application/json:
             example:
               {"offerID": 12345}
+
+  patch:
+      queryParameters:
+        CustomerID: 
+      body:
+        application/json:
+          type: Offer
+          example: !include Examples/offer-patch.raml
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                value: Offer updated to ACCEPTED state.
+
   /{ID}:
     get:
       queryParameters:
@@ -65,17 +80,6 @@ types:
             application/json:
               type: Offer[]
               examples: !include Examples/offers-by-status.raml
-    patch:
-      body:
-        application/json:
-          type: Offer
-          example: !include Examples/offer-patch.raml
-      responses:
-        200:
-          body:
-            application/json:
-              example:
-                value: "Offer status = ACCEPTED"
 
 /products: 
   get: 
