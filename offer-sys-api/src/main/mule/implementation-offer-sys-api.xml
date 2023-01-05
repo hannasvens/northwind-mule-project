@@ -160,4 +160,46 @@ payload map ( property , indexOfproperty ) -> {
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="3f846e7a-7f34-4213-a965-6eec933f5f84" message="#[payload]" />
 	</flow>
+	<flow name="getOffersByStatusAndEmployeeID" doc:id="13ce32a8-e4bd-46ea-bc6b-b2ba3d348eb8" >
+		<logger level="INFO" doc:name="Logger" doc:id="90dfef27-a828-4316-a9ee-49a30ff63932" />
+		<db:select doc:name="Select" doc:id="0e6b6010-9f84-444e-a802-7c85853f0f11" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT *
+FROM Offers
+WHERE Status = :status AND EmployeeID = :ID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"status": attributes.queryParams.status default "pending",
+	"ID": attributes.uriParams.ID
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="f14fb4d6-af51-4da9-8cc2-f6a780c28cce" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="0f6f25e8-6599-4233-b4be-32fa73771270" />
+	</flow>
+	<flow name="getOffersByStatusAndCustomerID" doc:id="bd3a38e4-eb88-4a23-835a-a2481f9e57e7" >
+		<logger level="INFO" doc:name="Logger" doc:id="142e9b30-4aa2-4fb6-aa0c-33d4b6307af9" />
+		<db:select doc:name="Select" doc:id="fe160087-9c56-49d5-b7db-09fac88e6c38" config-ref="Database_Config" >
+			<db:sql ><![CDATA[SELECT *
+FROM Offers
+WHERE Status = :status AND CustomerID = :ID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"status": attributes.queryParams.status default "accepted",
+	"ID": attributes.uriParams.ID
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="79f9d15a-4d1b-44b5-86d3-00d2398024c9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger1" doc:id="fd053347-95cb-4334-865d-1dc2698e0e86" />
+	</flow>
 </mule>
