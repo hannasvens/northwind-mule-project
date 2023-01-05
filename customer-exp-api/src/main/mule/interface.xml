@@ -139,6 +139,6 @@ output application/json
 		<flow-ref doc:name="Flow Reference" doc:id="ad1e8f98-52c4-405b-b6cb-3c5449b44c53" name="getProducts"/>
     </flow>
 	<flow name="get:\offers\(ID):customer-eapi-config">
-		<flow-ref doc:name="Flow Reference" doc:id="777a3d94-1e94-4cbd-97c9-cf9b92c7bc49" name="getOffersByIDFlow"/>
+		<flow-ref doc:name="Flow Reference" doc:id="777a3d94-1e94-4cbd-97c9-cf9b92c7bc49" name="getOffersByStatusFlow"/>
     </flow>
 </mule>
