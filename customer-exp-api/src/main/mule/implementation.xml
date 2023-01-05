@@ -77,9 +77,14 @@ output application/json
 		<logger level="INFO" doc:name="endGetCustomerByIDFlow" doc:id="7f5bedd6-2d55-4108-a26e-482e4252856f" />
 	</flow>
 	<flow name="postOfferRequestFlow" doc:id="191cd106-e89a-4f44-b9ba-247541cfb69e">
-		<http:listener doc:name="Listener" doc:id="abf10400-447d-4e93-add3-f76cc0ce4abd" config-ref="HTTP_Listener_config" path="/requestoffer" allowedMethods="POST" />
 		<logger level="INFO" doc:name="startpostOfferRequestFlow" doc:id="af723bf2-4305-4271-9731-473010a92794" />
-		<http:request method="POST" doc:name="Request" doc:id="39acfcec-d443-41c1-932a-5369d0762a74" config-ref="HTTP_Request_configuration_ordPAPI" path="/offer" />
+		<http:request method="POST" doc:name="Request" doc:id="39acfcec-d443-41c1-932a-5369d0762a74" config-ref="HTTP_Request_configuration_ordPAPI" path="/offerRequest" responseTimeout="300000">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	customerID : attributes.queryParams.customerID
+}]]]></http:query-params>
+		</http:request>
 		<set-payload value="#[payload]" doc:name="payload(offerID)" doc:id="cff391fc-5849-42df-9b92-fd739a4712e8" />
 		<logger level="INFO" doc:name="endPostOfferRequestFlow" doc:id="8010afee-a945-4736-bf0d-6b2b40ea992f" />
 	</flow>

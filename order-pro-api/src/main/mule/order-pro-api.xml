@@ -54,7 +54,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	<flow name="offerRequest" doc:id="6437727e-c812-4067-95c6-2f5604da7ad1" >
 		<http:listener doc:name="offerRequest" doc:id="cc5ba633-15b8-45d8-8a50-cf0a3e7291ef" config-ref="HTTP_Listener_config-global" path="/offerRequest"/>
 		<set-variable value="#[payload.quantity]" doc:name="quantity" doc:id="da95c426-f145-4cb6-91a9-1b147536a88d" variableName="quantity"/>
-		<set-variable value="#[payload.customerID]" doc:name="customerID" doc:id="c6d24905-e453-40de-b7f8-2d9d279a73d6" variableName="customerID"/>
+		<set-variable value="#[attributes.queryParams.customerID]" doc:name="customerID" doc:id="c6d24905-e453-40de-b7f8-2d9d279a73d6" variableName="customerID"/>
 		<set-variable value="#[payload.productID]" doc:name="productID" doc:id="ce4e6cdb-b63b-4b5d-85b1-4cfb5dc828dd" variableName="productID"/>
 		<http:request method="GET" doc:name="Request - checkProductID" doc:id="6b057f20-94f9-45b6-9ce8-f389fdb799f6" config-ref="HTTP_Request_configuration_prodSAPI" path="/api/products/{ID}" responseTimeout="300000">
 			<http:uri-params ><![CDATA[#[output application/java
