@@ -7,6 +7,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+	<validation:config name="Validation_Config" doc:name="Validation Config" doc:id="feb43441-9c3c-42cc-bac6-5d1c92664193" />
 	<flow name="getCustomersFlow" doc:id="a7856407-7b5b-4825-be5b-a20d6c69c152" >
 		<logger level="INFO" doc:name="startGetCustomerFlow" doc:id="7d6fdece-cbaa-4307-9020-4fba8b65ebce" />
 		<http:request method="GET" doc:name="Request" doc:id="baa1cc98-018a-43e6-800c-7c041641b862" config-ref="HTTP_Request_configuration_custSAPI" path="/api/customers"/>
@@ -16,6 +17,36 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="endGetCustomerFlow" doc:id="7b1ba026-2bfb-441f-843d-6adbe0df5266" />
+	</flow>
+	<flow name="postCustomerFlow" doc:id="7b2ee7eb-9720-4490-8590-adfbc6e23569">
+		<logger level="INFO" doc:name="startPostCustomerFlow" doc:id="dea01201-2581-4fb6-854e-49d48af3f9f9" />
+		<http:request method="POST" doc:name="Request" doc:id="71c88a2f-b4d8-41eb-b421-e64be222a814" config-ref="HTTP_Request_configuration_custSAPI" path="/api/customers">
+			<http:body><![CDATA[#[%dw 2.0
+output application/json
+---
+{
+	CustomerID: payload.customerID,
+	CompanyName: payload.companyName,
+	ContactName: payload.contactName,
+	ContactTitle: payload.contactTitle,
+	Address: payload.address,
+	City: "",
+	PostalCode: payload.postalCode,
+	Country: payload.country,
+	Region: "",
+	Phone: payload.phone,
+	Fax: ""
+}]]]></http:body>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="f76add61-c4d6-4a09-872a-dc27505abe44">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+"Message": "Customer added successfully"]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="endpostCustomerFlow" doc:id="e5809168-ac22-4895-9d9f-4e9acf051455" />
 	</flow>
 	<flow name="getCustomerByIDFlow" doc:id="e2d72521-c37f-4825-b03b-da0fb4fe5091" >
 		<logger level="INFO" doc:name="startGetCustomerByIDFlow" doc:id="9e37e9df-9b53-4271-a0ab-84776ada8ce2" />
@@ -45,50 +76,31 @@ output application/json
 		</ee:transform>
 		<logger level="INFO" doc:name="endGetCustomerByIDFlow" doc:id="7f5bedd6-2d55-4108-a26e-482e4252856f" />
 	</flow>
-	<flow name="postCustomerFlow" doc:id="7b2ee7eb-9720-4490-8590-adfbc6e23569" >
-		<logger level="INFO" doc:name="startPostCustomerFlow" doc:id="dea01201-2581-4fb6-854e-49d48af3f9f9" />
-		<http:request method="POST" doc:name="Request" doc:id="71c88a2f-b4d8-41eb-b421-e64be222a814" config-ref="HTTP_Request_configuration_custSAPI" path="/api/customers">
-			<http:body ><![CDATA[#[%dw 2.0
-output application/json
----
-{
-	CustomerID: payload.customerID,
-	CompanyName: payload.companyName,
-	ContactName: payload.contactName,
-	ContactTitle: payload.contactTitle,
-	Address: payload.address,
-	City: "",
-	PostalCode: payload.postalCode,
-	Country: payload.country,
-	Region: "",
-	Phone: payload.phone,
-	Fax: ""
-}]]]></http:body>
-		</http:request>
-		<ee:transform doc:name="Transform Message" doc:id="f76add61-c4d6-4a09-872a-dc27505abe44" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-"Message": "Customer added successfully"]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<logger level="INFO" doc:name="endpostCustomerFlow" doc:id="e5809168-ac22-4895-9d9f-4e9acf051455" />
-	</flow>
-	<flow name="postOfferRequestFlow" doc:id="191cd106-e89a-4f44-b9ba-247541cfb69e" >
-		<http:listener doc:name="Listener" doc:id="abf10400-447d-4e93-add3-f76cc0ce4abd" config-ref="HTTP_Listener_config" path="/requestoffer" allowedMethods="POST"/>
+	<flow name="postOfferRequestFlow" doc:id="191cd106-e89a-4f44-b9ba-247541cfb69e">
+		<http:listener doc:name="Listener" doc:id="abf10400-447d-4e93-add3-f76cc0ce4abd" config-ref="HTTP_Listener_config" path="/requestoffer" allowedMethods="POST" />
 		<logger level="INFO" doc:name="startpostOfferRequestFlow" doc:id="af723bf2-4305-4271-9731-473010a92794" />
-		<http:request method="POST" doc:name="Request" doc:id="39acfcec-d443-41c1-932a-5369d0762a74" config-ref="HTTP_Request_configuration_ordPAPI" path="/offer"/>
+		<http:request method="POST" doc:name="Request" doc:id="39acfcec-d443-41c1-932a-5369d0762a74" config-ref="HTTP_Request_configuration_ordPAPI" path="/offer" />
 		<set-payload value="#[payload]" doc:name="payload(offerID)" doc:id="cff391fc-5849-42df-9b92-fd739a4712e8" />
 		<logger level="INFO" doc:name="endPostOfferRequestFlow" doc:id="8010afee-a945-4736-bf0d-6b2b40ea992f" />
 	</flow>
+	<flow name="updateOffer" doc:id="eb13c09c-e633-4f86-804e-c453af902f67" >
+		<http:listener doc:name="patchOffer" doc:id="6510ff45-1ac8-4ec9-87c0-3d685a3f9e19" config-ref="HTTP_Listener_config" path="/" allowedMethods="PATCH"/>
+		<logger level="INFO" doc:name="Logger" doc:id="61adc071-1e4e-4240-abb3-be6db3179db5" />
+	</flow>
 	<flow name="acceptOfferFlow" doc:id="6838ddcb-1204-4925-9547-fa7a562af461" >
-		<http:listener doc:name="Listener" doc:id="f1f9c06b-d71c-45e7-8342-56a63fe681b7" config-ref="HTTP_Listener_config" path="/acceptoffer" allowedMethods="PATCH"/>
+		<http:listener doc:name="Listener" doc:id="f1f9c06b-d71c-45e7-8342-56a63fe681b7" config-ref="HTTP_Listener_config" path="{ID}/acceptoffer" allowedMethods="PATCH"/>
 		<logger level="INFO" doc:name="startAcceptOfferFlow" doc:id="cca1995b-cbb1-462c-aa92-430a3d8a0493" />
-<!-- [STUDIO:"Is number"]		<validation:is-number numberType="INTEGER" doc:name="Is number" doc:id="a745c84f-fa79-4fb5-9800-e6d5deaa7172" value="#[payload.paymentTransactionID]" message="paymentTransactionID must be a number"/> [STUDIO] -->
+		<validation:is-number numberType="INTEGER" doc:name="Is number" doc:id="a745c84f-fa79-4fb5-9800-e6d5deaa7172" value="#[payload.PaymentTransactionID]" message="PaymentTransactionID must be a number" config-ref="Validation_Config"/>
 		<http:request method="POST" doc:name="Request" doc:id="574e3663-bf18-4350-9b57-6a30b82d9a91" config-ref="HTTP_Request_configuration_ordPAPI" path="/orders/acceptoffer" responseTimeout="3000000"/>
-		<set-payload value="Offer status = ACCEPTED" doc:name="Set Payload" doc:id="af0017cd-9a47-47f1-ae8b-7724492e5d04" />
+		<set-payload value="Offer status = ACCEPTED" doc:name="Accepted" doc:id="af0017cd-9a47-47f1-ae8b-7724492e5d04" />
 		<logger level="INFO" doc:name="endAcceptOfferFlow" doc:id="a2ee0825-8ccb-447d-9c44-b7169902449f" />
+	</flow>
+	<flow name="rejectOfferFlow" doc:id="5e9aacc2-bef9-4ea3-854b-5ec3ff43ac4e" >
+		<http:listener doc:name="Listener" doc:id="4854dfe0-6f9d-4be5-b284-994b12bf8719" config-ref="HTTP_Listener_config" path="/rejectoffer"/>
+		<logger level="INFO" doc:name="Start" doc:id="0dc81148-77f8-48fc-9826-cd8dd9eec015" />
+		<http:request method="POST" doc:name="Offer rejected sent to orderPapi" doc:id="afe198e0-4ca1-48c3-912a-b1439c9ac9f8" config-ref="HTTP_Request_configuration_ordPAPI" path="/orders/rejectoffer"/>
+		<set-payload value="Offer status = REJECTED" doc:name="Rejected" doc:id="1408c79c-3755-401b-92d8-739f9d3bad69" />
+		<logger level="INFO" doc:name="End" doc:id="4033a2e1-f2ea-4e1e-a256-cd95412eb017" />
 	</flow>
 	<flow name="getOffersByStatusFlow" doc:id="f5cf0836-5f60-4a1b-91cb-301f715bd6ab" >
 		<logger level="INFO" doc:name="startGetOffersByID" doc:id="a743d51e-a82d-440e-ae1a-34ef1138fa1f" />

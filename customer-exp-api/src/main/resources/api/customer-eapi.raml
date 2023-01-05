@@ -16,16 +16,6 @@ types:
             type: Customer[]
             examples:
               output: !include Examples/customers.raml
-    
-  /{ID}:
-    get:
-      responses:
-        200:
-          body:
-            application/json:
-              type: Customer
-              example: !include Examples/customer.raml
-        
   post:
     body:
       application/json:
@@ -38,7 +28,14 @@ types:
           application/json:
             example:
               value: "Customer added successfully"
-
+  /{ID}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Customer
+              example: !include Examples/customer.raml
 /offers:
   post:
     body:
@@ -51,17 +48,6 @@ types:
           application/json:
             example:
               {"offerID": 12345}
-  patch:
-    body:
-      application/json:
-        type: Offer
-        example: !include Examples/offer-patch.raml
-    responses:
-      200:
-        body:
-          application/json:
-            example:
-              value: "Offer status = ACCEPTED"
   /{ID}:
     get:
       queryParameters:
@@ -70,6 +56,7 @@ types:
             - pending
             - proposed
             - accepted
+            - rejected
             - out of stock
             - shipped
       responses:
@@ -78,6 +65,17 @@ types:
             application/json:
               type: Offer[]
               examples: !include Examples/offers-by-status.raml
+    patch:
+      body:
+        application/json:
+          type: Offer
+          example: !include Examples/offer-patch.raml
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                value: "Offer status = ACCEPTED"
 
 /products: 
   get: 

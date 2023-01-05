@@ -126,7 +126,7 @@ output application/json
 		<logger level="INFO" doc:name="EndFlow" doc:id="81f5a503-cb10-4fca-bb11-413326f1d12b" />
 	</flow>
 	<sub-flow name="matchCustomerID" doc:id="77df4cf1-0d60-47fb-bb44-698e3eb172b4">
-		<set-variable value="#[message.payload.CustomerID]" doc:name="customerID" doc:id="afcd04bf-125a-4acb-a082-44bedddd2775" variableName="customerID"/>
+		<set-variable value="#[payload.CustomerID]" doc:name="customerID" doc:id="afcd04bf-125a-4acb-a082-44bedddd2775" variableName="customerID"/>
 		<http:request method="GET" doc:name="GET offer matching offerID" doc:id="ae41fdb2-aed8-4a51-ad55-079f1700796a" config-ref="HTTP_Request_configuration-offersSapi" path="/offers/{offerID}">
 			<http:uri-params><![CDATA[#[output application/java
 ---
@@ -140,7 +140,7 @@ output application/json
 		<http:listener doc:name="POST /proposedoffer" doc:id="63c99ae0-1061-454f-a745-959fb24e1ae5" config-ref="HTTP_Listener_config-global" path="/orders/proposedoffer"/>
 		<logger level="INFO" doc:name="StartFlow" doc:id="f17b6898-244d-4f69-ba58-3f37f9e80915" />
 <set-variable value="#[payload.OfferID]" doc:name="offerID" doc:id="e0b2da21-7915-4b39-aa73-d7f6c3107152" variableName="offerID" />
-		<!-- [STUDIO:"Check things (Hanna)"]		<flow-ref doc:name="Check things (Hanna)" doc:id="d931066e-c8e9-4906-95af-a625644aede7" name="updateOffer"/> [STUDIO] -->
+		<flow-ref doc:name="getTotalPrice" doc:id="71daa7de-5b70-4a3b-962d-9ca65652821a" name="getTotalPrice"/>
 		<choice doc:name="Choice" doc:id="fb8c1030-61a4-4ebe-a8ba-6086e3cf7515" >
 			<when expression="#[payload.TotalPrice != null]">
 				<ee:transform doc:name="Set payload for PROPOSED" doc:id="0690f8bd-4aaa-46e5-a941-0fdfc92ec47a" >
