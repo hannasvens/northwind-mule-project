@@ -20,12 +20,15 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<db:insert doc:name="pending" doc:id="da0032df-b0e9-4e5c-aedf-e5979e3d17e5" config-ref="Database_Config">
+		<db:insert doc:name="pending" doc:id="da0032df-b0e9-4e5c-aedf-e5979e3d17e5" config-ref="Database_Config" autoGenerateKeys="true">
 			<db:sql ><![CDATA[insert into Offers (CustomerID, ProductID, Quantity, Status)
 values (:CustomerID, :ProductID, :Quantity, "pending")]]></db:sql>
 			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
+			<db:auto-generated-keys-column-names >
+				<db:auto-generated-keys-column-name value="OfferID" />
+			</db:auto-generated-keys-column-names>
 		</db:insert>
-		<set-variable value="#[payload.generatedKeys[0]]" doc:name="offerID" doc:id="bc04c3ea-8b4f-4c29-9da3-77b2baccf814" variableName="offerID"/>
+		<set-variable doc:name="offerID" doc:id="bc04c3ea-8b4f-4c29-9da3-77b2baccf814" variableName="offerID" value="#[payload.generatedKeys[0]]"/>
 		<ee:transform doc:name="Transform Message" doc:id="a3388557-0bed-406a-b216-a618937c9003" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
