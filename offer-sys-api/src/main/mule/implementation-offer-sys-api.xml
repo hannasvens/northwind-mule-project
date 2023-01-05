@@ -25,7 +25,7 @@ output application/json
 values (:CustomerID, :ProductID, :Quantity, "pending")]]></db:sql>
 			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
 		</db:insert>
-		<set-variable value="payload.generatedKeys[0]" doc:name="offerID" doc:id="bc04c3ea-8b4f-4c29-9da3-77b2baccf814" variableName="offerID"/>
+		<set-variable value="#[payload.generatedKeys[0]]" doc:name="offerID" doc:id="bc04c3ea-8b4f-4c29-9da3-77b2baccf814" variableName="offerID"/>
 		<logger level="INFO" doc:name="Logger" doc:id="d1b8acf8-76ac-4543-b98f-cdfa7aa5f994"/>
 	</flow>
 	<flow name="get-all-offers" doc:id="2fea5e85-ab97-435d-942b-710e70d8e4c0" >
