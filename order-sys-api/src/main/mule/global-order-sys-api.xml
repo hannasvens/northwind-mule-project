@@ -12,15 +12,9 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="6c8fb35e-b91c-4fa0-9726-61a914de72a8" >
 		<http:request-connection host="localhost" port="${http.port}" />
 	</http:request-config>
-<<<<<<< HEAD
-	<configuration-properties doc:name="Configuration properties" doc:id="49397f4d-7e7f-42d8-89a3-783fd2ea6758" file="config-${dev}.yaml" />
-	<global-property doc:name="Global Property" doc:id="2e6492ca-35be-4202-9374-dafa0be035b7" name="env" value="dev" />
-	<configuration doc:name="Configuration" doc:id="f16e5b30-f692-41b3-9865-39c77f84b911" defaultErrorHandler-ref="global-order-sys-apiError_Handler" />
-=======
 	<configuration-properties doc:name="Configuration properties" doc:id="49397f4d-7e7f-42d8-89a3-783fd2ea6758" file="config-${env}.yaml" />
 	<configuration doc:name="Configuration" doc:id="d12983cd-03b9-4257-9116-57b20c860962" defaultErrorHandler-ref="global-order-sys-apiError_Handler" />
 	<global-property doc:name="Global Property" doc:id="c2899ed1-3afd-4e62-a063-214f31af775a" name="env" value="dev" />
->>>>>>> 89bf5e161271ab9e8b069c74019de0d0ca653592
 	<error-handler name="global-order-sys-apiError_Handler" doc:id="ce475545-9fe4-4fc3-8470-d6a082de4438" >
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="3d1aecc7-27b8-4fa0-a044-13421ecaaac7" type="HTTP:BAD_REQUEST">
 			<ee:transform doc:name="Transform Message" doc:id="3e19e616-5b43-41a9-95c7-283590ff7776" >
@@ -29,7 +23,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 output application/json
 ---
 {
-	message: "Required query parameter not specified"
+message: "Required query parameter not specified"
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
@@ -42,7 +36,7 @@ output application/json
 output application/json
 ---
 {
-	message: "Parameter was not bound by query"
+message: "Parameter was not bound by query"
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
@@ -55,7 +49,7 @@ output application/json
 output application/json
 ---
 {
-	message: "there is an error in the SQL syntax"
+message: "there is an error in the SQL syntax"
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
@@ -68,7 +62,7 @@ output application/json
 output application/json
 ---
 {
-	message : "Unable to perform SQL query. Check your input values!"
+message : "Unable to perform SQL query. Check your input values!"
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
@@ -81,7 +75,7 @@ output application/json
 output application/json
 ---
 {
-	message: "An error has occurred!"
+message: "An error has occurred!"
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
