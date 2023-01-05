@@ -56,7 +56,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 		<set-variable value="#[payload.quantity]" doc:name="quantity" doc:id="da95c426-f145-4cb6-91a9-1b147536a88d" variableName="quantity"/>
 		<set-variable value="#[payload.customerID]" doc:name="customerID" doc:id="c6d24905-e453-40de-b7f8-2d9d279a73d6" variableName="customerID"/>
 		<set-variable value="#[payload.productID]" doc:name="productID" doc:id="ce4e6cdb-b63b-4b5d-85b1-4cfb5dc828dd" variableName="productID"/>
-		<http:request method="GET" doc:name="Request - checkProductID" doc:id="6b057f20-94f9-45b6-9ce8-f389fdb799f6" config-ref="HTTP_Request_configuration3-global" path="/products/{ID}">
+		<http:request method="GET" doc:name="Request - checkProductID" doc:id="6b057f20-94f9-45b6-9ce8-f389fdb799f6" config-ref="HTTP_Request_configuration_prodSAPI" path="/api/products/{ID}" responseTimeout="300000">
 			<http:uri-params ><![CDATA[#[output application/java
 ---
 {
@@ -64,16 +64,17 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 }]]]></http:uri-params>
 		</http:request>
 		<validation:is-not-null doc:name="Is not null" doc:id="5146e73b-2fb9-4ff1-a556-6499e173363f" config-ref="Validation_Config" value="#[payload]"/>
-		<http:request method="POST" doc:name="Request - crateOffer" doc:id="6dcaef61-412f-43b1-9e07-953ee9198129" path="/offers/{offerID}" config-ref="HTTP_Request_configuration3-global">
+		<http:request method="POST" doc:name="Request - crateOffer" doc:id="6dcaef61-412f-43b1-9e07-953ee9198129" path="/api/offers" config-ref="HTTP_Request_configuration-offersSapi" responseTimeout="300000">
 			<http:body ><![CDATA[#[output application/json
 ---
 {
-	"quantity": vars.quantity,
-	"customerID": vars.customerID, 
-	"productID": vars.productID
+	"Quantity": vars.quantity,
+	"CustomerID": vars.customerID, 
+	"ProductID": vars.productID
 
 }]]]></http:body>
 		</http:request>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="880b758e-19d0-46a5-81a0-8422fe709d57" />
 	</flow>
 	<flow name="acceptOffer" doc:id="0909cb86-ba70-4d4e-bf85-c9ba5acafdfe">
 		<http:listener doc:name="POST /acceptoffer" doc:id="bf6f61d7-d280-4e90-af57-295efe4599b5" config-ref="HTTP_Listener_config-global" path="/orders/acceptoffer">

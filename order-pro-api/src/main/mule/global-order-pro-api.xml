@@ -23,7 +23,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	<db:config name="Database_Config-global" doc:name="Database Config" doc:id="34dc5108-4745-4790-9b56-af4f17254955" >
 		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}" />
 	</db:config>
-	<http:request-config name="HTTP_Request_configuration-offersSapi" doc:name="HTTP Request configuration" doc:id="9b5fede9-22c8-4d6b-b2df-72329b1d67da" basePath="/api" >
+	<http:request-config name="HTTP_Request_configuration-offersSapi" doc:name="HTTP Request configuration" doc:id="9b5fede9-22c8-4d6b-b2df-72329b1d67da">
 		<http:request-connection host="${requestoffs.host}" port="${requestoffs.port}" />
 	</http:request-config>
 	<http:request-config name="HTTP_Request_configuration_prodSAPI" doc:name="HTTP Request configuration" doc:id="3a0954c6-fff8-4b95-a970-3b1bd52f1fda" >
