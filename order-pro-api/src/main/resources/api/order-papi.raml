@@ -1,0 +1,50 @@
+#%RAML 1.0
+title: Order PAPI
+
+types:
+  offer: !include Datatypes/offer.raml
+  order: !include Datatypes/order.raml
+
+/offers:
+  post:
+    description: creates new offer
+    body:
+      application/json:
+        type: offer
+        example: !include Examples/Post-offer-example.raml
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              {"offerID": "1"} 
+  patch:
+    description: updates offer
+    body:
+      application/json:
+        type: offer
+        example: !include Examples/Patch-example.raml
+    responses:
+      201:
+        body:
+          application/json:
+            example: Status updated to OUT_OF_STOCK
+
+/orders:
+  post:
+    body:
+      application/json:
+        type: order
+        example: !include Examples/Post-order-example.raml
+    responses:
+      201:
+        body:
+          application/json:
+            example: 
+             {
+               "OrderID": 83492,
+               "ShippingDate": "2022-02-06"
+             }
+
+
+

@@ -10,7 +10,6 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
 	<flow name="getShippingDate" doc:id="50e08634-7087-4896-be16-236cbf73cb9c" >
-		<http:listener doc:name="POST/shippingDate" doc:id="0ac5e549-384d-4d41-91c4-d603bdee1b64" config-ref="HTTP_Listener_config-global" path="/shipping" allowedMethods="POST"/>
 		<logger level="INFO" doc:name="Logger" doc:id="b9e85a5f-c5ef-40e2-a5ad-7b9f2986669f" />
 		<set-variable value="#[now() as Date]" doc:name="dateAccepted" doc:id="70a2d7e0-6162-42bb-b81c-dad2d2293680" variableName="dateAccepted"/>
 		<http:request method="POST" doc:name="POST/shipping-sys-api" doc:id="9a152fd7-01d8-45cb-b19b-31739a624cdb" config-ref="HTTP_Request_configuration-shipSAPI" path="/api/shipping" target="shippingDate" responseTimeout="30000000">
@@ -66,14 +65,8 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 		<set-payload value='#[output application/json&#10;---&#10;{&#10;	"OrderID": vars.orderID,&#10;	"ShippingDate": vars.shippingDate&#10;}]' doc:name="Set Payload" doc:id="f6e6d024-d483-4d1a-b2c8-b8718e57c1c5" />
 		<logger level="INFO" doc:name="Logger" doc:id="96fdfbba-c91a-44f9-80b9-63a58a133fe3" />
 	</flow>
-<!-- [STUDIO:"updateOffer"]	<flow name="updateOffer" doc:id="a9bbc8d4-1254-4d60-8c3e-879f2326b050" >
-		<logger level="INFO" doc:name="Logger" doc:id="a1226c86-7bd7-4952-bf59-63989adca9f3" />
-		<http:request method="GET" doc:name="Request" doc:id="a8ad0ee9-da24-4eb9-9d19-78b265d5d825" config-ref="HTTP_Request_configuration3-global" path="/offer"/>
-		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="2078fbe3-92a8-463b-9785-9a3018676b00" />
-	</flow> [STUDIO] -->
 	
 	<flow name="offerRequest" doc:id="6437727e-c812-4067-95c6-2f5604da7ad1" >
-		<http:listener doc:name="POST/offerRequest" doc:id="cc5ba633-15b8-45d8-8a50-cf0a3e7291ef" config-ref="HTTP_Listener_config-global" path="/offerRequest" allowedMethods="POST"/>
 		<logger level="INFO" doc:name="Logger" doc:id="6b57b49c-7584-4b7b-98c9-a8aa25c8bb66" />
 		<http:request method="GET" doc:name="GET/productID " doc:id="6b057f20-94f9-45b6-9ce8-f389fdb799f6" config-ref="HTTP_Request_configuration_prodSAPI" path="/api/products/{ID}" responseTimeout="300000" target="productID" targetValue="#[payload[0].ProductID]">
 			<http:uri-params ><![CDATA[#[output application/java
@@ -96,8 +89,57 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 		<set-payload value="#[payload]" doc:name="OfferID" doc:id="880b758e-19d0-46a5-81a0-8422fe709d57" />
 		<logger level="INFO" doc:name="Logger" doc:id="3460df29-4e7c-4212-9b43-094e81b6dae7" />
 	</flow>
-	<flow name="acceptOffer" doc:id="0909cb86-ba70-4d4e-bf85-c9ba5acafdfe">
-		<http:listener doc:name="POST /acceptoffer" doc:id="bf6f61d7-d280-4e90-af57-295efe4599b5" config-ref="HTTP_Listener_config-global" path="/accept" allowedMethods="POST">
+	<flow name="patchesFlows" doc:id="a60e8982-253e-4ea4-9c9a-897d3667b680" >
+		<choice doc:name="Choice" doc:id="d7f19b8d-15f4-4a1b-83bb-55641ae4bb3c" >
+			<when expression="#[payload.PaymentTransactionID != null]">
+				<flow-ref doc:name="matchCustomerID" doc:id="6dfb0e38-05eb-4e82-af87-f2df7f257ae0" name="matchCustomerID" />
+				<http:request method="PATCH" doc:name="Update Offer to ACCEPTED state" doc:id="eddc43e1-7b6d-4df8-b453-77fa71d1a6b8" config-ref="HTTP_Request_configuration-offersSapi" path="/api/offers/{offerID}" >
+					<http:body ><![CDATA[#[{
+	"PaymentTransactionID": payload.PaymentTransactionID,
+	"DateApproved": now() as Date
+}]]]></http:body>
+					<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	offerID : payload.OfferID
+}]]]></http:uri-params>
+				</http:request>
+			</when>
+			<when expression="#[payload.PriceDiscount != null]">
+				<set-variable value="#[payload.OfferID]" doc:name="offerID" doc:id="085be607-c381-4377-b28f-2cb316d35112" variableName="offerID" />
+				<flow-ref doc:name="getTotalPrice" doc:id="391fd201-72c8-4004-83ab-e4535830c103" name="getTotalPrice"/>
+				<http:request method="PATCH" doc:name="Update Offer PROPOSED" doc:id="3e745ed7-8e61-4637-8142-6a0dd33f7b3b" config-ref="HTTP_Request_configuration-offersSapi" path="/api/offers/{offerID}" >
+					<http:body ><![CDATA[#[%dw 2.0
+output application/json
+---
+{
+	EmployeeID: payload.EmployeeID,
+	PriceDiscount: payload.PriceDiscount default 0,
+	TotalPrice: vars.totalPrice,
+	DateCreated: now() as Date
+}]]]></http:body>
+					<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	offerID : vars.offerID
+}]]]></http:uri-params>
+				</http:request>
+			</when>
+			<otherwise >
+				<flow-ref doc:name="matchCustomerID" doc:id="f34de612-e5cf-44eb-971e-93f6e4fee605" name="matchCustomerID"/>
+				<http:request method="PATCH" doc:name="Request" doc:id="7a89926b-79d3-4970-83dd-d961e3340aef" path="/offers/{offerID}" config-ref="HTTP_Request_configuration-offersSapi">
+					<http:body ><![CDATA[#[%dw 2.0
+output application/json
+---
+{
+	Status: "rejected"
+}]]]></http:body>
+				</http:request>
+			</otherwise>
+		</choice>
+	</flow>
+<!-- [STUDIO:"acceptOffer"]	<flow name="acceptOffer" doc:id="0909cb86-ba70-4d4e-bf85-c9ba5acafdfe">
+		<http:listener doc:name="PATCH/acceptoffer" doc:id="bf6f61d7-d280-4e90-af57-295efe4599b5" config-ref="HTTP_Listener_config-global" path="/accept" allowedMethods="PATCH">
 			<http:error-response statusCode="400">
 				<http:body><![CDATA[#[payload]]]></http:body>
 			</http:error-response>
@@ -110,33 +152,33 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	"DateApproved": now() as Date
 }]]]></http:body>
 			<http:uri-params><![CDATA[#[output application/java
----
+&#45;&#45;-
 {
 	offerID : payload.OfferID
 }]]]></http:uri-params>
 		</http:request>
 		<logger level="INFO" doc:name="EndFlow" doc:id="3f53c569-e723-476d-8b6b-a1d0e6334073" />
-	</flow>
-	<flow name="rejectOffer" doc:id="b80a175b-507f-45d6-8dc2-a6dd0d74528f" >
+	</flow> [STUDIO] -->
+<!-- [STUDIO:"rejectOffer"]	<flow name="rejectOffer" doc:id="b80a175b-507f-45d6-8dc2-a6dd0d74528f" >
 		<http:listener doc:name="POST /rejectoffer" doc:id="e73ddc7c-c4f7-4b1e-8fdd-8dde2f33c7cf" config-ref="HTTP_Listener_config-global" path="/orders/rejectoffer"/>
 		<logger level="INFO" doc:name="StartFlow" doc:id="0e0899c3-9958-4d3e-9e7f-6f70b8c57e97" />
-<!-- [STUDIO:"offerID"]		<set-variable value="#[payload.OfferID]" doc:name="offerID" doc:id="2551df97-1f13-4b70-bde6-593ff81d8a6c" variableName="offerID" /> [STUDIO] -->
+		<set-variable value="#[payload.OfferID]" doc:name="offerID" doc:id="2551df97-1f13-4b70-bde6-593ff81d8a6c" variableName="offerID" />
 		<flow-ref doc:name="matchCustomerID" doc:id="07280948-eed3-49cf-96f5-a4835b13d8e2" name="matchCustomerID" />
 		<http:request method="PATCH" doc:name="Update Offer to REJECTED state" doc:id="4a090dc4-5b38-4fa3-aa04-b77f271e2c70" config-ref="HTTP_Request_configuration-offersSapi" path="/offers/{offerID}" >
 			<http:body ><![CDATA[#[%dw 2.0
 output application/json
----
+&#45;&#45;-
 {
 	Status: "rejected"
 }]]]></http:body>
 			<http:uri-params ><![CDATA[#[output application/java
----
+&#45;&#45;-
 {
 	offerID : vars.offerID
 }]]]></http:uri-params>
 		</http:request>
 		<logger level="INFO" doc:name="EndFlow" doc:id="81f5a503-cb10-4fca-bb11-413326f1d12b" />
-	</flow>
+	</flow> [STUDIO] -->
 	<sub-flow name="matchCustomerID" doc:id="77df4cf1-0d60-47fb-bb44-698e3eb172b4">
 		<http:request method="GET" doc:name="GET offer matching offerID" doc:id="ae41fdb2-aed8-4a51-ad55-079f1700796a" config-ref="HTTP_Request_configuration-offersSapi" path="/api/offers/{offerID}" target="customerID" targetValue="#[payload[0].CustomerID]">
 			<http:uri-params><![CDATA[#[output application/java
@@ -147,15 +189,15 @@ output application/json
 		</http:request>
 		<validation:is-true doc:name="Payload matches CustomerID?" doc:id="c2b2f3e2-7005-4d6b-b859-d80130d15923" expression="#[vars.customerID == payload.CustomerID]" config-ref="Validation_Config" />
 	</sub-flow>
-	<flow name="proposeOffer" doc:id="cc5ba157-dc15-4069-a684-6bb5ed193067" >
-		<http:listener doc:name="POST /proposedoffer" doc:id="63c99ae0-1061-454f-a745-959fb24e1ae5" config-ref="HTTP_Listener_config-global" path="/proposedoffer"/>
+<!-- [STUDIO:"proposeOffer"]	<flow name="proposeOffer" doc:id="cc5ba157-dc15-4069-a684-6bb5ed193067" >
+		<http:listener doc:name="PATCH/proposedoffer" doc:id="63c99ae0-1061-454f-a745-959fb24e1ae5" config-ref="HTTP_Listener_config-global" path="/proposedoffer" allowedMethods="PATCH"/>
 		<logger level="INFO" doc:name="StartFlow" doc:id="f17b6898-244d-4f69-ba58-3f37f9e80915" />
 <set-variable value="#[payload.OfferID]" doc:name="offerID" doc:id="e0b2da21-7915-4b39-aa73-d7f6c3107152" variableName="offerID" />
 		<flow-ref doc:name="getTotalPrice" doc:id="71daa7de-5b70-4a3b-962d-9ca65652821a" name="getTotalPrice"/>
 		<http:request method="PATCH" doc:name="Update Offer PROPOSED" doc:id="ebe41e07-a55c-41fb-a098-234bd2b53cfc" config-ref="HTTP_Request_configuration-offersSapi" path="/api/offers/{offerID}">
 					<http:body ><![CDATA[#[%dw 2.0
 output application/json
----
+&#45;&#45;-
 {
 	EmployeeID: payload.EmployeeID,
 	PriceDiscount: payload.PriceDiscount default 0,
@@ -163,15 +205,14 @@ output application/json
 	DateCreated: now() as Date
 }]]]></http:body>
 			<http:uri-params><![CDATA[#[output application/java
----
+&#45;&#45;-
 {
 	offerID : vars.offerID
 }]]]></http:uri-params>
 				</http:request>
 		<logger level="INFO" doc:name="EndFlow" doc:id="0a1a1097-b566-46c2-a673-c434d55e097c" />
-	</flow>
+	</flow> [STUDIO] -->
 	<flow name="getTotalPrice" doc:id="08c79522-e826-4ed7-adeb-86f6160a805f" >
-		<http:listener doc:name="Listener" doc:id="31f4bf4b-a663-46f1-a5d0-7550d601f98f" config-ref="HTTP_Listener_config-global" path="/totalprice"/>
 		<validation:is-not-null doc:name="Is not null" doc:id="c4ff7b08-a9b0-498f-98c7-9b5d17500193" config-ref="Validation_Config" value="#[payload.PriceDiscount]" message="Discount not specified"/>
 		<http:request method="GET" doc:name="Request" doc:id="1a7ac154-4d56-4188-9b7a-d35ac611572e" config-ref="HTTP_Request_configuration_prodSAPI" path="/api/price" target="price" responseTimeout="300000">
 			<http:query-params ><![CDATA[#[output application/java

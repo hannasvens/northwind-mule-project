@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_a60e8982_253e_4ea4_9c9a_897d3667b680_Output_Variables_offerID = Any
+

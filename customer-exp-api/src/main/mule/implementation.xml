@@ -78,7 +78,7 @@ output application/json
 	</flow>
 	<flow name="postOfferRequestFlow" doc:id="191cd106-e89a-4f44-b9ba-247541cfb69e">
 		<logger level="INFO" doc:name="startpostOfferRequestFlow" doc:id="af723bf2-4305-4271-9731-473010a92794" />
-		<http:request method="POST" doc:name="POST/offerRequest" doc:id="39acfcec-d443-41c1-932a-5369d0762a74" config-ref="HTTP_Request_configuration_ordPAPI" path="/offerRequest" responseTimeout="300000">
+		<http:request method="POST" doc:name="POST/offerRequest" doc:id="39acfcec-d443-41c1-932a-5369d0762a74" config-ref="HTTP_Request_configuration_ordPAPI" path="/api/offers" responseTimeout="300000">
 			<http:body ><![CDATA[#[output application/json
 ---
 {
@@ -97,13 +97,13 @@ output application/json
 	<flow name="acceptOfferFlow" doc:id="6838ddcb-1204-4925-9547-fa7a562af461" >
 		<logger level="INFO" doc:name="startAcceptOfferFlow" doc:id="cca1995b-cbb1-462c-aa92-430a3d8a0493" />
 		<validation:is-number numberType="INTEGER" doc:name="Is number" doc:id="a745c84f-fa79-4fb5-9800-e6d5deaa7172" value="#[payload.PaymentTransactionID]" message="PaymentTransactionID must be a number" config-ref="Validation_Config"/>
-		<http:request method="POST" doc:name="POST/acceptedOffer" doc:id="574e3663-bf18-4350-9b57-6a30b82d9a91" config-ref="HTTP_Request_configuration_ordPAPI" path="/accept" responseTimeout="3000000">
+		<http:request method="PATCH" doc:name="PATCH/acceptedOffer" doc:id="574e3663-bf18-4350-9b57-6a30b82d9a91" config-ref="HTTP_Request_configuration_ordPAPI" path="/api/offers" responseTimeout="3000000">
 			<http:body ><![CDATA[#[output application/json
 ---
 {
 	"CustomerID": attributes.queryParams.CustomerID,
 	"PaymentTransactionID": payload.PaymentTransactionID,
-	"OfferID": attributes.uriParams.ID
+	"OfferID": attributes.uriParams.ID as Number
 }]]]></http:body>
 			<http:query-params ><![CDATA[#[output application/java
 ---
@@ -117,7 +117,7 @@ output application/json
 	<flow name="rejectOfferFlow" doc:id="5e9aacc2-bef9-4ea3-854b-5ec3ff43ac4e" >
 		<http:listener doc:name="Listener" doc:id="4854dfe0-6f9d-4be5-b284-994b12bf8719" config-ref="HTTP_Listener_config" path="/rejectoffer"/>
 		<logger level="INFO" doc:name="Start" doc:id="0dc81148-77f8-48fc-9826-cd8dd9eec015" />
-		<http:request method="POST" doc:name="Offer rejected sent to orderPapi" doc:id="afe198e0-4ca1-48c3-912a-b1439c9ac9f8" config-ref="HTTP_Request_configuration_ordPAPI" path="/orders/rejectoffer"/>
+		<http:request method="PATCH" doc:name="Offer rejected sent to orderPapi" doc:id="afe198e0-4ca1-48c3-912a-b1439c9ac9f8" config-ref="HTTP_Request_configuration_ordPAPI" path="/api/offers"/>
 		<set-payload value="Offer status = REJECTED" doc:name="Rejected" doc:id="1408c79c-3755-401b-92d8-739f9d3bad69" />
 		<logger level="INFO" doc:name="End" doc:id="4033a2e1-f2ea-4e1e-a256-cd95412eb017" />
 	</flow>

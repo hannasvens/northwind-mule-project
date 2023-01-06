@@ -72,6 +72,12 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.16</version>
 		</dependency>
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-apikit-module</artifactId>
+			<version>1.6.1</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
 	</dependencies>
 
 	<repositories>
