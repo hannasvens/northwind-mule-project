@@ -41,7 +41,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	</flow>
 	<flow name="createOrder" doc:id="4a430c34-75e2-4bdd-b176-b1ce7dafdd97" >
 		<logger level="INFO" doc:name="Logger" doc:id="2de6183f-f703-4af7-9adc-9ef1485c389a" />
-		<http:request method="POST" doc:name="POST/order" doc:id="345a8e57-56f3-4001-82c7-f66534298ab5" config-ref="HTTP_Request_configuration_ordSAPI" path="/api/orders" responseTimeout="300000">
+		<http:request method="POST" doc:name="POST/order" doc:id="345a8e57-56f3-4001-82c7-f66534298ab5" config-ref="HTTP_Request_configuration_ordSAPI" path="/api/orders" responseTimeout="300000" target="orderID" targetValue="#[payload.OrderID]">
 			<http:body ><![CDATA[#[output application/json
 ---
 {
@@ -52,7 +52,18 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	"ShipperID": payload.shipperID
 }]]]></http:body>
 		</http:request>
-		<set-payload value="#[payload]" doc:name="OrderID" doc:id="1487e3a1-5979-4656-8647-9e11f44c6f8f" />
+		<validation:is-number doc:name="Is number" doc:id="0d9a37a7-fe2f-4d22-82ab-9b67142ec3c2" value="#[vars.orderID]" config-ref="Validation_Config" numberType="INTEGER"/>
+		<http:request method="PATCH" doc:name="Request" doc:id="09fd8e2e-785a-4bca-ad37-818fca01c83c" config-ref="HTTP_Request_configuration-offersSapi" path="/api/offers/{offerID}">
+			<http:body ><![CDATA[#[{
+	"OrderID": vars.orderID
+}]]]></http:body>
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	offerID : payload.offerID
+}]]]></http:uri-params>
+		</http:request>
+		<set-payload value='#[output application/json&#10;---&#10;{&#10;	"OrderID": vars.orderID,&#10;	"ShippingDate": vars.shippingDate&#10;}]' doc:name="Set Payload" doc:id="f6e6d024-d483-4d1a-b2c8-b8718e57c1c5" />
 		<logger level="INFO" doc:name="Logger" doc:id="96fdfbba-c91a-44f9-80b9-63a58a133fe3" />
 	</flow>
 <!-- [STUDIO:"updateOffer"]	<flow name="updateOffer" doc:id="a9bbc8d4-1254-4d60-8c3e-879f2326b050" >

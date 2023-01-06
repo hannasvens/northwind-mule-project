@@ -49,7 +49,8 @@ types:
             example:
               {"offerID": 12345}
 
-  patch:
+  /{ID}:
+    post:
       queryParameters:
         CustomerID: 
       body:
@@ -62,8 +63,7 @@ types:
             application/json:
               example:
                 value: Offer updated to ACCEPTED state.
-
-  /{ID}:
+                
     get:
       queryParameters:
         status:
