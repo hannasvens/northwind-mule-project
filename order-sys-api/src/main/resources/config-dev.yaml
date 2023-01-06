@@ -7,5 +7,10 @@ db:
   user: "root"
   password: "root"
   database: "northwind"
+  
+requestords:
+ host: "localhost"
+ port: "8085"
+  
 
   

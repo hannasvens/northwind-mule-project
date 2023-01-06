@@ -9,8 +9,8 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<db:config name="Database_Config" doc:name="Database Config" doc:id="ef0c69b6-d66c-4ff5-8aa6-fe5ac27b735c" >
 		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}" />
 	</db:config>
-	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="6c8fb35e-b91c-4fa0-9726-61a914de72a8" >
-		<http:request-connection host="localhost" port="${http.port}" />
+	<http:request-config name="HTTP_Request_configuration_ordSAPI" doc:name="HTTP Request configuration" doc:id="6c8fb35e-b91c-4fa0-9726-61a914de72a8" >
+		<http:request-connection host="${requestords.host}" port="${requestords.port}" />
 	</http:request-config>
 	<configuration-properties doc:name="Configuration properties" doc:id="49397f4d-7e7f-42d8-89a3-783fd2ea6758" file="config-${env}.yaml" />
 	<configuration doc:name="Configuration" doc:id="d12983cd-03b9-4257-9116-57b20c860962" defaultErrorHandler-ref="global-order-sys-apiError_Handler" />
@@ -53,7 +53,7 @@ message: "there is an error in the SQL syntax"
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
-			<set-variable value="500" doc:name="Set Variable" doc:id="f7daf148-039d-4255-a7ee-af3a7e6c1562" variableName="httpStatus"/>
+			<set-variable value="400" doc:name="Set Variable" doc:id="f7daf148-039d-4255-a7ee-af3a7e6c1562" variableName="httpStatus"/>
 		</on-error-propagate>
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="8f453187-4236-4096-8d58-ef0fe17d2caa" type="DB:QUERY_EXECUTION">
 			<ee:transform doc:name="Transform Message" doc:id="b442a9a2-c412-4cfe-9513-0f367da67c97" >

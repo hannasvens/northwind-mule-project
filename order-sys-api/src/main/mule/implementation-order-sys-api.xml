@@ -29,7 +29,7 @@ output application/json
 	</flow>
 	<flow name="orderflow-POST" doc:id="426fe71c-8751-41f6-9059-281e0426123b" >
 		<logger level="INFO" doc:name="Entering sapi postOrder flow" doc:id="af8c01fc-0578-46d4-999b-b46ce829cdce" message="Entering postOrder flow"/>
-		<http:request method="GET" doc:name="Request" doc:id="6e13c9b8-bb0a-4311-8e42-8b99740ef9bf" path="/api/orders/shipAddress" target="ShipAddress" targetValue="#[payload.message]" responseTimeout="6000000" config-ref="HTTP_Request_configuration1">
+		<http:request method="GET" doc:name="Request" doc:id="6e13c9b8-bb0a-4311-8e42-8b99740ef9bf" path="/api/orders/shipAddress" target="ShipAddress" targetValue="#[payload.message]" responseTimeout="6000000" config-ref="HTTP_Request_configuration_ordSAPI">
 			<http:query-params ><![CDATA[#[output application/java
 ---
 {
@@ -38,14 +38,14 @@ output application/json
 		</http:request>
 		<db:insert doc:name="Insert into database" doc:id="9a712b90-ccee-4334-bb72-c50d5e5ab315" autoGenerateKeys="true" config-ref="Database_Config">
 			<db:sql ><![CDATA[INSERT INTO Orders (CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, ShipAddress, Freight, ShipName, ShipCity, ShipRegion, ShipPostalCode, ShipCountry)
-VALUES(:CustomerID, :EmployeeID, :OrderDate, :RequiredDate, ShippedDate, :ShipVia, :ShipAddress, :Freight, :ShipName, :ShipCity, :ShipRegion, :ShipPostalCode, :ShipCountry)]]></db:sql>
+VALUES(:CustomerID, :EmployeeID, :OrderDate, : RequiredDate, :ShippedDate, :ShipVia, :ShipAddress, :Freight, :ShipName, :ShipCity, :ShipRegion, :ShipPostalCode, :ShipCountry)]]></db:sql>
 			<db:input-parameters ><![CDATA[#[{
 CustomerID: payload.CustomerID,
 EmployeeID: payload.EmployeeID,
-OrderDate: payload.OrderDate,
+OrderDate: payload.DateAccepted,
 RequiredDate: payload.RequiredDate,
 ShippedDate: payload.ShippedDate,
-ShipVia: payload.ShipVia,
+ShipVia: payload.ShipperID,
 ShipAddress: vars.ShipAddress,
 Freight: payload.Freight,
 ShipName: payload.ShipName,

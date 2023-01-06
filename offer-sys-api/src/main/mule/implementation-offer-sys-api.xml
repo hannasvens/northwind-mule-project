@@ -155,18 +155,18 @@ where OfferID = :offerID]]></db:sql>
 output application/json
 ---
 payload map ( property , indexOfproperty ) -> {
-	"Offer ID": property.OfferID,
+	"OfferID": property.OfferID,
 	Status: property.Status,
-	"Date created": property.DateCreated,
+	"DateCreated": property.DateCreated,
 	"Date approved": property.DateApproved,
-	"Employee ID": property.EmployeeID,
-	"Customer ID": property.CustomerID,
-	"Product ID": property.ProductID,
+	"EmployeeID": property.EmployeeID,
+	"CustomerID": property.CustomerID,
+	"ProductID": property.ProductID,
 	Quantity: property.Quantity,
-	"Order ID": property.OrderID,
-	"Total price": property.TotalPrice,
-	"Price discount": property.PriceDiscount,
-	"Payment transaction ID": property.PaymentTransactionID
+	"OrderID": property.OrderID,
+	"TotalPrice": property.TotalPrice,
+	"PriceDiscount": property.PriceDiscount,
+	"PaymentTransactionID": property.PaymentTransactionID
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>

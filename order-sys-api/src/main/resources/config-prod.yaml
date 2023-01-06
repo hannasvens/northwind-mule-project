@@ -7,3 +7,7 @@ db:
   user: "group04"
   password: "@Br1ghtsGr0up04!"
   database: "northwind04"
+  
+requestords:
+ host: "localhost"
+ port: "8085"

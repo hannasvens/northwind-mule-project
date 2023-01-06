@@ -10,7 +10,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
 	<flow name="getShippingDate" doc:id="50e08634-7087-4896-be16-236cbf73cb9c" >
-		<http:listener doc:name="GET/shippingDate" doc:id="0ac5e549-384d-4d41-91c4-d603bdee1b64" config-ref="HTTP_Listener_config-global" path="/shipping"/>
+		<http:listener doc:name="POST/shippingDate" doc:id="0ac5e549-384d-4d41-91c4-d603bdee1b64" config-ref="HTTP_Listener_config-global" path="/shipping" allowedMethods="POST"/>
 		<set-variable value="#[now() as Date]" doc:name="dateAccepted" doc:id="70a2d7e0-6162-42bb-b81c-dad2d2293680" variableName="dateAccepted"/>
 		<http:request method="POST" doc:name="POST/shipping-sys-api" doc:id="9a152fd7-01d8-45cb-b19b-31739a624cdb" config-ref="HTTP_Request_configuration-shipSAPI" path="/api/shipping" target="shippingDate" responseTimeout="30000000">
 			<http:body ><![CDATA[#[output application/json
@@ -23,33 +23,39 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 		</http:request>
 		<choice doc:name="Choice" doc:id="87e02c3f-013e-4913-9b3a-05a7510a3a7c" >
 			<when expression='#[import * from dw::core::Dates&#10;import * from dw::core::Periods&#10;output application/json&#10;&#10;var days = 15&#10;---&#10;vars.shippingDate &lt; vars.dateAccepted + ("P$(days)D" as Period)]'>
-				<flow-ref doc:name="createOrder" doc:id="ad3b9ab4-e633-4a33-bf1d-ac230c942c77" name="createOrder"/>
-			</when>
-			<otherwise >
-				<flow-ref doc:name="Flow Reference" doc:id="c0898271-2aba-443f-82b8-bbea9552e229" name="getShippingDate"/>
-			</otherwise>
-		</choice>
-		<flow-ref doc:name="Flow Reference" doc:id="c08beb51-3435-4c3d-bd96-b29a5be94a3f" name="updateOffer"/>
-	</flow>
-	<flow name="createOrder" doc:id="4a430c34-75e2-4bdd-b176-b1ce7dafdd97" >
-		<http:request method="POST" doc:name="Request to order SAPI (insert order)" doc:id="345a8e57-56f3-4001-82c7-f66534298ab5" config-ref="HTTP_Request_configuration3-global" path="/api/orders">
-			<http:query-params><![CDATA[#[output application/json
+				<http:request method="GET" doc:name="GET/customerID from offerSAPI" doc:id="61e80216-c375-46be-9730-af5d130fdce5" config-ref="HTTP_Request_configuration-offersSapi" path="/api/offers/{offerID}" target="customerID" targetValue="#[payload[0].CustomerID]" responseTimeout="300000">
+					<http:uri-params ><![CDATA[#[output application/java
 ---
 {
-	"customerID" : "payload.customerID",
-	"employeeID" : "payload.employeeID",
-	"acceptedDate" : "var.acceptedDate",
-	"shippingDate" : "payload.shippingDate",
-	"shipperID" : "payload.shipperID"
-	}]]]></http:query-params>
-		</http:request>
-		<set-payload value="#[payload]" doc:name="payload (orderID)" doc:id="1487e3a1-5979-4656-8647-9e11f44c6f8f" />
+	offerID : payload.offerID
+}]]]></http:uri-params>
+				</http:request>
+				<flow-ref doc:name="createOrder" doc:id="ad3b9ab4-e633-4a33-bf1d-ac230c942c77" name="createOrder"/>
+			</when>
+			<otherwise>
+				<set-payload value="Shipping date over 15 days away. Try again with another shipper. " doc:name="ShippingDate &gt; 15 days away" doc:id="7a80c0b3-373b-4bb4-9062-0c3c55ea80b7" />
+			</otherwise>
+		</choice>
 	</flow>
-	<flow name="updateOffer" doc:id="a9bbc8d4-1254-4d60-8c3e-879f2326b050" >
+	<flow name="createOrder" doc:id="4a430c34-75e2-4bdd-b176-b1ce7dafdd97" >
+		<http:request method="POST" doc:name="POST/order" doc:id="345a8e57-56f3-4001-82c7-f66534298ab5" config-ref="HTTP_Request_configuration_ordSAPI" path="/api/orders" responseTimeout="300000">
+			<http:body ><![CDATA[#[output application/json
+---
+{
+	"CustomerID": vars.customerID,
+	"EmployeeID": payload.employeeID,
+	"DateAccepted": vars.dateAccepted,
+	"ShippedDate": vars.shippingDate,
+	"ShipperID": payload.shipperID
+}]]]></http:body>
+		</http:request>
+		<set-payload value="#[payload]" doc:name="OrderID" doc:id="1487e3a1-5979-4656-8647-9e11f44c6f8f" />
+	</flow>
+<!-- [STUDIO:"updateOffer"]	<flow name="updateOffer" doc:id="a9bbc8d4-1254-4d60-8c3e-879f2326b050" >
 		<logger level="INFO" doc:name="Logger" doc:id="a1226c86-7bd7-4952-bf59-63989adca9f3" />
 		<http:request method="GET" doc:name="Request" doc:id="a8ad0ee9-da24-4eb9-9d19-78b265d5d825" config-ref="HTTP_Request_configuration3-global" path="/offer"/>
 		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="2078fbe3-92a8-463b-9785-9a3018676b00" />
-	</flow>
+	</flow> [STUDIO] -->
 	
 	<flow name="offerRequest" doc:id="6437727e-c812-4067-95c6-2f5604da7ad1" >
 		<http:listener doc:name="offerRequest" doc:id="cc5ba633-15b8-45d8-8a50-cf0a3e7291ef" config-ref="HTTP_Listener_config-global" path="/offerRequest"/>
@@ -128,7 +134,7 @@ output application/json
 	</flow>
 	<sub-flow name="matchCustomerID" doc:id="77df4cf1-0d60-47fb-bb44-698e3eb172b4">
 		<set-variable value="#[attributes.queryParams.CustomerID]" doc:name="customerID" doc:id="afcd04bf-125a-4acb-a082-44bedddd2775" variableName="customerID"/>
-		<http:request method="GET" doc:name="GET offer matching offerID" doc:id="ae41fdb2-aed8-4a51-ad55-079f1700796a" config-ref="HTTP_Request_configuration-offersSapi" path="/offers/{offerID}">
+		<http:request method="GET" doc:name="GET offer matching offerID" doc:id="ae41fdb2-aed8-4a51-ad55-079f1700796a" config-ref="HTTP_Request_configuration-offersSapi" path="/api/offers/{offerID}">
 			<http:uri-params><![CDATA[#[output application/java
 ---
 {
