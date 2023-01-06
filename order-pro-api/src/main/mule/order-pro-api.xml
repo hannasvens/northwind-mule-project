@@ -11,6 +11,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
 	<flow name="getShippingDate" doc:id="50e08634-7087-4896-be16-236cbf73cb9c" >
 		<http:listener doc:name="POST/shippingDate" doc:id="0ac5e549-384d-4d41-91c4-d603bdee1b64" config-ref="HTTP_Listener_config-global" path="/shipping" allowedMethods="POST"/>
+		<logger level="INFO" doc:name="Logger" doc:id="b9e85a5f-c5ef-40e2-a5ad-7b9f2986669f" />
 		<set-variable value="#[now() as Date]" doc:name="dateAccepted" doc:id="70a2d7e0-6162-42bb-b81c-dad2d2293680" variableName="dateAccepted"/>
 		<http:request method="POST" doc:name="POST/shipping-sys-api" doc:id="9a152fd7-01d8-45cb-b19b-31739a624cdb" config-ref="HTTP_Request_configuration-shipSAPI" path="/api/shipping" target="shippingDate" responseTimeout="30000000">
 			<http:body ><![CDATA[#[output application/json
@@ -36,8 +37,10 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 				<set-payload value="Shipping date over 15 days away. Try again with another shipper. " doc:name="ShippingDate &gt; 15 days away" doc:id="7a80c0b3-373b-4bb4-9062-0c3c55ea80b7" />
 			</otherwise>
 		</choice>
+		<logger level="INFO" doc:name="Logger" doc:id="fa3267d3-d810-483b-94eb-c1c9f44207d6" />
 	</flow>
 	<flow name="createOrder" doc:id="4a430c34-75e2-4bdd-b176-b1ce7dafdd97" >
+		<logger level="INFO" doc:name="Logger" doc:id="2de6183f-f703-4af7-9adc-9ef1485c389a" />
 		<http:request method="POST" doc:name="POST/order" doc:id="345a8e57-56f3-4001-82c7-f66534298ab5" config-ref="HTTP_Request_configuration_ordSAPI" path="/api/orders" responseTimeout="300000">
 			<http:body ><![CDATA[#[output application/json
 ---
@@ -50,6 +53,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 }]]]></http:body>
 		</http:request>
 		<set-payload value="#[payload]" doc:name="OrderID" doc:id="1487e3a1-5979-4656-8647-9e11f44c6f8f" />
+		<logger level="INFO" doc:name="Logger" doc:id="96fdfbba-c91a-44f9-80b9-63a58a133fe3" />
 	</flow>
 <!-- [STUDIO:"updateOffer"]	<flow name="updateOffer" doc:id="a9bbc8d4-1254-4d60-8c3e-879f2326b050" >
 		<logger level="INFO" doc:name="Logger" doc:id="a1226c86-7bd7-4952-bf59-63989adca9f3" />
@@ -58,29 +62,28 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	</flow> [STUDIO] -->
 	
 	<flow name="offerRequest" doc:id="6437727e-c812-4067-95c6-2f5604da7ad1" >
-		<http:listener doc:name="offerRequest" doc:id="cc5ba633-15b8-45d8-8a50-cf0a3e7291ef" config-ref="HTTP_Listener_config-global" path="/offerRequest"/>
-		<set-variable value="#[payload.quantity]" doc:name="quantity" doc:id="da95c426-f145-4cb6-91a9-1b147536a88d" variableName="quantity"/>
-		<set-variable value="#[attributes.queryParams.customerID]" doc:name="customerID" doc:id="c6d24905-e453-40de-b7f8-2d9d279a73d6" variableName="customerID"/>
-		<set-variable value="#[payload.productID]" doc:name="productID" doc:id="ce4e6cdb-b63b-4b5d-85b1-4cfb5dc828dd" variableName="productID"/>
-		<http:request method="GET" doc:name="Request - checkProductID" doc:id="6b057f20-94f9-45b6-9ce8-f389fdb799f6" config-ref="HTTP_Request_configuration_prodSAPI" path="/api/products/{ID}" responseTimeout="300000">
+		<http:listener doc:name="offerRequest" doc:id="cc5ba633-15b8-45d8-8a50-cf0a3e7291ef" config-ref="HTTP_Listener_config-global" path="/offerRequest" allowedMethods="POST"/>
+		<logger level="INFO" doc:name="Logger" doc:id="6b57b49c-7584-4b7b-98c9-a8aa25c8bb66" />
+		<http:request method="GET" doc:name="GET/productID " doc:id="6b057f20-94f9-45b6-9ce8-f389fdb799f6" config-ref="HTTP_Request_configuration_prodSAPI" path="/api/products/{ID}" responseTimeout="300000" target="productID" targetValue="#[payload[0].ProductID]">
 			<http:uri-params ><![CDATA[#[output application/java
 ---
 {
-	ID : vars.productID
+	ID : payload.productID
 }]]]></http:uri-params>
 		</http:request>
-		<validation:is-not-null doc:name="Is not null" doc:id="5146e73b-2fb9-4ff1-a556-6499e173363f" config-ref="Validation_Config" value="#[payload]"/>
-		<http:request method="POST" doc:name="Request - crateOffer" doc:id="6dcaef61-412f-43b1-9e07-953ee9198129" path="/api/offers" config-ref="HTTP_Request_configuration-offersSapi" responseTimeout="300000">
+		<validation:is-not-null doc:name="ProductID is not null" doc:id="5146e73b-2fb9-4ff1-a556-6499e173363f" config-ref="Validation_Config" value="#[vars.productID]" message="ProductID does not exist"/>
+		<http:request method="POST" doc:name="POST/createOffer" doc:id="6dcaef61-412f-43b1-9e07-953ee9198129" path="/api/offers" config-ref="HTTP_Request_configuration-offersSapi" responseTimeout="300000">
 			<http:body ><![CDATA[#[output application/json
 ---
 {
-	"Quantity": vars.quantity,
-	"CustomerID": vars.customerID, 
-	"ProductID": vars.productID
+	"Quantity": payload.quantity,
+	"CustomerID": payload.customerID, 
+	"ProductID": payload.productID
 
 }]]]></http:body>
 		</http:request>
-		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="880b758e-19d0-46a5-81a0-8422fe709d57" />
+		<set-payload value="#[payload]" doc:name="OfferID" doc:id="880b758e-19d0-46a5-81a0-8422fe709d57" />
+		<logger level="INFO" doc:name="Logger" doc:id="3460df29-4e7c-4212-9b43-094e81b6dae7" />
 	</flow>
 	<flow name="acceptOffer" doc:id="0909cb86-ba70-4d4e-bf85-c9ba5acafdfe">
 		<http:listener doc:name="POST /acceptoffer" doc:id="bf6f61d7-d280-4e90-af57-295efe4599b5" config-ref="HTTP_Listener_config-global" path="/orders/acceptoffer">
