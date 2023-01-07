@@ -51,8 +51,8 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	"ShipperID": payload.shipperID
 }]]]></http:body>
 		</http:request>
-		<validation:is-number doc:name="Is number" doc:id="0d9a37a7-fe2f-4d22-82ab-9b67142ec3c2" value="#[vars.orderID]" config-ref="Validation_Config" numberType="INTEGER"/>
-		<http:request method="PATCH" doc:name="Request" doc:id="09fd8e2e-785a-4bca-ad37-818fca01c83c" config-ref="HTTP_Request_configuration-offersSapi" path="/api/offers/{offerID}">
+		<validation:is-number doc:name="OrderID Is number" doc:id="0d9a37a7-fe2f-4d22-82ab-9b67142ec3c2" value="#[vars.orderID]" config-ref="Validation_Config" numberType="INTEGER"/>
+		<http:request method="PATCH" doc:name="PATCH/to shipped" doc:id="09fd8e2e-785a-4bca-ad37-818fca01c83c" config-ref="HTTP_Request_configuration-offersSapi" path="/api/offers/{offerID}">
 			<http:body ><![CDATA[#[{
 	"OrderID": vars.orderID
 }]]]></http:body>
@@ -62,7 +62,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	offerID : payload.offerID
 }]]]></http:uri-params>
 		</http:request>
-		<set-payload value='#[output application/json&#10;---&#10;{&#10;	"OrderID": vars.orderID,&#10;	"ShippingDate": vars.shippingDate&#10;}]' doc:name="Set Payload" doc:id="f6e6d024-d483-4d1a-b2c8-b8718e57c1c5" />
+		<set-payload value='#[output application/json&#10;---&#10;{&#10;	"OrderID": vars.orderID,&#10;	"ShippingDate": vars.shippingDate&#10;}]' doc:name="OrderID &amp; ShippingDate" doc:id="f6e6d024-d483-4d1a-b2c8-b8718e57c1c5" />
 		<logger level="INFO" doc:name="Logger" doc:id="96fdfbba-c91a-44f9-80b9-63a58a133fe3" />
 	</flow>
 	

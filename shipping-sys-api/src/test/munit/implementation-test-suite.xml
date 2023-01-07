@@ -109,6 +109,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 			<munit-tools:assert-equals doc:name="Assert equals" doc:id="0572001a-4301-4e1a-9115-cd2bf042464d" actual="#[payload.message]" expected="Could not connect to database, try again"/>
 		</munit:validation>
 	</munit:test>
+	<munit:test name="implementation-test-suiteTest" doc:id="d8e05d06-b48e-49cb-ab60-0e0cca83c46c" />
 
 
 </mule>

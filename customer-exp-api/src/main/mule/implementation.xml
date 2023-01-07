@@ -123,7 +123,7 @@ output application/json
 	</flow>
 	<flow name="getOffersByStatusFlow" doc:id="f5cf0836-5f60-4a1b-91cb-301f715bd6ab" >
 		<logger level="INFO" doc:name="startGetOffersByID" doc:id="a743d51e-a82d-440e-ae1a-34ef1138fa1f" />
-		<http:request method="GET" doc:name="Request" doc:id="4db7160c-9c95-43be-8439-49fa3879d3fa" config-ref="HTTP_Request_configuration_offSAPI" path="/api/offers/customers/{ID}" responseTimeout="300000">
+		<http:request method="GET" doc:name="GET/offers" doc:id="4db7160c-9c95-43be-8439-49fa3879d3fa" config-ref="HTTP_Request_configuration_offSAPI" path="/api/offers/customers/{ID}" responseTimeout="300000">
 			<http:uri-params ><![CDATA[#[output application/java
 ---
 {
@@ -139,7 +139,7 @@ output application/json
 	</flow>
 	<flow name="getProducts" doc:id="fcad2581-41a0-45e8-b0a3-2519220b46cc" >
 		<logger level="INFO" doc:name="Logger" doc:id="dba35da4-d2e8-4627-8727-b9aed4a6b590" />
-		<http:request method="GET" doc:name="Request" doc:id="0d278b39-587c-4a0d-8447-72691ab289ca" config-ref="HTTP_Request_configuration_prodSAPI" path="/api/products"/>
+		<http:request method="GET" doc:name="GET/Products" doc:id="0d278b39-587c-4a0d-8447-72691ab289ca" config-ref="HTTP_Request_configuration_prodSAPI" path="/api/products"/>
 		<logger level="INFO" doc:name="Logger" doc:id="f90b791e-c3ee-4d00-a6cc-3f3b17b013a2" />
 	</flow>
 </mule>
