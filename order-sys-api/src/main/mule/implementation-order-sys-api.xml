@@ -76,7 +76,7 @@ output application/json
 		<db:select doc:name="Select" doc:id="6c9c5149-9782-4a54-ba64-3d0bc6f87a52" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT * FROM Orders
 WHERE EmployeeID = :employeeID]]></db:sql>
-			<db:input-parameters ><![CDATA[#[{'employeeID':vars.employeeID}]]]></db:input-parameters>
+			<db:input-parameters ><![CDATA[#[{'employeeID': attributes.uriParams.employeeID}]]]></db:input-parameters>
 		</db:select>
 		<ee:transform doc:name="Transform Message" doc:id="472cf8fc-9772-4221-84c0-a010d4df62be" >
 			<ee:message >
@@ -93,7 +93,7 @@ payload]]></ee:set-payload>
 		<db:select doc:name="Select" doc:id="08550399-c176-429a-9e5b-1e9b241bd1dd" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT * FROM Orders
 WHERE CustomerID = :customerID]]></db:sql>
-			<db:input-parameters ><![CDATA[#[{'customerID': vars.customerId}]]]></db:input-parameters>
+			<db:input-parameters ><![CDATA[#[{'customerID': attributes.uriParams.customerID}]]]></db:input-parameters>
 		</db:select>
 		<ee:transform doc:name="Transform Message" doc:id="ce58061e-7452-4d9e-b970-0926573b3fb4" >
 			<ee:message >

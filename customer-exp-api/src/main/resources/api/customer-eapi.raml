@@ -6,6 +6,7 @@ types:
   Customer: !include Datatypes/customer.raml
   Offer: !include Datatypes/offer.raml
   Product: !include Datatypes/product.raml
+  Order: !include Datatypes/order.raml
 
 /customers:
   get:
@@ -89,6 +90,18 @@ types:
           application/json:
             type: Product[]
             examples: !include Examples/products.raml
+
+/orders:
+  get:
+    queryParameters:
+      CustomerID:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Order[]
+            examples: !include Examples/orders.raml
+              
               
             
     

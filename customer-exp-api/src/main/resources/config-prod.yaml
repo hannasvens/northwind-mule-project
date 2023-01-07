@@ -16,6 +16,11 @@ requestoffs:
 requestps:
   host: "localhost"
   port: "8087"
+  
+requestords:
+  host: "localhost"
+  port: "8085"
+  
 
 
   

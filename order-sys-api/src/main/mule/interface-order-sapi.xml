@@ -124,19 +124,9 @@ output application/json
         <flow-ref doc:name="Flow Reference" doc:id="914d03f6-2cf0-4c3c-9448-01a7805bace7" name="shipAddressflow-GET" />
     </flow>
     <flow name="get:\orders\customer\(customerID):order-sapi-config" doc:id="41249b1d-650f-403e-9357-1a54fb6b7f05">
-        <ee:transform>
-            <ee:variables>
-                <ee:set-variable variableName="customerID">attributes.uriParams.'customerID'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
         <flow-ref doc:name="Flow Reference" doc:id="3402bb14-3612-4d31-8080-3f7a74b34139" name="customerIDflow-GET" />
     </flow>
     <flow name="get:\orders\employee\(employeeID):order-sapi-config">
-        <ee:transform>
-            <ee:variables>
-                <ee:set-variable variableName="employeeID">attributes.uriParams.'employeeID'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
         <flow-ref doc:name="Flow Reference" doc:id="633b58dd-909d-4deb-a9bd-72a50f5957ae" name="employeeIDflow-GET" />
     </flow>
     <flow name="post:\orders:application\json:order-sapi-config">
