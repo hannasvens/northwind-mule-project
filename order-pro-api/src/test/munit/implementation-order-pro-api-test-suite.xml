@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="implementation-order-pro-api-test-suite.xml" />
+	<munit:test name="getShippingDate-postOrder-happy-path" doc:id="c660ba3b-df55-4018-8028-adc4fc72cd86" description="Test">
+		<munit:behavior >
+			<munit:set-event doc:name="Set Event" doc:id="b9bfa10b-3a76-49aa-bb53-cb577965b77b" >
+				<munit:payload value='#[{&#10;    "offerID": 12345,&#10;    "employeeID": 2,&#10;    "shipperID": 1&#10;}]' />
+			</munit:set-event>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="646ee0b8-1951-43e3-aed3-16939ac60161" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="9a152fd7-01d8-45cb-b19b-31739a624cdb" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:variables >
+						<munit-tools:variable key="shippingDate" value="#[now() as Date]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="4504614d-b973-47b2-8dcc-ac20135d4199" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="61e80216-c375-46be-9730-af5d130fdce5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#["ANTON"]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="974ff3ec-d53b-4fed-8a4e-77d440d1a241" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="345a8e57-56f3-4001-82c7-f66534298ab5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:variables >
+						<munit-tools:variable key="orderID" value="#[11111]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="7ab99d05-5968-4641-a331-8315b3c81d97" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="09fd8e2e-785a-4bca-ad37-818fca01c83c" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to getShippingDate" doc:id="d0428bb4-81a7-407a-9b54-76e4c724e0ea" name="getShippingDate"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="25b3b18d-20ee-457e-9705-f51c570960ed" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="postOfferRequest-happy-path" doc:id="caee3f21-9e35-4edb-8475-24b41846545a" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Event" doc:id="396ce0b1-3a16-4fc8-bf59-dc6c3a750ac5" >
+				<munit:payload value='#[{&#10;    "productID": 2,&#10;    "quantity": 5&#10;}]' />
+				<munit:attributes value='#["ANTON"]' />
+			</munit:set-event>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="8c6598de-a392-4a53-9777-8467cf7cb6de" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6b057f20-94f9-45b6-9ce8-f389fdb799f6" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:variables >
+						<munit-tools:variable key="productID" value="#[2]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="6245cc26-87a2-441b-a493-5809d757733a" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6dcaef61-412f-43b1-9e07-953ee9198129" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[12345]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="6e1dc98c-fc17-4194-9093-f49405f34d41" name="offerRequest"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="553b87d2-979f-4cb1-8541-804e62b9216d" />
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

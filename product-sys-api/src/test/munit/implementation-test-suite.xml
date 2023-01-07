@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="implementation-test-suite.xml" />
+	<munit:test name="getProducts-happy-path" doc:id="537cfc9e-a121-45ac-a485-1857d0470e44" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="b0b2fcd4-ee96-41e3-ad51-6b2bca1570d3" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="9c2407f7-ec5b-4325-8b44-c09b2b22df9e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[[&#10;  {&#10;    "ProductID": 1,&#10;    "ProductName": "Chai",&#10;    "SupplierID": 1,&#10;    "CategoryID": 1,&#10;    "QuantityPerUnit": "10 boxes",&#10;    "UnitPrice": 18000,&#10;    "UnitsInStock": 39,&#10;    "UnitsOnOrder": 0,&#10;    "ReorderLevel": 10,&#10;    "Discontinued": 0&#10;  },&#10;  {&#10;    "ProductID": 2,&#10;    "ProductName": "Chang",&#10;    "SupplierID": 1,&#10;    "CategoryID": 1,&#10;    "QuantityPerUnit": "24 bottles",&#10;    "UnitPrice": 19000,&#10;    "UnitsInStock": 17,&#10;    "UnitsOnOrder": 40,&#10;    "ReorderLevel": 25,&#10;    "Discontinued": 0&#10;  }&#10;]]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to getProducts" doc:id="f3fab0ff-0505-41f2-bbb0-9cfa62a1ff91" name="getProducts"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="42e6f8a6-cc2d-4f58-a802-be0d19a54803" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="getProductsByID-happy-path" doc:id="ae5cc327-b770-45fb-b9a7-3c40ac83a240" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Event" doc:id="daca4251-5231-4f61-9d8b-84cc8f545d7c" >
+				<munit:attributes value="#[2]" />
+			</munit:set-event>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="27156158-fe6d-4586-b716-a846a0ea8420" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="9a4e75d6-70f5-4821-b1bb-fc127d7db858" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[{&#10;  "Product": null,&#10;  "ProductID": 1,&#10;  "ProductName": "Chai",&#10;  "SupplierID": 1,&#10;  "CategoryID": 1,&#10;  "QuantityPerUnit": "10 boxes",&#10;  "UnitPrice": 18000,&#10;  "UnitsInStock": 39,&#10;  "UnitsOnOrder": 0,&#10;  "ReorderLevel": 10,&#10;  "Discontinued": 0&#10;}]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="d78b1eec-bb59-4aba-b6d6-b32c33a7473d" name="getProductsByID"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="d1f6315c-ac68-43b1-a1b4-25bc07d951fd" />
+		</munit:validation>
+	</munit:test>
+
+
+</mule>
