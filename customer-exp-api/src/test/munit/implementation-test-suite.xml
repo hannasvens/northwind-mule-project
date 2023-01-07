@@ -167,10 +167,11 @@
 			<munit-tools:assert doc:name="Assert expression" doc:id="7d038c2f-5e9e-4928-bfbe-b366d72c70ea" />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="patch-offer-happy-path" doc:id="9c1a8c1e-2805-4236-9f15-5a0c21c5adba" >
+	<munit:test name="acceptOffer-happy-path" doc:id="9c1a8c1e-2805-4236-9f15-5a0c21c5adba" >
 		<munit:behavior >
 			<munit:set-event doc:name="Set Event" doc:id="107dde97-57bd-4fe5-853c-d338319c58e4" >
-				<munit:payload value='#[{"offerID": 2, "paymentTransactionID": 10, "customerID": "ANTON"}]' />
+				<munit:payload value='#[{"OfferID": 2, "PaymentTransactionID": 10}]' />
+				<munit:attributes value='#["ANTON"]' />
 			</munit:set-event>
 			<munit-tools:mock-when doc:name="Mock when" doc:id="3d496a0a-8687-40c2-a5a7-2e0c27c4a395" processor="http:request" >
 				<munit-tools:with-attributes >
@@ -185,7 +186,46 @@
 			<flow-ref doc:name="Flow Reference" doc:id="ab992f1f-eb89-440e-b645-47dad333fd60" name="acceptOfferFlow" />
 		</munit:execution>
 		<munit:validation>
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="84ddf438-1680-471b-ad92-75f27602ed4f" actual="#[payload]" expected="Offer status = ACCEPTED"/>
+			<munit-tools:assert doc:name="Assert expression" doc:id="a6f9b137-896d-4772-b999-a208844d65ad" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="getProducts-happy-path" doc:id="c6330d73-1ab4-4fc8-8c62-a66d48c2d2e3" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="de1e582e-4b9d-4a9f-9a4f-3bc7de0e27ee" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="0d278b39-587c-4a0d-8447-72691ab289ca" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[[&#10;  {&#10;    "ProductID": 1,&#10;    "ProductName": "Chai",&#10;    "SupplierID": 1,&#10;    "CategoryID": 1,&#10;    "QuantityPerUnit": "10 boxes",&#10;    "UnitPrice": 18000,&#10;    "UnitsInStock": 39,&#10;    "UnitsOnOrder": 0,&#10;    "ReorderLevel": 10,&#10;    "Discontinued": 0&#10;  },&#10;  {&#10;    "ProductID": 2,&#10;    "ProductName": "Chang",&#10;    "SupplierID": 1,&#10;    "CategoryID": 1,&#10;    "QuantityPerUnit": "24 bottles",&#10;    "UnitPrice": 19000,&#10;    "UnitsInStock": 17,&#10;    "UnitsOnOrder": 40,&#10;    "ReorderLevel": 25,&#10;    "Discontinued": 0&#10;  }&#10;]]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="d076a2d9-90e2-499f-bc40-fe0804506446" name="getProducts"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="82cc8a3d-f95a-473a-8256-f11a06f82e28" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="getOffersByStatus-happy-path" doc:id="da56950a-9208-42dd-94f4-cd408c2233ac" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Event" doc:id="369d1cd8-4768-4980-ba7f-6dbf73862898" >
+				<munit:attributes value='#[{"status": "pending", "customerID": "ANTON"}]' />
+			</munit:set-event>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="ad81114f-890b-4427-930c-e4473832d7e4" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="4db7160c-9c95-43be-8439-49fa3879d3fa" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[[&#10;  {&#10;    "OfferID": 1,&#10;    "Status": "accepted",&#10;    "DateCreated": "2022-12-13",&#10;    "DateApproved": "2022-12-16",&#10;    "EmployeeID": 5,&#10;    "CustomerID": "ALKWE",&#10;    "ProductID": 23,&#10;    "Quantity": 3,&#10;    "OrderID": 11086,&#10;    "TotalPrice": 30,&#10;    "PriceDiscount": 0,&#10;    "PaymentTransactionID": 12&#10;  },&#10;  {&#10;    "OfferID": 2,&#10;    "Status": "accepted",&#10;    "DateCreated": "2022-12-16",&#10;    "DateApproved": "2022-12-19",&#10;    "EmployeeID": 5,&#10;    "CustomerID": "ALKWE",&#10;    "ProductID": 23,&#10;    "Quantity": 5,&#10;    "OrderID": 11078,&#10;    "TotalPrice": 400,&#10;    "PriceDiscount": 0,&#10;    "PaymentTransactionID": 6&#10;  }&#10;]]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="b78c2fab-78cb-4f1f-8106-8af332a28f56" name="getOffersByStatusFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="28b6edf5-1915-4f93-a564-ba1705716ef9" />
 		</munit:validation>
 	</munit:test>
 
