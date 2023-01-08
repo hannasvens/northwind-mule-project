@@ -47,6 +47,78 @@
 			<munit-tools:assert doc:name="Assert expression" doc:id="d1f6315c-ac68-43b1-a1b4-25bc07d951fd" />
 		</munit:validation>
 	</munit:test>
+	<munit:test name="getUnitsInStoc-happy-path" doc:id="ad99ad15-591c-4857-bddf-d6bea4bda15d" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="fc3ec697-cd35-42e3-a8a1-8ebb03672cc2" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="7af9584c-b455-4e07-b876-0cfa8faffdad" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[[{"UnitsInStock": 20}]]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="208a1236-bee8-4956-a851-573961392208" name="getUnitsInStock"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="482d0e0e-50f9-4104-9052-d87ab16f4d0f" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="getPrice-happy-path" doc:id="2a29f0af-e046-4a2e-9140-8dbf39635e43" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="cf666a13-579a-41af-a9ed-84f3d2ca4aac" processor="db:select" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="94424483-7750-4a85-863a-2e719c3cda11" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[[{"UnitPrice": 20}]]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="ec1b0db9-533e-48e9-9b8d-41d38d832485" name="getPrice" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="5f269b46-6be1-4c0f-94b8-222e97634106" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="getPrice-connectivity-error-path" doc:id="add30b3c-f188-4d17-8a77-f28aa19fcad2" expectedErrorType="DB:CONNECTIVITY">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="760f92d4-34ed-4ba1-ac83-847c44540d70" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="94424483-7750-4a85-863a-2e719c3cda11" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="DB:CONNECTIVITY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow reference" doc:id="6bc468ad-7586-48d7-ae45-047fbf35116a" name="getPrice"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="ade9774e-32cb-49c4-9b20-cf95310d5cf8" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="getPrice-query-execution-error-path" doc:id="1d0c6ffe-4eea-404e-bb5c-b0cd02e466fc" expectedErrorType="DB:QUERY_EXECUTION" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="a159bdc8-de4c-44ac-a81e-bae5fe7113d9" processor="db:select" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="94424483-7750-4a85-863a-2e719c3cda11" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="DB:QUERY_EXECUTION" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow reference" doc:id="648f4da8-81db-413f-a1b4-15e92dfb241e" name="getPrice" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="6cbb0fa3-9a46-44c1-b3b0-a70562c4bc25" />
+		</munit:validation>
+	</munit:test>
 
 
 </mule>
