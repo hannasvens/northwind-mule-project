@@ -162,7 +162,7 @@
 			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
-			<flow-ref doc:name="Flow Reference" doc:id="ab992f1f-eb89-440e-b645-47dad333fd60" name="acceptOfferFlow" />
+			<flow-ref doc:name="Flow Reference" doc:id="ab992f1f-eb89-440e-b645-47dad333fd60" name="accept-or-rejectOfferFlow" />
 		</munit:execution>
 		<munit:validation>
 			<munit-tools:assert doc:name="Assert expression" doc:id="a6f9b137-896d-4772-b999-a208844d65ad" />

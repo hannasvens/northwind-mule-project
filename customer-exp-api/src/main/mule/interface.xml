@@ -139,7 +139,7 @@ output application/json
         <flow-ref doc:name="Flow Reference" doc:id="7ba854ab-58b7-4c0c-bc0a-945dc5102329" name="postOfferRequestFlow" />
     </flow>
     <flow name="post:\offers\(ID):application\json:customer-eapi-config">
-        <flow-ref doc:name="Flow Reference" doc:id="f48515d7-d920-402b-9563-3d427310bdbe" name="acceptOfferFlow" />
+        <flow-ref doc:name="Flow Reference" doc:id="f48515d7-d920-402b-9563-3d427310bdbe" name="accept-or-rejectOfferFlow" />
     </flow>
     <flow name="get:\orders:customer-eapi-config">
 		<flow-ref doc:name="Flow Reference" doc:id="8576deb8-3d7b-460b-84c2-578b304edf29" name="getOrders"/>
