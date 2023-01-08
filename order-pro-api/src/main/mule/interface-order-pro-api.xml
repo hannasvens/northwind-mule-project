@@ -121,7 +121,7 @@ output application/json
         </error-handler>
     </flow>
     <flow name="patch:\offers:application\json:order-papi-config">
-		<flow-ref doc:name="Flow Reference" doc:id="29c2da90-8053-4f4b-9cfd-95d3c7c72fe8" name="patchesFlows"/>
+		<flow-ref doc:name="Flow Reference" doc:id="29c2da90-8053-4f4b-9cfd-95d3c7c72fe8" name="updateOffer"/>
     </flow>
     <flow name="post:\offers:application\json:order-papi-config">
 		<flow-ref doc:name="Flow Reference" doc:id="2556b4c1-9bbc-49c5-a01b-71ff5f276d2b" name="offerRequest"/>

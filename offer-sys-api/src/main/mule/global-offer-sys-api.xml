@@ -51,7 +51,6 @@ output application/json
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
-			<set-variable value="500" doc:name="httpStatus" doc:id="9c77c28a-f85e-4369-8ddd-75a71f5c1078" variableName="httpStatus" />
 		</on-error-propagate>
 	</error-handler>
 	<http:listener-config name="HTTP_ListenerConfig">

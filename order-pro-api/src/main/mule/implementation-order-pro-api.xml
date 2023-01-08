@@ -68,7 +68,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	
 	<flow name="offerRequest" doc:id="6437727e-c812-4067-95c6-2f5604da7ad1" >
 		<logger level="INFO" doc:name="Logger" doc:id="6b57b49c-7584-4b7b-98c9-a8aa25c8bb66" />
-		<http:request method="GET" doc:name="GET/productID " doc:id="6b057f20-94f9-45b6-9ce8-f389fdb799f6" config-ref="HTTP_Request_configuration_prodSAPI" path="/api/products/{ID}" responseTimeout="300000" target="productID" targetValue="#[payload[0].ProductID]">
+		<http:request method="GET" doc:name="GET/productID" doc:id="6b057f20-94f9-45b6-9ce8-f389fdb799f6" config-ref="HTTP_Request_configuration_prodSAPI" path="/api/products/{ID}" responseTimeout="300000" target="productID" targetValue="#[payload[0].ProductID]">
 			<http:uri-params ><![CDATA[#[output application/java
 ---
 {
@@ -89,7 +89,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 		<set-payload value="#[payload]" doc:name="OfferID" doc:id="880b758e-19d0-46a5-81a0-8422fe709d57" />
 		<logger level="INFO" doc:name="Logger" doc:id="3460df29-4e7c-4212-9b43-094e81b6dae7" />
 	</flow>
-	<flow name="patchesFlows" doc:id="a60e8982-253e-4ea4-9c9a-897d3667b680" >
+	<flow name="updateOffer" doc:id="a60e8982-253e-4ea4-9c9a-897d3667b680" >
 		<logger level="INFO" doc:name="Logger" doc:id="fab90211-2dfe-4e88-be4d-9b415664c92a" />
 		<choice doc:name="Choice" doc:id="d7f19b8d-15f4-4a1b-83bb-55641ae4bb3c" >
 			<when expression="#[payload.PaymentTransactionID != null]">
@@ -108,7 +108,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 			</when>
 			<when expression="#[payload.PriceDiscount != null]">
 				<set-variable value="#[payload.OfferID]" doc:name="offerID" doc:id="085be607-c381-4377-b28f-2cb316d35112" variableName="offerID" />
-				<flow-ref doc:name="getTotalPrice" doc:id="391fd201-72c8-4004-83ab-e4535830c103" name="getTotalPrice"/>
+				<flow-ref doc:name="proposeOffer" doc:id="391fd201-72c8-4004-83ab-e4535830c103" name="proposeOffer"/>
 				<http:request method="PATCH" doc:name="Update Offer PROPOSED (or set as OUT OF STOCK)" doc:id="3e745ed7-8e61-4637-8142-6a0dd33f7b3b" config-ref="HTTP_Request_configuration-offersSapi" path="/api/offers/{offerID}" >
 					<http:body ><![CDATA[#[%dw 2.0
 output application/json
@@ -219,7 +219,7 @@ output application/json
 				</http:request>
 		<logger level="INFO" doc:name="EndFlow" doc:id="0a1a1097-b566-46c2-a673-c434d55e097c" />
 	</flow> [STUDIO] -->
-	<flow name="getTotalPrice" doc:id="08c79522-e826-4ed7-adeb-86f6160a805f" >
+	<flow name="proposeOffer" doc:id="08c79522-e826-4ed7-adeb-86f6160a805f" >
 		<logger level="INFO" doc:name="Logger" doc:id="d4c7bd7b-9b0c-4784-bd31-5afd5408ee03" />
 		<validation:is-not-null doc:name="Is not null" doc:id="c4ff7b08-a9b0-498f-98c7-9b5d17500193" config-ref="Validation_Config" value="#[payload.PriceDiscount]" message="Discount not specified"/>
 		<http:request method="GET" doc:name="GET/price" doc:id="1a7ac154-4d56-4188-9b7a-d35ac611572e" config-ref="HTTP_Request_configuration_prodSAPI" path="/api/products/price" target="price" responseTimeout="300000">
