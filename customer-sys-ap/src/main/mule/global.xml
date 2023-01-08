@@ -17,25 +17,15 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	<global-property doc:name="Global Property" doc:id="42b06064-1ef9-44e5-963e-ca62a86fec48" name="env" value="dev" />
 	<error-handler name="globalError_Handler" doc:id="fa4065a9-078e-497d-82e5-93aefbf37a7f" >
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="359f9ca1-c3b6-44dd-97ba-084cc3ebd0a0" type="DB:CONNECTIVITY">
-			<ee:transform doc:name="Transform Message" doc:id="0c48c249-eb57-4a75-a836-760caef642f0" >
-				<ee:message >
-					<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{
-	"message": "Database unavailable"
-}]]></ee:set-payload>
-				</ee:message>
-			</ee:transform>
 		</on-error-propagate>
 				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="5a5693ea-b762-497a-a794-347d0332ca01" type="DB:QUERY_EXECUTION">
-			<ee:transform doc:name="Transform Message" doc:id="16c0a5ea-7c9e-451a-a4aa-6c45901ad3df" >
+			<ee:transform doc:name="Transform Message" doc:id="06bc9564-f21c-4eef-9ba2-6561f6367db9" >
 				<ee:message >
 					<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
 {
-	message: "Customer already exists in database" 
+	message: error.detailedDescription
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
@@ -43,16 +33,6 @@ output application/json
 		</on-error-propagate>
 		
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="3338c827-67cf-47e1-ada4-54b6abd2fb18" type="ANY">
-			<ee:transform doc:name="error.description" doc:id="1ece29c2-0357-4dc2-b4c8-f9be30629781" >
-				<ee:message >
-					<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{
-	"message": error.description
-}]]></ee:set-payload>
-				</ee:message>
-			</ee:transform>
 			</on-error-propagate>
 		
 	

@@ -20,7 +20,7 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 	</flow>
 	<flow name="postCustomerFlow" doc:id="7b2ee7eb-9720-4490-8590-adfbc6e23569">
 		<logger level="INFO" doc:name="startPostCustomerFlow" doc:id="dea01201-2581-4fb6-854e-49d48af3f9f9" />
-		<http:request method="POST" doc:name="Request" doc:id="71c88a2f-b4d8-41eb-b421-e64be222a814" config-ref="HTTP_Request_configuration_custSAPI" path="/api/customers">
+		<http:request method="POST" doc:name="Request" doc:id="71c88a2f-b4d8-41eb-b421-e64be222a814" config-ref="HTTP_Request_configuration_custSAPI" path="/api/customers" responseTimeout="300000">
 			<http:body><![CDATA[#[%dw 2.0
 output application/json
 ---
@@ -50,7 +50,7 @@ output application/json
 	</flow>
 	<flow name="getCustomerByIDFlow" doc:id="e2d72521-c37f-4825-b03b-da0fb4fe5091" >
 		<logger level="INFO" doc:name="startGetCustomerByIDFlow" doc:id="9e37e9df-9b53-4271-a0ab-84776ada8ce2" />
-		<http:request method="GET" doc:name="Request" doc:id="898f63ec-cfd0-4ac5-a104-2e5790533e7e" config-ref="HTTP_Request_configuration_custSAPI" path="/api/customers/{ID}" >
+		<http:request method="GET" doc:name="Request" doc:id="898f63ec-cfd0-4ac5-a104-2e5790533e7e" config-ref="HTTP_Request_configuration_custSAPI" path="/api/customers/{ID}" responseTimeout="300000">
 			<http:uri-params ><![CDATA[#[output application/java
 ---
 {

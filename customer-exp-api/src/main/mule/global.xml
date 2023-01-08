@@ -55,6 +55,19 @@ output application/json
 			</ee:transform>
 			<set-variable value="400" doc:name="Set Variable" doc:id="bb622c0f-677b-4f14-a8c2-1fbbba9db1c3" variableName="httpStatus"/>
 		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="ebfe335b-b8a4-4f61-b744-40c37b40bb3c" type="MULE:EXPRESSION">
+			<ee:transform doc:name="Transform Message" doc:id="3f2b0170-8d18-4138-9029-9d82ce793c9d" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+ {
+ 	message: error.description
+ }]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<set-variable value="400" doc:name="Set Variable" doc:id="27fd68dc-c8f3-49d1-a6f3-30cc5694aa6f" variableName="httpStatus"/>
+		</on-error-propagate>
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="baa2172b-d5fd-42ed-abc2-f8ce5422c39c" type="ANY">
 			<ee:transform doc:name="Transform Message" doc:id="e003178c-ab94-4db4-a1de-f0ab62725c65" >
 				<ee:message >
@@ -67,5 +80,6 @@ output application/json
 				</ee:message>
 			</ee:transform>
 		</on-error-propagate>
+		
 	</error-handler>
 </mule>
