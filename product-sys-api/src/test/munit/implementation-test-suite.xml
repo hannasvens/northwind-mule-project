@@ -115,8 +115,8 @@
 		<munit:execution >
 			<flow-ref doc:name="Flow reference" doc:id="648f4da8-81db-413f-a1b4-15e92dfb241e" name="getPrice" />
 		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert doc:name="Assert expression" doc:id="6cbb0fa3-9a46-44c1-b3b0-a70562c4bc25" />
+		<munit:validation>
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="8ffee1c8-14eb-4d29-9d58-78b6e796e6f0" actual="#[payload]" expected="#[{message: error.description}]"/>
 		</munit:validation>
 	</munit:test>
 

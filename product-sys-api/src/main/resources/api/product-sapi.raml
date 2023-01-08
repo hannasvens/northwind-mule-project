@@ -21,27 +21,27 @@ types:
               type: product
               example: !include Examples/productByID.raml
 
-/price:
-  get:
-    queryParameters:
-      offerID:
-    responses:
-      200:
-        body:
-          application/json:
-            example:
-              {"unitPrice": 200}
+  /price:
+    get:
+      queryParameters:
+        offerID:
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                {"UnitPrice": 200}
 
-/unitsInStock:
-  get:
-    queryParameters:
-      offerID:
-    responses:
-      200:
-        body:
-          application/json:
-            example:
-              
+  /unitsInStock:
+    get:
+      queryParameters:
+        offerID:
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                {"UnitsInStock": 17}
                 
 
               

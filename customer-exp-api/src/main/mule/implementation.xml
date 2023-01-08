@@ -144,7 +144,7 @@ output application/json
 	</flow>
 	<flow name="getOrders" doc:id="5df481fd-fc56-44f3-b00f-c04d8b011953" >
 		<logger level="INFO" doc:name="Logger" doc:id="1a5f645b-e41c-4268-9381-50fa803c3f40" />
-		<http:request method="GET" doc:name="Request" doc:id="034a1e17-d739-4a31-82e7-aec48b766308" config-ref="HTTP_Request_configuration_ordSAPI" path="/api/orders/customer/{customerID}" responseTimeout="300000">
+		<http:request method="GET" doc:name="GET/orders" doc:id="034a1e17-d739-4a31-82e7-aec48b766308" config-ref="HTTP_Request_configuration_ordSAPI" path="/api/orders/customer/{customerID}" responseTimeout="300000">
 			<http:uri-params ><![CDATA[#[output application/java
 ---
 {

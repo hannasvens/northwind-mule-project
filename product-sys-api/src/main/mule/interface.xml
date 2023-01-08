@@ -126,10 +126,10 @@ output application/json
     <flow name="get:\products\(ID):product-sapi-config">
         <flow-ref doc:name="Flow Reference" doc:id="2fc9a98f-c175-4875-9f9d-e6f920c8217c" name="getProductsByID" />
     </flow>
-    <flow name="get:\price:product-sapi-config">
-		<flow-ref doc:name="Flow Reference" doc:id="a6bc8ac4-6a7f-43c7-9ed5-66a84008a61f" name="getPrice"/>
+    <flow name="get:\products\price:product-sapi-config">
+		<flow-ref doc:name="Flow Reference" doc:id="9e0851ff-0b62-436e-9191-713d1e797ba4" name="getPrice"/>
     </flow>
-    <flow name="get:\unitsInStock:product-sapi-config">
-		<flow-ref doc:name="Flow Reference" doc:id="79b6b938-90b3-4d08-96b9-3116f77a32b6" name="getUnitsInStock"/>
+    <flow name="get:\products\unitsInStock:product-sapi-config">
+		<flow-ref doc:name="Flow Reference" doc:id="cf39a1a0-6071-4c66-a703-48ec07077556" name="getUnitsInStock"/>
     </flow>
 </mule>
