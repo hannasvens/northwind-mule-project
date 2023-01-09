@@ -22,6 +22,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 }]]]></http:body>
 		</http:request>
 		<set-variable value='#[import * from dw::core::Dates&#10;import * from dw::core::Periods&#10;output application/json&#10;&#10;var days = 15&#10;---&#10;&#10;vars.dateAccepted + ("P$(days)D" as Period)]' doc:name="Set Variable" doc:id="5cbc47a3-29c1-4c37-a335-2d3f54b69495" variableName="limitDate"/>
+		<logger level="INFO" doc:name="Logger" doc:id="33a60f0f-49cc-4780-b4ab-791b7130f95f" />
 		<choice doc:name="Choice" doc:id="87e02c3f-013e-4913-9b3a-05a7510a3a7c" >
 			<when expression="#[vars.shippingDate &lt; vars.limitDate]">
 				<http:request method="GET" doc:name="GET/customerID from offerSAPI" doc:id="61e80216-c375-46be-9730-af5d130fdce5" config-ref="HTTP_Request_configuration-offersSapi" path="/api/offers/{offerID}" target="customerID" targetValue="#[payload[0].CustomerID]" responseTimeout="300000">
@@ -31,6 +32,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	offerID : payload.offerID
 }]]]></http:uri-params>
 				</http:request>
+				<logger level="INFO" doc:name="Logger" doc:id="40f67a90-9f62-4fd5-a84c-47289ccfddef" />
 				<flow-ref doc:name="createOrder" doc:id="ad3b9ab4-e633-4a33-bf1d-ac230c942c77" name="createOrder"/>
 			</when>
 			<otherwise>
