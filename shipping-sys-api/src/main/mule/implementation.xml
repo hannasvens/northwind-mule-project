@@ -43,7 +43,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<db:select doc:name="Select" doc:id="6005f275-ee12-41ec-92db-1e14b954f9f7" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT Customers.PostalCode
 FROM Offers, Customers
-WHERE OfferID = :offerID AND offers.CustomerID = Customers.CustomerID;]]></db:sql>
+WHERE OfferID = :offerID AND Offers.CustomerID = Customers.CustomerID;]]></db:sql>
 			<db:input-parameters ><![CDATA[#[{"offerID": attributes.queryParams.offerID}]]]></db:input-parameters>
 		</db:select>
 		<ee:transform doc:name="Transform Message" doc:id="14a605c3-4a3a-4783-a911-b1ba845e45bd" >
