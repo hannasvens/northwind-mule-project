@@ -11,3 +11,7 @@ db:
 requestext:
   host: "localhost"
   port: "8081"
+  
+requestown:
+  host: "localhost"
+  port: "8084"

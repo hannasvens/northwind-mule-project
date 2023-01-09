@@ -13,7 +13,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<http:listener-connection host="0.0.0.0" port="${http.port}" />
 	</http:listener-config>
 	<http:request-config name="HTTP_Request_configuration_own" doc:name="HTTP Request configuration" doc:id="b4e87cc9-c298-48ee-a595-af394938efdb" >
-		<http:request-connection host="localhost" port="${http.port}" />
+		<http:request-connection host="${requestown.host}" port="${requestown.port}" />
 	</http:request-config>
 	<http:request-config name="HTTP_Request_configuration_extAPI" doc:name="HTTP Request configuration" doc:id="c58937cc-8091-400e-bdb0-c9eec5a816cb" >
 		<http:request-connection host="${requestext.host}" port="${requestext.port}" />
