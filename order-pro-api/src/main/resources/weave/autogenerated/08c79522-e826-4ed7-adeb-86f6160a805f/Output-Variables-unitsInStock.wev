@@ -1,4 +1,0 @@
-%dw 2.0
-
-type auto_08c79522_e826_4ed7_adeb_86f6160a805f_Output_Variables_unitsInStock = Any
-

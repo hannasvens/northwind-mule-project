@@ -48,9 +48,7 @@ output application/json
 					<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-{
-	message: error.description
-}]]></ee:set-payload>
+error.errorMessage.payload]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
 			<set-variable value="400" doc:name="Set Variable" doc:id="bb622c0f-677b-4f14-a8c2-1fbbba9db1c3" variableName="httpStatus"/>

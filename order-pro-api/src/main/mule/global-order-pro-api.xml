@@ -33,6 +33,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<http:request-config name="HTTP_Request_configuration_ordSAPI" doc:name="HTTP Request configuration" doc:id="912b6f9a-b484-44f4-b795-d6b5efa402c3" >
 		<http:request-connection host="${requestords.host}" port="${requestords.port}" />
 	</http:request-config>
+	<configuration doc:name="Configuration" doc:id="e0303238-db8c-44ff-acc6-9479d99834f7" defaultErrorHandler-ref="global-order-pro-apiError_Handler" />
 	<error-handler name="global-order-pro-apiError_Handler">
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c9461afe-6ac5-4bce-bd4a-ff642140731e" type="VALIDATION:INVALID_BOOLEAN">
 			<ee:transform doc:name="Transform Message" doc:id="6dad728f-4c04-46ad-b468-8b42c41f118f" >
@@ -45,7 +46,7 @@ output application/json
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
-			<set-payload value="400" doc:name="httpStatus" doc:id="57138381-fd2d-4a50-841e-14b259e597a3" />
+			<set-variable value="400" doc:name="Set Variable" doc:id="438e1478-eb33-4fdf-ba70-6746c32a27c9" variableName="httpStatus"/>
 			</on-error-propagate>
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="e1a11f01-7b1a-46f2-b674-7232f889a6b3" type="HTTP:CONNECTIVITY">
 			<ee:transform doc:name="Transform Message" doc:id="04f8618a-ed05-428f-88c0-2da8b88c6a21">
@@ -58,7 +59,7 @@ output application/json
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
-			<set-payload value="400" doc:name="httpStatus" doc:id="13e81818-5d5d-47c8-94e3-334919e28f80" />
+			<set-variable value="500" doc:name="Set Variable" doc:id="cf49c321-f8c4-4f69-8b86-aaa285d8b050" variableName="httpStatus"/>
 		</on-error-propagate>
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="ed5f66e3-0242-4e87-b091-ef897318a667" type="HTTP:BAD_REQUEST">
 			<ee:transform doc:name="Transform Message" doc:id="12e9b2cd-eef4-4198-a6f5-3794de505ef4" >
@@ -71,7 +72,7 @@ output application/json
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
-			<set-payload value="400" doc:name="httpStatus" doc:id="7c30cd3a-eefd-4cdd-a2fa-17122b0ff01a" />
+			<set-variable value="400" doc:name="Set Variable" doc:id="e73a9ee0-aa90-4050-b599-66cabab0da74" variableName="httpStatus"/>
 		</on-error-propagate>
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="85553038-861d-4af4-b203-c4f1de89cdc2" type="ANY">
 			<ee:transform doc:name="Transform Message" doc:id="5dbffac7-cf15-4133-ba57-aee24acd0276">
